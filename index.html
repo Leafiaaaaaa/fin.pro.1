@@ -120,8 +120,8 @@
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
             </span>
-            <span class="text-slate-300 font-medium">評議庫連線</span>
-            <span id="crawler-last-sync-time" class="font-mono text-emerald-300">15:10:00</span>
+            <span class="text-slate-300 font-medium">NLP/評議庫連線</span>
+            <span id="crawler-last-sync-time" class="font-mono text-emerald-300">16:10:00</span>
           </div>
 
           <button onclick="exportAuditReport()" class="inline-flex items-center gap-2 px-4 py-2 bg-gov-700 hover:bg-gov-500 text-white text-sm font-bold rounded-lg border border-slate-600 transition shadow-sm">
@@ -161,25 +161,25 @@
       <div class="bg-gov-900 border border-slate-700/80 rounded-2xl p-5 text-white shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div class="flex items-center gap-4">
           <div class="w-12 h-12 rounded-xl bg-regtech-500/20 border border-regtech-500/30 flex items-center justify-center text-regtech-400 shrink-0">
-            <i data-lucide="radio" class="w-6 h-6 animate-pulse"></i>
+            <i data-lucide="sparkles" class="w-6 h-6 text-emerald-400 animate-pulse"></i>
           </div>
           <div>
             <div class="flex items-center gap-2">
-              <span class="font-bold text-base text-white">官方評議決定書實時爬取中樞</span>
-              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">ods.foi.org.tw 節點同步</span>
+              <span class="font-bold text-base text-white">官方評議決定書實時爬取 ＆ AI 語意斷詞分析中樞</span>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">NLP 語意引擎在線</span>
             </div>
-            <p class="text-xs text-slate-300 mt-0.5">即刻解析金融消費評議中心最新作成之評議與不受理決定書，動態載入案由、賠償額度並聯動更新全站指標。</p>
+            <p class="text-xs text-slate-300 mt-0.5">即刻解析金融消費評議中心最新作成之評議與不受理決定書，自動提取兩造爭端攻防、法規錨點與責任分擔比率。</p>
           </div>
         </div>
 
         <div class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
           <div class="text-right">
-            <div class="text-[11px] text-slate-400">目前收錄評議書庫存</div>
+            <div class="text-[11px] text-slate-400">已剖析評議書庫存</div>
             <div id="stat-total-crawled-badge" class="text-lg font-black font-mono text-emerald-400">11,671 <span class="text-xs text-slate-400 font-normal">篇</span></div>
           </div>
           <button onclick="triggerLiveCrawlerSync()" id="btn-sync-crawler-home" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-bold transition flex items-center gap-2 shadow-md">
             <i id="crawler-refresh-icon" data-lucide="refresh-cw" class="w-4 h-4"></i>
-            <span>同步最新評議書</span>
+            <span>同步最新評議書並執行語意解析</span>
           </button>
         </div>
       </div>
@@ -193,7 +193,7 @@
           </div>
           <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">金融機構爭議案件全流程監理中樞</h1>
           <p class="text-slate-300 text-base max-w-3xl">
-            提供主管機關與特許金融機構法遵室即時研判消費者申訴之程序適格性（內建第 24 條九大不受理事由篩檢矩陣）、評議時效警示監控、一定額度拘束力門檻與歷年裁判心證分析。
+            提供主管機關與特許金融機構法遵室即時研判消費者申訴之程序適格性（內建第 24 條九大不受理事由篩檢矩陣）、評議時效警示監控、一定額度拘束力門檻與 AI 裁判心證分析報告。
           </p>
         </div>
         <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
@@ -272,15 +272,15 @@
           <div>
             <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
               <i data-lucide="list-ordered" class="w-6 h-6 text-gov-700"></i>
-              即時評議決定書收錄清單（點擊案號查閱整理與類似案件）
+              即時評議決定書收錄清單（點擊案號查閱 AI 斷詞語意報告與前案比對）
             </h3>
             <p class="text-sm text-slate-500 mt-1">
-              點擊任一 <span class="font-bold text-gov-700">評議字號／序號</span> 可檢閱結構化判決要旨，並由系統自動配對相關判例
+              點擊任一 <span class="font-bold text-gov-700">評議字號／序號</span> 即刻調閱由 NLP 系統萃取之「兩造爭點攻防、責任比例條與心證理由」
             </p>
           </div>
           <div class="flex items-center gap-2">
-            <input type="text" id="feed-search-input" oninput="filterDecisionFeed()" placeholder="搜尋評議字號/金融機構/關鍵字..." class="px-3.5 py-2 rounded-lg border border-slate-300 text-sm outline-none focus:ring-2 focus:ring-gov-500 w-64">
-            <span class="text-xs px-2.5 py-2 bg-emerald-50 text-emerald-700 rounded-lg font-mono border border-emerald-200 font-bold whitespace-nowrap">LIVE FEED</span>
+            <input type="text" id="feed-search-input" oninput="filterDecisionFeed()" placeholder="搜尋評議字號/機構/斷詞關鍵字..." class="px-3.5 py-2 rounded-lg border border-slate-300 text-sm outline-none focus:ring-2 focus:ring-gov-500 w-72">
+            <span class="text-xs px-2.5 py-2 bg-emerald-50 text-emerald-700 rounded-lg font-mono border border-emerald-200 font-bold whitespace-nowrap">NLP LIVE</span>
           </div>
         </div>
 
@@ -288,7 +288,7 @@
           <table class="w-full text-left border-collapse text-base">
             <thead>
               <tr class="border-b-2 border-slate-200 bg-slate-50 text-slate-700 font-bold text-sm">
-                <th class="py-3.5 px-4">評議字號 / 案卷序號 (點擊檢視)</th>
+                <th class="py-3.5 px-4">評議字號 / 案卷序號 (點擊開啟AI快析)</th>
                 <th class="py-3.5 px-4">金融機構</th>
                 <th class="py-3.5 px-4">產業類別</th>
                 <th class="py-3.5 px-4">爭端類型</th>
@@ -838,22 +838,28 @@
 
   </main>
 
-  <!-- Decision Detail & Precedent Viewer Modal -->
-  <div id="decision-detail-modal" class="fixed inset-0 z-50 bg-slate-900/75 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-2xl max-w-4xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 max-h-[92vh] overflow-y-auto custom-scroll">
+  <!-- ======================================================== -->
+  <!-- MODAL: AI 斷詞與語意分析中樞報告 (AI INTELLIGENCE DOSSIER) -->
+  <!-- ======================================================== -->
+  <div id="decision-detail-modal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md hidden flex items-center justify-center p-3 sm:p-6">
+    <div class="bg-white rounded-2xl max-w-5xl w-full p-6 sm:p-8 space-y-6 shadow-2xl border border-slate-200 max-h-[92vh] overflow-y-auto custom-scroll">
       
       <!-- Modal Header -->
       <div class="flex items-start justify-between pb-4 border-b border-slate-200">
         <div class="flex items-center gap-3">
           <span class="w-12 h-12 rounded-xl bg-gov-900 text-regtech-400 flex items-center justify-center font-bold shadow-md">
-            <i data-lucide="scale" class="w-6 h-6"></i>
+            <i data-lucide="brain-circuit" class="w-6 h-6 text-emerald-400"></i>
           </span>
           <div>
             <div class="flex items-center gap-2">
               <span id="modal-doc-id" class="text-sm font-mono font-bold bg-gov-100 text-gov-800 px-2.5 py-0.5 rounded">115-評字第 000891 號</span>
               <span id="modal-doc-industry-badge" class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700">銀行業</span>
+              <span class="text-xs font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 flex items-center gap-1 border border-emerald-300">
+                <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-600"></i>
+                AI 斷詞語意報告已生成
+              </span>
             </div>
-            <h3 id="modal-doc-title" class="text-xl sm:text-2xl font-black text-slate-900 mt-1">評議書案卷摘要</h3>
+            <h3 id="modal-doc-title" class="text-xl sm:text-2xl font-black text-slate-900 mt-1">智慧案件快析報告書</h3>
           </div>
         </div>
         <button onclick="closeDecisionModal()" class="text-slate-400 hover:text-slate-700 p-2 rounded-lg hover:bg-slate-100 transition">
@@ -861,34 +867,113 @@
         </button>
       </div>
 
-      <!-- Quick KPI Chips -->
+      <!-- Quick KPI Strip -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs bg-slate-50 p-4 rounded-xl border border-slate-200">
         <div>
           <div class="text-slate-400">涉案受評機構</div>
           <div id="modal-doc-inst" class="font-bold text-slate-900 text-base mt-0.5">-</div>
         </div>
         <div>
-          <div class="text-slate-400">爭議標的金額</div>
+          <div class="text-slate-400">爭議標的總金額</div>
           <div id="modal-doc-amount" class="font-bold text-gov-800 font-mono text-base mt-0.5">-</div>
         </div>
         <div>
-          <div class="text-slate-400">作成決定結論</div>
+          <div class="text-slate-400">裁決結論</div>
           <div id="modal-doc-verdict" class="font-bold text-base mt-0.5">-</div>
         </div>
         <div>
-          <div class="text-slate-400">拘束力法定門檻</div>
-          <div id="modal-doc-binding" class="font-bold text-emerald-600 text-base mt-0.5">具強制拘束力</div>
+          <div class="text-slate-400">金保法第29條門檻</div>
+          <div id="modal-doc-binding" class="font-bold text-emerald-600 text-base mt-0.5">具法定強制拘束力</div>
         </div>
       </div>
 
-      <!-- Section: Structured Case Insights -->
+      <!-- Section: Visual Financial Liability Meter -->
+      <div class="p-5 rounded-2xl bg-gradient-to-br from-slate-900 to-gov-900 text-white space-y-3 shadow-md">
+        <div class="flex items-center justify-between text-xs">
+          <span class="font-bold uppercase tracking-wider text-emerald-300 flex items-center gap-1.5">
+            <i data-lucide="scale" class="w-4 h-4"></i>
+            評議賠償責任負擔比例量表 (Financial Liability Allocation)
+          </span>
+          <span id="meter-ratio-text" class="font-mono font-bold text-slate-200">機構負擔 70% ｜ 消費者承擔 30%</span>
+        </div>
+
+        <!-- 2-Tone Ratio Bar -->
+        <div class="w-full h-5 rounded-full overflow-hidden bg-slate-700 flex p-0.5 gap-1">
+          <div id="meter-inst-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 rounded-l-full transition-all duration-500" style="width: 70%;"></div>
+          <div id="meter-consumer-bar" class="bg-gradient-to-r from-amber-500 to-rose-400 rounded-r-full transition-all duration-500" style="width: 30%;"></div>
+        </div>
+
+        <div class="flex items-center justify-between text-xs font-mono">
+          <div class="flex items-center gap-1.5 text-emerald-300">
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+            <span>金融機構應給付：<strong id="meter-inst-amount" class="text-white text-sm">NT$ 129,500</strong></span>
+          </div>
+          <div class="flex items-center gap-1.5 text-amber-200">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
+            <span>消費者自行承擔：<strong id="meter-consumer-amount" class="text-white text-sm">NT$ 55,500</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Claim vs Defense Matrix (雙造攻防對照) -->
+      <div class="space-y-3">
+        <h4 class="font-bold text-slate-900 flex items-center gap-2 text-base">
+          <i data-lucide="swords" class="w-5 h-5 text-indigo-600"></i>
+          語意抽取：兩造爭端攻防對照矩陣 (Cross-Examination Matrix)
+        </h4>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Consumer Side -->
+          <div class="p-4 rounded-xl bg-blue-50/70 border border-blue-200 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold px-2 py-0.5 rounded bg-blue-600 text-white flex items-center gap-1">
+                <i data-lucide="user" class="w-3.5 h-3.5"></i> 申請人（消費者）爭議主張
+              </span>
+              <span class="text-xs text-blue-800 font-mono">CLAIM #1</span>
+            </div>
+            <ul id="modal-claim-list" class="space-y-1.5 text-xs text-slate-700 leading-relaxed list-disc list-inside">
+              <!-- Dynamically populated -->
+            </ul>
+          </div>
+
+          <!-- Institution Side -->
+          <div class="p-4 rounded-xl bg-amber-50/70 border border-amber-200 space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold px-2 py-0.5 rounded bg-amber-600 text-white flex items-center gap-1">
+                <i data-lucide="building-2" class="w-3.5 h-3.5"></i> 相對人（金融機構）抗辯要點
+              </span>
+              <span class="text-xs text-amber-800 font-mono">DEFENSE #1</span>
+            </div>
+            <ul id="modal-defense-list" class="space-y-1.5 text-xs text-slate-700 leading-relaxed list-disc list-inside">
+              <!-- Dynamically populated -->
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Tokenized Tags & Legal Reasoning -->
       <div class="space-y-4">
+        <!-- Tokenized Tags Cloud -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-slate-900 flex items-center gap-2 text-sm">
+              <i data-lucide="tag" class="w-4 h-4 text-gov-700"></i>
+              NLP 斷詞特徵與法規錨點標籤 (Tokenized Legal Tags)
+            </h4>
+            <span class="text-xs text-slate-400">已自動提取 8 項特徵詞</span>
+          </div>
+          <div id="modal-tokenized-tags" class="flex flex-wrap gap-2 text-xs">
+            <!-- Dynamically populated tags -->
+          </div>
+        </div>
+
+        <!-- The Ratio Decidendi (核心心證) -->
         <div>
           <h4 class="font-bold text-slate-900 flex items-center gap-2 text-base mb-2">
             <i data-lucide="gavel" class="w-5 h-5 text-gov-700"></i>
-            評議委員會決定主文（裁決結論與賠償義務）
+            評議委員會決定主文與核心裁判心證 (The Ratio Decidendi)
           </h4>
-          <div id="modal-doc-summary" class="p-4 bg-emerald-50/60 rounded-xl text-slate-800 text-sm leading-relaxed border border-emerald-200 font-medium">
+          <div id="modal-doc-summary" class="p-4 bg-emerald-50/70 rounded-xl text-slate-800 text-sm leading-relaxed border border-emerald-200 font-medium">
             -
           </div>
         </div>
@@ -896,21 +981,21 @@
         <div>
           <h4 class="font-bold text-slate-900 flex items-center gap-2 text-base mb-2">
             <i data-lucide="book-open" class="w-5 h-5 text-gov-700"></i>
-            法規援引與心證理由整理
+            法理推論依據與歸責責任分析
           </h4>
-          <div id="modal-doc-reasons" class="p-4 bg-slate-50 rounded-xl text-slate-700 text-sm leading-relaxed border border-slate-200 space-y-2">
+          <div id="modal-doc-reasons" class="p-4 bg-slate-50 rounded-xl text-slate-700 text-xs sm:text-sm leading-relaxed border border-slate-200 space-y-2 whitespace-pre-line">
             -
           </div>
         </div>
 
-        <!-- Precedent & Similar Cases Section -->
+        <!-- Precedent & Similar Cases Section with Similarity Score -->
         <div class="pt-4 border-t border-slate-200 space-y-3">
           <div class="flex items-center justify-between">
             <h4 class="font-bold text-slate-900 flex items-center gap-2 text-base">
               <i data-lucide="git-branch" class="w-5 h-5 text-cyan-600"></i>
-              智慧關聯：相關或類似案件參照（Precedent Dossier）
+              智慧先例配對：類似爭端案件比對雷達 (Precedent Matching Radar)
             </h4>
-            <span class="text-xs text-slate-400">由案由特徵自動比對歷年評議心證</span>
+            <span class="text-xs text-slate-400">基於特徵向量相似度 (Cosine Similarity) 演算法推薦</span>
           </div>
 
           <div id="modal-similar-cases-list" class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -921,10 +1006,11 @@
 
       <!-- Modal Footer -->
       <div class="pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3">
-        <span class="text-xs text-slate-400">資料來源：財團法人金融消費評議中心公開評議書庫 ｜ 數位簽章存證中</span>
+        <span class="text-xs text-slate-400">資料來源：財團法人金融消費評議中心 ｜ NLP 語意模型版本：v2026.4</span>
         <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
-          <button onclick="closeDecisionModal()" class="px-5 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-bold transition">
-            關閉檢視
+          <button onclick="copyDossierBrief()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-sm font-bold transition flex items-center gap-1.5">
+            <i data-lucide="copy" class="w-4 h-4"></i>
+            <span>複製公務簽呈摘要</span>
           </button>
           <button id="modal-doc-load-btn" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-bold transition flex items-center gap-2 shadow">
             <i data-lucide="arrow-right-circle" class="w-4 h-4"></i>
@@ -952,16 +1038,17 @@
     </div>
   </footer>
 
+  <!-- ======================================================== -->
+  <!-- JAVASCRIPT LOGIC STATE & NLP DATA PIPELINE              -->
+  <!-- ======================================================== -->
   <script>
-    // ========================================================
-    // 1. DATA STATE & PRE-ANNOTATED 9-CATEGORY SAMPLES
-    // ========================================================
     const portalState = {
       currentView: 'portal-home',
       activePeriod: 'all',
       caseTypeFilter: 'all',
       chartsInitialized: false,
       isCrawling: false,
+      activeModalDoc: null,
 
       // Pre-annotated Sample Cases covering All 9 Screening Categories
       annotatedSamples: {
@@ -1137,7 +1224,7 @@
         }
       },
 
-      // Synchronized Decision Repository
+      // Synchronized Decision Repository with NLP Structured Metadata
       crawledDecisions: [
         {
           id: 'CASE-2026-0891',
@@ -1146,6 +1233,9 @@
           industry: '銀行業',
           category: '信用卡消費款爭端/盜刷',
           amount: 185000,
+          instPayRatio: 70,
+          instPayAmount: 129500,
+          consumerAmount: 55500,
           date: '2026-10-18',
           statusDesc: '評議 60 日時效內（餘 28 天）',
           badgeClass: 'bg-emerald-100 text-emerald-800',
@@ -1153,6 +1243,17 @@
           verdict: '評議成立 (部分賠償)',
           summary: '受評金融機構應給付申請人新台幣 129,500 元整（承擔比例 70%）。持卡人遭遇境外網路釣魚未授權交易，發卡銀行雖有 OTP 機制，惟異常扣款頻率未適時啟動風控攔阻。',
           reasons: '一、依金保法第 7 條規定，金融機構應盡善良管理人注意義務。\n二、本件短時間於凌晨時段連續進行多筆外幣交易，銀行監控模組未及時發出警示通知，有管理疏失。\n三、消費者誤點釣魚簡訊亦有輕微疏失，審酌情狀由機構承擔 70% 爭議款。',
+          consumerClaims: [
+            '接獲假冒公用事業水費催繳釣魚簡訊，誤點連結輸入信用卡資訊。',
+            '凌晨 02:15 至 02:22 短時間內遭連續盜刷 5 筆歐元境外交易。',
+            '發現後 10 分鐘內即致電客服要求掛失並列為爭議款，主張非本人意圖授權。'
+          ],
+          institutionDefenses: [
+            '交易過程皆發送 3D OTP 動態密碼至持卡人留存手機，系統已完成驗證。',
+            'OTP 簡訊內文已載明「防詐警示：請勿交付他人」，持卡人交付驗證碼顯有過失。',
+            '特約商店已扣款請款，依信用卡定型化契約應由持卡人承擔。'
+          ],
+          tokenizedTags: ['#金保法§7', '#善良管理人注意義務', '#境外釣魚簡訊', '#OTP動態密碼', '#凌晨連續交易', '#風控攔阻缺失', '#過失相抵70%', '#具強制拘束力'],
           complainDaysAgo: 42,
           replyDaysAgo: 32,
           similarCaseIds: ['CASE-2026-0412', 'CASE-2025-1190']
@@ -1164,13 +1265,27 @@
           industry: '保險業',
           category: '必要性醫療/理賠金額認定',
           amount: 620000,
+          instPayRatio: 80,
+          instPayAmount: 496000,
+          consumerAmount: 124000,
           date: '2026-10-14',
           statusDesc: '業者 30 天回覆期中（餘 6 天）',
           badgeClass: 'bg-amber-100 text-amber-800',
           dotClass: 'bg-amber-500',
-          verdict: '調處協商程序中',
+          verdict: '調處協商程序中 (建議8成給付)',
           summary: '申請人主張因癌症需自費施打標靶藥物，請求全額給付住院醫療日額保險金；保險公司抗辯該療程無實質住院必要性，僅屬門診注射。',
           reasons: '一、涉及契約條款中「住院」之醫學必要性認定。\n二、送請評議中心特約專科醫師鑑定，認該療程雖屬新型療法，但醫師處方註明因嚴重副作用需留院觀察，符合住院常規。\n三、促請雙方於調處階段協議部分給付。',
+          consumerClaims: [
+            '罹患肺腺癌第四期，主治醫師評估施打自費標靶藥物後可能發生急性過敏休克。',
+            '主治醫師診斷證明載明「宜住院施打並觀察 24 小時」，符合醫學常規。',
+            '保險公司逕以「健保未給付住院」為由全數拒賠，顯違背保險契約目的。'
+          ],
+          institutionDefenses: [
+            '保單條款明定住院須經醫師診斷「確有留院治療之實質必要性」。',
+            '依現代醫療實務，該標靶化療藥物在日間門診注射即可完成，無需留宿病房。',
+            '為維護全體保戶公平對待原則，難認符合住院保險金給付要件。'
+          ],
+          tokenizedTags: ['#保險法§54條之1', '#醫學必要性', '#自費標靶治療', '#癌症住院日額', '#臨床指引常規', '#專科醫師鑑定', '#調處成立80%'],
           complainDaysAgo: 24,
           replyDaysAgo: null,
           similarCaseIds: ['CASE-2026-0301']
@@ -1182,13 +1297,25 @@
           industry: '證券期貨業',
           category: '電子下單線路中斷/委託失敗',
           amount: 1800000,
+          instPayRatio: 0,
+          instPayAmount: 0,
+          consumerAmount: 1800000,
           date: '2026-09-28',
           statusDesc: '逾 60 日法定期限（時效消滅）',
           badgeClass: 'bg-rose-100 text-rose-800',
           dotClass: 'bg-rose-500',
           verdict: '不受理決定 (逾期申請)',
           summary: '期貨結算日下單軟體斷線 3 分鐘導致停損單延遲觸發受損。消費者收到證券商正式回覆公文後第 68 日方具狀向評議中心申請，依法作成不受理決議。',
-          reasons: '一、依金融消費者保護法第 13 條第 2 項規定，受覆後 60 日為法定不變期間。\n二、申請人具狀之發文字號與郵戳已逾收受回函後第 60 日，要件欠缺且無從補正，依同法第 24 條應為不受理之決定。',
+          reasons: '一、依金融消費者保護法第 13 條第 2 項規定，受覆後 60 日為法定不變期間。\n二、申請人具狀之發文字號與郵戳已逾收受回函後第 68 日，要件欠缺且無從補正，依同法第 24 條應為不受理之決定。',
+          consumerClaims: [
+            '期貨下單軟體斷線延遲 3 分鐘，無法及時平倉導致巨額損失。',
+            '因出差海外延誤送件，主張應有正當不可抗力事由順延時效。'
+          ],
+          institutionDefenses: [
+            '已提供備用電話與網頁語音下單管道，免責條款已於開戶時告知。',
+            '消費者收受拒賠公文已逾 68 天，程序罹於法定不變期間，應逕予駁回。'
+          ],
+          tokenizedTags: ['#金保法§13條第2項', '#60日法定不變期間', '#程序不受理', '#時效抗辯成立', '#電子下單連線中斷', '#無補正可能'],
           complainDaysAgo: 95,
           replyDaysAgo: 68,
           similarCaseIds: []
@@ -1200,6 +1327,9 @@
           industry: '保險業',
           category: '業務招攬爭端/未盡告知義務',
           amount: 980000,
+          instPayRatio: 100,
+          instPayAmount: 980000,
+          consumerAmount: 0,
           date: '2026-10-21',
           statusDesc: '評議受理審理中（餘 45 天）',
           badgeClass: 'bg-emerald-100 text-emerald-800',
@@ -1207,13 +1337,23 @@
           verdict: '評議成立 (契約解除返還保費)',
           summary: '業務員向 69 歲高齡長者推介保本型結構連動債保單，未完整告知匯率風險與本金虧損可能性，且核保錄音存在引導性問答。',
           reasons: '一、保險業招攬及核保理賠辦法第 6 條要求對高齡客戶應落實友善對待與錄音錄影核保。\n二、經調閱錄音檔，業務員未明確朗讀風險預告書，認定招攬不當，應全額返還已繳保費。',
+          consumerClaims: [
+            '投保時已高齡 69 歲，風險屬性為保守型，業務員卻推介高風險結構型保單。',
+            '業務員強調「保證配息且保本」，隱瞞匯率及解約本金折減風險。',
+            '要求撤銷保單契約並全額退還本金與手續費。'
+          ],
+          institutionDefenses: [
+            '要保書均由消費者親筆簽名，聲明書載明已審閱商品說明書超過 3 天。',
+            '電話核保錄音消費者皆明確答覆「了解投資風險自負」。'
+          ],
+          tokenizedTags: ['#保險招攬核保辦法§6', '#KYC與適合度原則', '#高齡客戶保護規範', '#引導性錄音無效', '#契約撤銷退費100%', '#具強制拘束力'],
           complainDaysAgo: 38,
           replyDaysAgo: 15,
           similarCaseIds: ['CASE-2025-0882']
         }
       ],
 
-      // Standalone Reference Precedents
+      // Standalone Reference Precedents with Similarity Metrics
       precedentDatabase: {
         'CASE-2026-0412': {
           docId: '115-評字第 000412 號',
@@ -1221,8 +1361,10 @@
           industry: '銀行業',
           category: '信用卡消費款爭端/盜刷',
           amount: 142000,
+          similarity: '91% (高相關性)',
           verdict: '評議成立 (分擔 60%)',
-          summary: '持卡人因偽冒公用事業簡訊連結誤植 OTP，評議會認發卡行簡訊未載明完整幣別，判賠 60%。'
+          summary: '持卡人因偽冒公用事業簡訊連結誤植 OTP，評議會認發卡行簡訊未載明完整幣別，判賠 60%。',
+          coreDistinction: '【心證分水嶺】發卡行發送之簡訊未載明完整幣別（僅標示數字），致持卡人誤信為小額繳費，銀行注意義務缺失較本案更為顯著。'
         },
         'CASE-2025-1190': {
           docId: '114-評字第 001190 號',
@@ -1230,8 +1372,10 @@
           industry: '銀行業',
           category: '信用卡消費款爭端/盜刷',
           amount: 220000,
+          similarity: '84% (對比判例)',
           verdict: '評議不成立 (消費者承擔)',
-          summary: '消費者主動將 3D 認證碼轉傳他人，且該認證碼簡訊已特別以粗體警示不得提供他人，消費者顯有重大過失。'
+          summary: '消費者主動將 3D 認證碼轉傳他人，且該認證碼簡訊已特別以粗體警示不得提供他人，消費者顯有重大過失。',
+          coreDistinction: '【心證分水嶺】持卡人非在偽冒網頁輸入，而是主動將驗證碼以通訊軟體私訊傳予詐騙集團，判定持卡人存在重大過失，免除銀行賠償責任。'
         },
         'CASE-2026-0301': {
           docId: '115-評字第 000301 號',
@@ -1239,8 +1383,10 @@
           industry: '保險業',
           category: '必要性醫療/理賠金額認定',
           amount: 450000,
+          similarity: '89% (同型醫療案)',
           verdict: '評議成立 (給付理賠金)',
-          summary: '自費標靶藥物門診化療認定爭端，依契約精神與最新醫療技術實質給付。'
+          summary: '自費標靶藥物門診化療認定爭端，依契約精神與最新醫療技術實質給付。',
+          coreDistinction: '【心證分水嶺】特約專科醫師出具明確鑑定報告，證明若不在醫院施打觀察將有危及生命之高風險，確認住院之醫學必要性成立。'
         },
         'CASE-2025-0882': {
           docId: '114-評字第 000882 號',
@@ -1248,8 +1394,10 @@
           industry: '保險業',
           category: '業務招攬爭端/未盡告知義務',
           amount: 1100000,
+          similarity: '94% (高度重疊案)',
           verdict: '評議成立 (解除契約)',
-          summary: '向未具投資經驗保戶推銷高槓桿投資型保險，違反 KYC 適當性原則。'
+          summary: '向未具投資經驗保戶推銷高槓桿投資型保險，違反 KYC 適當性原則。',
+          coreDistinction: '【心證分水嶺】業務員以代操獲利之口頭承諾引導投保，且核保錄音背景有業務員低聲指導發言，錄音存證失效。'
         }
       },
 
@@ -1263,6 +1411,9 @@
       }
     };
 
+    // ========================================================
+    // UI NAVIGATION & INTERACTION
+    // ========================================================
     function navigateTo(sectionId) {
       portalState.currentView = sectionId;
 
@@ -1311,7 +1462,9 @@
       }, 3200);
     }
 
-    // Render Case Feed with Clickable Number for Structured Insights & Precedents
+    // ========================================================
+    // CASE FEED & AI DOSSIER MODAL PIPELINE
+    // ========================================================
     function renderDecisionFeed(filteredList = null) {
       const tbody = document.getElementById('decision-feed-tbody');
       if (!tbody) return;
@@ -1326,10 +1479,10 @@
           <td class="py-3.5 px-4 font-mono">
             <button onclick="openDecisionDossier('${c.id}')" class="text-left group focus:outline-none">
               <span class="font-bold text-gov-700 group-hover:text-regtech-600 group-hover:underline flex items-center gap-1.5">
-                <i data-lucide="file-search" class="w-4 h-4 text-regtech-600"></i>
+                <i data-lucide="brain-circuit" class="w-4 h-4 text-emerald-600"></i>
                 <span>${c.docId}</span>
               </span>
-              <span class="text-xs text-slate-400 block">${c.id} ｜ 點擊檢視要旨</span>
+              <span class="text-xs text-slate-400 block">${c.id} ｜ <span class="text-emerald-700 font-semibold">✨ 開啟AI斷詞語意報告</span></span>
             </button>
           </td>
           <td class="py-3.5 px-4 font-semibold text-slate-900">${c.inst}</td>
@@ -1342,7 +1495,7 @@
             </span>
           </td>
           <td class="py-3.5 px-4 text-right space-x-2">
-            <button onclick="openDecisionDossier('${c.id}')" class="text-xs font-bold text-gov-700 hover:text-regtech-600 underline">詳情與類似案</button>
+            <button onclick="openDecisionDossier('${c.id}')" class="text-xs font-bold text-emerald-700 hover:text-emerald-800 underline flex-inline items-center gap-1">AI 報告書</button>
             <button onclick="loadPresetCase('${c.id}')" class="text-xs font-bold px-2.5 py-1 bg-gov-700 hover:bg-gov-600 text-white rounded-md transition">審查</button>
           </td>
         `;
@@ -1363,11 +1516,13 @@
         c.docId.toLowerCase().includes(query) ||
         c.inst.toLowerCase().includes(query) ||
         c.category.toLowerCase().includes(query) ||
-        c.verdict.toLowerCase().includes(query)
+        c.verdict.toLowerCase().includes(query) ||
+        (c.tokenizedTags && c.tokenizedTags.some(t => t.toLowerCase().includes(query)))
       );
       renderDecisionFeed(filtered);
     }
 
+    // Opens the Enhanced AI Tokenization & Executive Intelligence Dossier Modal
     function openDecisionDossier(caseId) {
       let doc = portalState.crawledDecisions.find(c => c.id === caseId);
       
@@ -1381,31 +1536,82 @@
           industry: prec.industry,
           category: prec.category,
           amount: prec.amount,
+          instPayRatio: prec.verdict.includes('60%') ? 60 : (prec.verdict.includes('不成立') ? 0 : 80),
+          instPayAmount: Math.round(prec.amount * (prec.verdict.includes('60%') ? 0.6 : (prec.verdict.includes('不成立') ? 0 : 0.8))),
+          consumerAmount: Math.round(prec.amount * (prec.verdict.includes('60%') ? 0.4 : (prec.verdict.includes('不成立') ? 1 : 0.2))),
           verdict: prec.verdict,
           summary: prec.summary,
-          reasons: '依主管機關評議作業辦法與金融消費者保護法第 13 條及第 24 條規定之裁判心證作成。',
+          reasons: '依主管機關評議作業辦法與金融消費者保護法第 13 條及第 24 條規定之裁判心證作成。\n' + (prec.coreDistinction || ''),
+          consumerClaims: ['申請人檢具具體受損證明主張機構違反法令與善良管理人注意義務。', '爭執標的符合契約約定之權益範圍。'],
+          institutionDefenses: ['相對人抗辯均已恪遵定型化契約規範與風險告知書條款。', '主張不可歸責於特許機構之免責事由。'],
+          tokenizedTags: ['#金保法適用', '#契約條款審查', '#判例引據', '#心證對比'],
           similarCaseIds: []
         };
       }
 
       if (!doc) return;
+      portalState.activeModalDoc = doc;
 
+      // Header & Primary Identifiers
       document.getElementById('modal-doc-id').innerText = doc.docId;
       document.getElementById('modal-doc-industry-badge').innerText = doc.industry;
-      document.getElementById('modal-doc-title').innerText = `${doc.category} 評議裁決分析`;
+      document.getElementById('modal-doc-title').innerText = `${doc.category} ｜ AI 語意斷詞分析報告`;
       document.getElementById('modal-doc-inst').innerText = doc.inst;
       document.getElementById('modal-doc-amount').innerText = `NT$ ${doc.amount.toLocaleString()}`;
       document.getElementById('modal-doc-verdict').innerText = doc.verdict;
-      document.getElementById('modal-doc-verdict').className = `font-bold text-base mt-0.5 ${doc.verdict.includes('成立') ? 'text-emerald-700' : 'text-amber-700'}`;
+      document.getElementById('modal-doc-verdict').className = `font-bold text-base mt-0.5 ${doc.verdict.includes('成立') ? 'text-emerald-700' : (doc.verdict.includes('不受理') ? 'text-rose-700' : 'text-amber-700')}`;
       
       const isBinding = doc.amount <= 1200000;
       document.getElementById('modal-doc-binding').innerText = isBinding ? '具法定拘束力 (<=120萬)' : '超逾上限無強制拘束力';
       document.getElementById('modal-doc-binding').className = `font-bold text-base mt-0.5 ${isBinding ? 'text-emerald-600' : 'text-amber-600'}`;
 
+      // Financial Liability Bar (責任分擔比例尺)
+      const instRatio = doc.instPayRatio !== undefined ? doc.instPayRatio : (doc.verdict.includes('不成立') ? 0 : 70);
+      const consumerRatio = 100 - instRatio;
+      const instPay = doc.instPayAmount !== undefined ? doc.instPayAmount : Math.round(doc.amount * (instRatio / 100));
+      const consumerPay = doc.consumerAmount !== undefined ? doc.consumerAmount : (doc.amount - instPay);
+
+      document.getElementById('meter-ratio-text').innerText = `機構負擔 ${instRatio}% ｜ 消費者承擔 ${consumerRatio}%`;
+      document.getElementById('meter-inst-bar').style.width = `${instRatio}%`;
+      document.getElementById('meter-consumer-bar').style.width = `${consumerRatio}%`;
+      document.getElementById('meter-inst-amount').innerText = `NT$ ${instPay.toLocaleString()}`;
+      document.getElementById('meter-consumer-amount').innerText = `NT$ ${consumerPay.toLocaleString()}`;
+
+      // Cross-Examination Lists (兩造攻防)
+      const claimList = document.getElementById('modal-claim-list');
+      claimList.innerHTML = '';
+      (doc.consumerClaims || ['申請人主張非本人授權，已即時向機構表達異議。']).forEach(item => {
+        const li = document.createElement('li');
+        li.innerText = item;
+        claimList.appendChild(li);
+      });
+
+      const defenseList = document.getElementById('modal-defense-list');
+      defenseList.innerHTML = '';
+      (doc.institutionDefenses || ['機構抗辯交易驗證程序完備，無管理疏失。']).forEach(item => {
+        const li = document.createElement('li');
+        li.innerText = item;
+        defenseList.appendChild(li);
+      });
+
+      // Tokenized Semantic Tags (斷詞與法規錨點)
+      const tagContainer = document.getElementById('modal-tokenized-tags');
+      tagContainer.innerHTML = '';
+      (doc.tokenizedTags || ['#金保法§7', '#未授權扣款', '#善良管理人注意義務']).forEach(tag => {
+        const span = document.createElement('span');
+        span.className = 'px-2.5 py-1 rounded-lg bg-gov-800 text-emerald-300 font-mono font-semibold border border-slate-700 shadow-sm hover:border-emerald-400 cursor-pointer transition';
+        span.innerText = tag;
+        span.onclick = () => {
+          showToast(`已按特徵標籤「${tag}」檢索全庫判例`, 'search');
+        };
+        tagContainer.appendChild(span);
+      });
+
+      // Ratio Decidendi & Legal Reasons
       document.getElementById('modal-doc-summary').innerText = doc.summary;
       document.getElementById('modal-doc-reasons').innerText = doc.reasons;
 
-      // Populate Similar Cases
+      // Precedents & Vector Similarity Radar
       const similarContainer = document.getElementById('modal-similar-cases-list');
       similarContainer.innerHTML = '';
 
@@ -1426,10 +1632,11 @@
             card.innerHTML = `
               <div class="flex items-center justify-between">
                 <span class="font-bold text-slate-900 font-mono">${simDoc.docId}</span>
-                <span class="font-bold text-cyan-700">${simDoc.verdict}</span>
+                <span class="font-bold text-cyan-700 px-2 py-0.5 rounded bg-cyan-100">${simDoc.similarity || '88% (高相關)'}</span>
               </div>
-              <div class="text-slate-600 font-medium">${simDoc.inst} ｜ NT$ ${simDoc.amount.toLocaleString()}</div>
+              <div class="text-slate-600 font-medium">${simDoc.inst} ｜ ${simDoc.verdict}</div>
               <p class="text-slate-500 line-clamp-2 leading-relaxed">${simDoc.summary}</p>
+              ${simDoc.coreDistinction ? `<p class="text-gov-700 font-medium text-[11px] pt-1 border-t border-slate-200">${simDoc.coreDistinction}</p>` : ''}
             `;
             similarContainer.appendChild(card);
           }
@@ -1451,8 +1658,31 @@
     function closeDecisionModal() {
       const modal = document.getElementById('decision-detail-modal');
       if (modal) modal.classList.add('hidden');
+      portalState.activeModalDoc = null;
     }
 
+    function copyDossierBrief() {
+      const doc = portalState.activeModalDoc;
+      if (!doc) return;
+
+      const brief = `【金融評議 AI 語意快析簽呈報告】\n評議字號：${doc.docId}\n受評機構：${doc.inst}\n爭議標的：NT$ ${doc.amount.toLocaleString()} ｜ 裁決結論：${doc.verdict}\n責任劃分：機構承擔 ${doc.instPayRatio}% (NT$ ${doc.instPayAmount.toLocaleString()}) ｜ 消費者承擔 ${100 - doc.instPayRatio}%\n核心心證要旨：${doc.summary}\n法條與標籤：${(doc.tokenizedTags || []).join(' ')}\n法規基準：依金融消費者保護法第 7 條、第 13 條與第 29 條作成。`;
+
+      const t = document.createElement('textarea');
+      t.value = brief;
+      document.body.appendChild(t);
+      t.select();
+      try {
+        document.execCommand('copy');
+        showToast('已複製 AI 公務簽呈快析摘要至剪貼簿！', 'check');
+      } catch (e) {
+        showToast('請手動複製文字', 'alert-circle');
+      }
+      document.body.removeChild(t);
+    }
+
+    // ========================================================
+    // LIVE CRAWLER & NLP AUTO-SYNCHRONIZATION ENGINE
+    // ========================================================
     function triggerLiveCrawlerSync() {
       if (portalState.isCrawling) return;
       portalState.isCrawling = true;
@@ -1460,7 +1690,7 @@
       const refreshIcon = document.getElementById('crawler-refresh-icon');
       if (refreshIcon) refreshIcon.classList.add('animate-spin');
 
-      showToast('正在與金融消費評議中心公開資料庫進行同步與案號解析...', 'radio');
+      showToast('正在向評議庫抓取最新評議書並啟動 NLP 斷詞與語意攻防抽取...', 'radio');
 
       setTimeout(() => {
         const now = new Date();
@@ -1474,13 +1704,26 @@
           industry: '銀行業',
           category: '信用卡消費款爭端/盜刷',
           amount: 245000,
+          instPayRatio: 75,
+          instPayAmount: 183750,
+          consumerAmount: 61250,
           date: now.toISOString().split('T')[0],
-          statusDesc: '最新送件（法定 60 日內）',
+          statusDesc: '最新送件（AI語意分析完畢）',
           badgeClass: 'bg-emerald-100 text-emerald-800',
           dotClass: 'bg-emerald-500',
-          verdict: '評議成立 (部分賠償)',
-          summary: '消費者遭假冒水費催繳簡訊騙取個資，玉山銀行於凌晨密集連續交易未觸發二次核身通知，應負擔 75% 爭端款項。',
-          reasons: '一、依善良管理人注意義務，發卡行對於異常境外交易需具備合理攔截措施。\n二、機構應給付申請人新台幣 183,750 元。',
+          verdict: '評議成立 (部分賠償 75%)',
+          summary: '消費者遭假冒自來水公司停水催繳簡訊騙取個資，玉山銀行於凌晨密集連續外幣交易未觸發二次風控核身通知，應負擔 75% 爭端款項（NT$ 183,750）。',
+          reasons: '一、依金融消費者保護法第 7 條規定，金融機構應盡善良管理人注意義務。\n二、本件凌晨連續發起多筆短間隔境外交易，銀行監控模組未適時阻斷，存在風控過失。\n三、消費者點擊釣魚網站亦有輕微疏失，判定由機構承擔 75% 責任。',
+          consumerClaims: [
+            '接獲假冒自來水水費催繳簡訊，網址仿真度極高，誤植個資。',
+            '凌晨時分於 3 分鐘內遭連續刷卡 4 筆未授權境外貨幣交易。',
+            '銀行當下並無即時阻斷或致電持卡人核實，致損害擴大。'
+          ],
+          institutionDefenses: [
+            '交易均經過 3D OTP 驗證機制，驗證碼已傳至持卡人手機。',
+            '簡訊內已註記防範詐騙標語，持卡人未盡保密義務交付密碼。'
+          ],
+          tokenizedTags: ['#金保法§7', '#境外偽冒連續交易', '#風控模組延遲', '#善良管理人責任', '#自來水催繳釣魚', '#責任比例75%', '#具強制拘束力'],
           complainDaysAgo: 28,
           replyDaysAgo: 5,
           similarCaseIds: ['CASE-2026-0891', 'CASE-2026-0412']
@@ -1506,10 +1749,13 @@
         portalState.isCrawling = false;
         if (refreshIcon) refreshIcon.classList.remove('animate-spin');
 
-        showToast(`已成功同步最新評議決定書：${freshDoc.docId}`, 'check-circle-2');
-      }, 1300);
+        showToast(`已成功同步最新評議書並完成語意分析：${freshDoc.docId}`, 'check-circle-2');
+      }, 1400);
     }
 
+    // ========================================================
+    // SAMPLES & AUDIT ENGINE PIPELINE
+    // ========================================================
     function loadAnnotatedSample(sampleKey) {
       const sample = portalState.annotatedSamples[sampleKey];
       if (!sample) return;
@@ -1647,6 +1893,9 @@
       if (window.lucide) lucide.createIcons();
     }
 
+    // ========================================================
+    // STATUTORY 9-CATEGORY GATEKEEPING ENGINE
+    // ========================================================
     function runAuditEngine() {
       const today = new Date();
       const nature = document.getElementById('audit-dispute-nature').value;
@@ -1716,11 +1965,7 @@
       iconPeriod.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i>';
       descPeriod.innerText = "消費者送件時間在收到機構回覆翌日起 60 日法定有效救濟期內。";
 
-      // ========================================================
-      // 9-Category Gatekeeping Logic (Article 24, Paragraph 2)
-      // ========================================================
-
-      // Check Category 1: Formal defect unfixed
+      // Category 1: Formal defect unfixed
       if (formalDefect === 'defect_unfixed') {
         banner.className = "rounded-2xl p-6 sm:p-8 border-2 transition-all text-white shadow-md bg-rose-800 border-rose-600";
         badge.innerText = "程序不受理：金保法第 24 條第 2 項第 1 款";
@@ -1738,7 +1983,7 @@
         return;
       }
 
-      // Check Category 2: Non-financial dispute
+      // Category 2: Non-financial dispute
       if (nature === 'non_financial') {
         banner.className = "rounded-2xl p-6 sm:p-8 border-2 transition-all text-white shadow-md bg-slate-800 border-slate-600";
         badge.innerText = "標的不合：金保法第 24 條第 2 項第 2 款";
@@ -1760,7 +2005,7 @@
         return;
       }
 
-      // Check Category 6: Standing defect (Professional Investor or Unauthorized)
+      // Category 6: Standing defect
       if (consumerStatus === 'pro_investor' || consumerStatus === 'unauthorized_third') {
         banner.className = "rounded-2xl p-6 sm:p-8 border-2 transition-all text-white shadow-md bg-rose-800 border-rose-600";
         badge.innerText = "主體不合：金保法第 24 條第 2 項第 6 款";
@@ -1785,7 +2030,7 @@
         return;
       }
 
-      // Check Category 7: Repeat same ombudsman case
+      // Category 7: Repeat same case
       if (repeatOmbuds === 'repeat_same_case') {
         banner.className = "rounded-2xl p-6 sm:p-8 border-2 transition-all text-white shadow-md bg-amber-800 border-amber-600";
         badge.innerText = "重複申請：金保法第 24 條第 2 項第 7 款";
@@ -1807,7 +2052,7 @@
         return;
       }
 
-      // Check Category 8: Court / Mediation Res Judicata
+      // Category 8: Court / Res Judicata
       if (courtStatus === 'determined') {
         banner.className = "rounded-2xl p-6 sm:p-8 border-2 transition-all text-white shadow-md bg-slate-800 border-slate-600";
         badge.innerText = "司法排他：金保法第 24 條第 2 項第 8 款";
@@ -1829,7 +2074,7 @@
         return;
       }
 
-      // Check Category 9: Regulatory Policy / Discretionary Exclusion
+      // Category 9: Policy / Rate exclusion
       if (category === '放款利率與費用定價爭議') {
         banner.className = "rounded-2xl p-6 sm:p-8 border-2 transition-all text-white shadow-md bg-amber-800 border-amber-600";
         badge.innerText = "主管機關排除：金保法第 24 條第 2 項第 9 款";
@@ -1847,7 +2092,7 @@
         return;
       }
 
-      // Check Category 3: No prior complaint
+      // Category 3: No prior complaint
       if (!hasComplained) {
         banner.className = "rounded-2xl p-6 sm:p-8 border-2 transition-all text-white shadow-md bg-rose-800 border-rose-600";
         badge.innerText = "程序要件欠缺：金保法第 24 條第 2 項第 3 款";
@@ -1869,7 +2114,7 @@
         return;
       }
 
-      // Check Category 4 & 5: Timeline & 30-day investigation / 60-day deadline
+      // Category 4 & 5: Timelines
       if (!complainDateStr) {
         banner.className = "rounded-2xl p-6 sm:p-8 border-2 transition-all text-white shadow-md bg-slate-800 border-slate-600";
         badge.innerText = "資料待補：缺少申訴日期";
@@ -1884,7 +2129,6 @@
 
       if (replyStatus === 'not_replied') {
         if (daysSinceComplain < 30) {
-          // Category 4: Still within 30-day investigation period
           const remainingWait = 30 - daysSinceComplain;
           const earliestDate = new Date(complainDate);
           earliestDate.setDate(complainDate.getDate() + 30);
@@ -1911,7 +2155,6 @@
           if (window.lucide) lucide.createIcons();
           return;
         } else {
-          // Over 30 days without reply: Eligible to apply!
           banner.className = "rounded-2xl p-6 sm:p-8 border-2 transition-all text-white shadow-md bg-emerald-800 border-emerald-600";
           badge.innerText = "法定適格：業者逾期未回覆";
           setVerdictTitle("完全符合評議受理事格", "（業者逾 30 日未覆，解除等待限制）", "text-emerald-200");
@@ -1929,7 +2172,6 @@
           detailRuleText.innerText = `申訴已達 ${daysSinceComplain} 日未獲回覆，符合金保法第13條第2項前段規定，得逕向評議中心申請評議，應依法排入審理。`;
         }
       } else {
-        // Replied rejected -> Check Category 5 (60-day limit)
         if (!replyDateStr) {
           banner.className = "rounded-2xl p-6 sm:p-8 border-2 transition-all text-white shadow-md bg-slate-800 border-slate-600";
           badge.innerText = "資料待補：缺少回覆日期";
@@ -1943,7 +2185,6 @@
         const daysSinceReply = Math.floor((today - replyDate) / (1000 * 60 * 60 * 24));
 
         if (daysSinceReply > 60) {
-          // Category 5: Over 60 days
           banner.className = "rounded-2xl p-6 sm:p-8 border-2 transition-all text-white shadow-md bg-rose-800 border-rose-600";
           badge.innerText = "時效消滅：金保法第 24 條第 2 項第 5 款";
           setVerdictTitle("依法應為不受理之決定", `（申請已逾法定 60 日不變期間，逾期 ${daysSinceReply - 60} 天）`, "text-rose-200");
@@ -1966,7 +2207,6 @@
           if (window.lucide) lucide.createIcons();
           return;
         } else {
-          // Within 60 days: Fully Eligible!
           const daysLeft = 60 - daysSinceReply;
           const deadlineDate = new Date(replyDate);
           deadlineDate.setDate(replyDate.getDate() + 60);
@@ -2031,6 +2271,9 @@
       }, 1000);
     }
 
+    // ========================================================
+    // CHART.JS OFFICIAL STATS RENDERERS
+    // ========================================================
     let barChartInstance = null;
     let donutChartInstance = null;
 
