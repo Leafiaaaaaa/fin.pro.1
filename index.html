@@ -887,39 +887,11 @@
         </div>
       </div>
 
-      <!-- Section: Visual Financial Liability Meter -->
-      <div class="p-5 rounded-2xl bg-gradient-to-br from-slate-900 to-gov-900 text-white space-y-3 shadow-md">
-        <div class="flex items-center justify-between text-xs">
-          <span class="font-bold uppercase tracking-wider text-emerald-300 flex items-center gap-1.5">
-            <i data-lucide="scale" class="w-4 h-4"></i>
-            評議賠償責任負擔比例量表 (Financial Liability Allocation)
-          </span>
-          <span id="meter-ratio-text" class="font-mono font-bold text-slate-200">機構負擔 70% ｜ 消費者承擔 30%</span>
-        </div>
-
-        <!-- 2-Tone Ratio Bar -->
-        <div class="w-full h-5 rounded-full overflow-hidden bg-slate-700 flex p-0.5 gap-1">
-          <div id="meter-inst-bar" class="bg-gradient-to-r from-emerald-500 to-teal-400 rounded-l-full transition-all duration-500" style="width: 70%;"></div>
-          <div id="meter-consumer-bar" class="bg-gradient-to-r from-amber-500 to-rose-400 rounded-r-full transition-all duration-500" style="width: 30%;"></div>
-        </div>
-
-        <div class="flex items-center justify-between text-xs font-mono">
-          <div class="flex items-center gap-1.5 text-emerald-300">
-            <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
-            <span>金融機構應給付：<strong id="meter-inst-amount" class="text-white text-sm">NT$ 129,500</strong></span>
-          </div>
-          <div class="flex items-center gap-1.5 text-amber-200">
-            <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
-            <span>消費者自行承擔：<strong id="meter-consumer-amount" class="text-white text-sm">NT$ 55,500</strong></span>
-          </div>
-        </div>
-      </div>
-
       <!-- Section: Claim vs Defense Matrix (雙造攻防對照) -->
       <div class="space-y-3">
         <h4 class="font-bold text-slate-900 flex items-center gap-2 text-base">
           <i data-lucide="swords" class="w-5 h-5 text-indigo-600"></i>
-          語意抽取：兩造爭端攻防對照矩陣 (Cross-Examination Matrix)
+          語意抽取：兩造爭端攻防對照矩陣
         </h4>
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -929,7 +901,7 @@
               <span class="text-xs font-bold px-2 py-0.5 rounded bg-blue-600 text-white flex items-center gap-1">
                 <i data-lucide="user" class="w-3.5 h-3.5"></i> 申請人（消費者）爭議主張
               </span>
-              <span class="text-xs text-blue-800 font-mono">CLAIM #1</span>
+              <span class="text-xs text-blue-800 font-bold">主張要點</span>
             </div>
             <ul id="modal-claim-list" class="space-y-1.5 text-xs text-slate-700 leading-relaxed list-disc list-inside">
               <!-- Dynamically populated -->
@@ -942,7 +914,7 @@
               <span class="text-xs font-bold px-2 py-0.5 rounded bg-amber-600 text-white flex items-center gap-1">
                 <i data-lucide="building-2" class="w-3.5 h-3.5"></i> 相對人（金融機構）抗辯要點
               </span>
-              <span class="text-xs text-amber-800 font-mono">DEFENSE #1</span>
+              <span class="text-xs text-amber-800 font-bold">抗辯要點</span>
             </div>
             <ul id="modal-defense-list" class="space-y-1.5 text-xs text-slate-700 leading-relaxed list-disc list-inside">
               <!-- Dynamically populated -->
@@ -958,7 +930,7 @@
           <div class="flex items-center justify-between">
             <h4 class="font-bold text-slate-900 flex items-center gap-2 text-sm">
               <i data-lucide="tag" class="w-4 h-4 text-gov-700"></i>
-              NLP 斷詞特徵與法規錨點標籤 (Tokenized Legal Tags)
+              斷詞特徵與法規錨點標籤
             </h4>
             <span class="text-xs text-slate-400">已自動提取 8 項特徵詞</span>
           </div>
@@ -971,7 +943,7 @@
         <div>
           <h4 class="font-bold text-slate-900 flex items-center gap-2 text-base mb-2">
             <i data-lucide="gavel" class="w-5 h-5 text-gov-700"></i>
-            評議委員會決定主文與核心裁判心證 (The Ratio Decidendi)
+            評議委員會決定主文與核心裁判心證
           </h4>
           <div id="modal-doc-summary" class="p-4 bg-emerald-50/70 rounded-xl text-slate-800 text-sm leading-relaxed border border-emerald-200 font-medium">
             -
@@ -993,9 +965,9 @@
           <div class="flex items-center justify-between">
             <h4 class="font-bold text-slate-900 flex items-center gap-2 text-base">
               <i data-lucide="git-branch" class="w-5 h-5 text-cyan-600"></i>
-              智慧先例配對：類似爭端案件比對雷達 (Precedent Matching Radar)
+              智慧先例配對：類似爭端案件比對雷達
             </h4>
-            <span class="text-xs text-slate-400">基於特徵向量相似度 (Cosine Similarity) 演算法推薦</span>
+            <span class="text-xs text-slate-400">基於特徵向量相似度演算法推薦</span>
           </div>
 
           <div id="modal-similar-cases-list" class="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -1536,9 +1508,6 @@
           industry: prec.industry,
           category: prec.category,
           amount: prec.amount,
-          instPayRatio: prec.verdict.includes('60%') ? 60 : (prec.verdict.includes('不成立') ? 0 : 80),
-          instPayAmount: Math.round(prec.amount * (prec.verdict.includes('60%') ? 0.6 : (prec.verdict.includes('不成立') ? 0 : 0.8))),
-          consumerAmount: Math.round(prec.amount * (prec.verdict.includes('60%') ? 0.4 : (prec.verdict.includes('不成立') ? 1 : 0.2))),
           verdict: prec.verdict,
           summary: prec.summary,
           reasons: '依主管機關評議作業辦法與金融消費者保護法第 13 條及第 24 條規定之裁判心證作成。\n' + (prec.coreDistinction || ''),
@@ -1564,18 +1533,6 @@
       const isBinding = doc.amount <= 1200000;
       document.getElementById('modal-doc-binding').innerText = isBinding ? '具法定拘束力 (<=120萬)' : '超逾上限無強制拘束力';
       document.getElementById('modal-doc-binding').className = `font-bold text-base mt-0.5 ${isBinding ? 'text-emerald-600' : 'text-amber-600'}`;
-
-      // Financial Liability Bar (責任分擔比例尺)
-      const instRatio = doc.instPayRatio !== undefined ? doc.instPayRatio : (doc.verdict.includes('不成立') ? 0 : 70);
-      const consumerRatio = 100 - instRatio;
-      const instPay = doc.instPayAmount !== undefined ? doc.instPayAmount : Math.round(doc.amount * (instRatio / 100));
-      const consumerPay = doc.consumerAmount !== undefined ? doc.consumerAmount : (doc.amount - instPay);
-
-      document.getElementById('meter-ratio-text').innerText = `機構負擔 ${instRatio}% ｜ 消費者承擔 ${consumerRatio}%`;
-      document.getElementById('meter-inst-bar').style.width = `${instRatio}%`;
-      document.getElementById('meter-consumer-bar').style.width = `${consumerRatio}%`;
-      document.getElementById('meter-inst-amount').innerText = `NT$ ${instPay.toLocaleString()}`;
-      document.getElementById('meter-consumer-amount').innerText = `NT$ ${consumerPay.toLocaleString()}`;
 
       // Cross-Examination Lists (兩造攻防)
       const claimList = document.getElementById('modal-claim-list');
@@ -1665,7 +1622,7 @@
       const doc = portalState.activeModalDoc;
       if (!doc) return;
 
-      const brief = `【金融評議 AI 語意快析簽呈報告】\n評議字號：${doc.docId}\n受評機構：${doc.inst}\n爭議標的：NT$ ${doc.amount.toLocaleString()} ｜ 裁決結論：${doc.verdict}\n責任劃分：機構承擔 ${doc.instPayRatio}% (NT$ ${doc.instPayAmount.toLocaleString()}) ｜ 消費者承擔 ${100 - doc.instPayRatio}%\n核心心證要旨：${doc.summary}\n法條與標籤：${(doc.tokenizedTags || []).join(' ')}\n法規基準：依金融消費者保護法第 7 條、第 13 條與第 29 條作成。`;
+      const brief = `【金融評議 AI 分析簽呈報告】\n評議字號：${doc.docId}\n受評機構：${doc.inst}\n爭議標的：NT$ ${doc.amount.toLocaleString()} ｜ 裁決結論：${doc.verdict}\n核心心證要旨：${doc.summary}\n法條與標籤：${(doc.tokenizedTags || []).join(' ')}\n法規基準：依金融消費者保護法第 7 條、第 13 條與第 29 條作成。`;
 
       const t = document.createElement('textarea');
       t.value = brief;
