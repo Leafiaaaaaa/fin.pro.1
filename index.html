@@ -283,8 +283,8 @@
     <!-- ======================================================== -->
     <section id="portal-analysis" class="portal-section space-y-8">
       
-      <!-- Top Screening Header with Sample Case Dropdown -->
-      <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm flex flex-col xl:flex-row items-start xl:items-center justify-between gap-6">
+      <!-- Top Screening Header (Blank Form & Direct Operations) -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
         <div>
           <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gov-700">
             <i data-lucide="scale" class="w-4 h-4"></i>
@@ -292,33 +292,14 @@
           </div>
           <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">案件爭議適格性深度審查系統</h2>
           <p class="text-base text-slate-500 mt-1">
-            針對金融消費爭端，依照法定不受理事由與強制拘束力門檻進行即時法理研判與細項說明。
+            請輸入受審個案資料，系統將依據金保法法定要件進行即時適格性研判，並比對關聯之歷史相似裁判案件。
           </p>
         </div>
 
-        <!-- Sample Selector & Operations -->
-        <div class="flex flex-wrap items-center gap-3 w-full xl:w-auto">
-          <div class="flex items-center gap-2 bg-slate-50 border border-slate-200 px-3 py-2 rounded-xl">
-            <i data-lucide="bookmark-check" class="w-5 h-5 text-gov-700 shrink-0"></i>
-            <span class="text-xs font-bold text-slate-700 whitespace-nowrap">載入標註範例：</span>
-            <select id="sample-case-selector" onchange="loadAnnotatedSample(this.value)" class="bg-white border border-slate-300 text-xs font-bold text-slate-800 rounded-lg px-2.5 py-1.5 outline-none focus:ring-2 focus:ring-gov-500">
-              <option value="eligible_case" selected>✅ 範例：完全符合受理事格案（信用卡盜刷）</option>
-              <option value="cat1_format">❌ 第一款：不合程式且未補正案</option>
-              <option value="cat2_not_fin">❌ 第二款：非屬金融消費爭議案（租賃糾紛）</option>
-              <option value="cat3_no_complain">❌ 第三款：未先向金融機構申訴案</option>
-              <option value="cat4_within_30d">❌ 第四款：申訴未逾30日且未獲回覆案</option>
-              <option value="cat5_over_60d">❌ 第五款：已逾收覆後60日法定期限案</option>
-              <option value="cat6_standing">❌ 第六款：當事人不適格案（專業投資人）</option>
-              <option value="cat7_repeat">❌ 第七款：曾經評議不成立重複申請案</option>
-              <option value="cat8_res_judicata">❌ 第八款：民事訴訟確定判決排他案</option>
-              <option value="cat9_policy_rate">❌ 第九款：主管機關公告排除案（放款定價）</option>
-            </select>
-          </div>
-
-          <button onclick="resetAuditForm()" class="px-4 py-2.5 border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-xl text-sm font-semibold transition">
-            重設
-          </button>
-        </div>
+        <button onclick="resetAuditForm()" class="px-5 py-2.5 border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-xl text-sm font-semibold transition flex items-center gap-2">
+          <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+          <span>清空表單</span>
+        </button>
       </div>
 
       <!-- Main Layout: Input Panel (5 Cols) vs Verdict & Detailed Legal Rules (7 Cols) -->
@@ -332,15 +313,16 @@
                 <i data-lucide="edit-3" class="w-5 h-5 text-gov-700"></i>
                 <span>審查個案資料輸入</span>
               </h3>
-              <span class="text-xs font-semibold px-2.5 py-1 bg-gov-50 text-gov-700 rounded-md">法定篩檢要素</span>
+              <span class="text-xs font-semibold px-2.5 py-1 bg-gov-50 text-gov-700 rounded-md">空白審查卷宗</span>
             </div>
 
             <div class="space-y-4">
               <div>
                 <label class="block text-sm font-bold text-slate-800 mb-1.5">金融業別與主管機關監理分類</label>
                 <select id="audit-industry" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-medium focus:ring-2 focus:ring-gov-500 outline-none bg-white">
+                  <option value="" selected disabled>請選擇金融業別...</option>
                   <option value="保險業">保險業（人身保險 / 財產保險）</option>
-                  <option value="銀行業" selected>銀行業（商業銀行 / 信用合作社）</option>
+                  <option value="銀行業">銀行業（商業銀行 / 信用合作社）</option>
                   <option value="證券期貨業">證券期貨業（券商 / 投信投顧）</option>
                   <option value="電子支付業">電子支付業 / 儲值卡發行機構</option>
                   <option value="其他金融服務業">其他特許金融機構 / 非特許業者</option>
@@ -349,7 +331,7 @@
 
               <div>
                 <label class="block text-sm font-bold text-slate-800 mb-1.5">金融機構或相對人名稱</label>
-                <input type="text" id="audit-institution" value="國泰世華商業銀行" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-medium focus:ring-2 focus:ring-gov-500 outline-none">
+                <input type="text" id="audit-institution" placeholder="例如：國泰世華商業銀行、富邦人壽..." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-medium focus:ring-2 focus:ring-gov-500 outline-none">
               </div>
 
               <div>
@@ -370,6 +352,7 @@
               <div>
                 <label class="block text-sm font-bold text-slate-800 mb-1.5">爭端類型分類</label>
                 <select id="audit-category" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-medium focus:ring-2 focus:ring-gov-500 outline-none bg-white">
+                  <option value="" selected disabled>請選擇爭端類型...</option>
                   <option value="信用卡消費款爭端/盜刷">信用卡消費款爭端 / 偽冒交易</option>
                   <option value="必要性醫療/理賠金額認定">必要性醫療 / 保險理賠金額認定爭議</option>
                   <option value="業務招攬爭端/未盡告知義務">業務招攬爭端 / 未盡風險告知義務</option>
@@ -383,7 +366,7 @@
                 <label class="block text-sm font-bold text-slate-800 mb-1.5">爭議標的請求金額 (新台幣 NTD)</label>
                 <div class="relative">
                   <span class="absolute left-4 top-2.5 text-slate-400 font-bold text-sm">$</span>
-                  <input type="number" id="audit-amount" value="380000" class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-300 text-sm font-mono font-bold focus:ring-2 focus:ring-gov-500 outline-none">
+                  <input type="number" id="audit-amount" placeholder="請輸入請求金額，如 180000" class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-300 text-sm font-mono font-bold focus:ring-2 focus:ring-gov-500 outline-none">
                 </div>
                 <p class="text-xs text-slate-500 mt-1">現行法定具強制拘束力金額：120 萬元以下</p>
               </div>
@@ -412,7 +395,7 @@
               <div id="audit-reply-status-block">
                 <label class="block text-xs font-bold text-slate-700 mb-1">金融機構之處置與回覆狀態</label>
                 <select id="audit-reply-status" onchange="onAuditReplyStatusChange()" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-gov-500 outline-none bg-white">
-                  <option value="replied_rejected">已獲正式書面回覆，消費者不服其處理結果</option>
+                  <option value="replied_rejected" selected>已獲正式書面回覆，消費者不服其處理結果</option>
                   <option value="not_replied">尚未獲得金融機構任何正式回覆</option>
                 </select>
               </div>
@@ -458,13 +441,13 @@
 
             <div>
               <label class="block text-sm font-bold text-slate-800 mb-1.5">爭端事證與事實摘要簡述</label>
-              <textarea id="audit-details" rows="3" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-gov-500 outline-none">消費者主張接獲偽冒扣款簡訊，已即刻掛失並主張非本人授權；機構抗辯交易帶有 3D 驗證碼，雙方對於不可歸責性責任分擔尚無共識。</textarea>
+              <textarea id="audit-details" rows="3" placeholder="請簡述案情事實、雙方主張與主要爭點..." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-gov-500 outline-none"></textarea>
             </div>
 
             <!-- Submit Action at the bottom of the Left Input Panel -->
             <div class="pt-4 border-t border-slate-200 flex items-center justify-between gap-3">
               <button onclick="resetAuditForm()" class="px-4 py-2.5 border border-slate-300 text-slate-600 hover:bg-slate-50 rounded-xl text-sm font-bold transition">
-                清除重填
+                清空重填
               </button>
               <button onclick="runAuditEngine()" class="flex-1 py-3 px-5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-base font-bold shadow-md transition flex items-center justify-center gap-2 transform active:scale-98">
                 <i data-lucide="play" class="w-5 h-5"></i>
@@ -482,21 +465,21 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-6">
               <div class="space-y-3 flex-1">
                 <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-xs font-bold uppercase tracking-wider backdrop-blur-sm">
-                  <i data-lucide="shield-check" class="w-4 h-4"></i>
-                  <span id="audit-badge-text">法定適格性研判結果</span>
+                  <i data-lucide="shield-alert" class="w-4 h-4"></i>
+                  <span id="audit-badge-text">等待研判輸入</span>
                 </div>
                 <h3 id="audit-verdict-title" class="text-2xl sm:text-3xl font-black leading-snug">
-                  <span>完全符合評議受理事格</span>
-                  <span id="audit-verdict-subtag" class="block text-xl sm:text-2xl text-emerald-200 font-bold mt-1 tracking-normal">（法定 60 日時效內）</span>
+                  <span>尚未執行適格性研判</span>
+                  <span id="audit-verdict-subtag" class="block text-xl sm:text-2xl text-slate-300 font-bold mt-1 tracking-normal">（請於左側填寫案情要件後送出）</span>
                 </h3>
                 <p id="audit-verdict-desc" class="text-slate-200 text-base leading-relaxed">
-                  先行申訴程序完備，對處理結果不服，且於收受回覆後法定 60 日有效救濟期之內，查無金保法第24條第2項各款不受理事由，應依法排入實體評議審查。
+                  請於左側表單輸入爭端金額、申訴與回覆日期等關鍵門檻要素，點擊「執行適格性研判」後，系統將依金保法第 13 條及第 24 條規定檢核，並即時比對歷史相似判例。
                 </p>
               </div>
-              <div id="audit-countdown-box" class="shrink-0 bg-white/10 backdrop-blur-md border border-white/25 p-5 rounded-xl text-center min-w-[190px]">
+              <div id="audit-countdown-box" class="hidden shrink-0 bg-white/10 backdrop-blur-md border border-white/25 p-5 rounded-xl text-center min-w-[190px]">
                 <div class="text-xs text-slate-200 font-semibold">法定救濟期限倒數</div>
-                <div id="audit-countdown-days" class="text-4xl font-black text-amber-300 my-1 font-mono whitespace-nowrap">40 天</div>
-                <div id="audit-deadline-date" class="text-xs text-slate-200">截止日：2026/12/01</div>
+                <div id="audit-countdown-days" class="text-4xl font-black text-amber-300 my-1 font-mono whitespace-nowrap">- 天</div>
+                <div id="audit-deadline-date" class="text-xs text-slate-200">-</div>
               </div>
             </div>
           </div>
@@ -511,63 +494,79 @@
                 </h4>
                 <p class="text-xs text-slate-500 mt-0.5">依照法定篩檢要件進行逐款檢核分析，確保程序合法性</p>
               </div>
-              <span id="screening-statutory-category-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 self-start sm:self-auto">
-                程序審查通過：無不受理事由
+              <span id="screening-statutory-category-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 self-start sm:self-auto">
+                待輸入檢核
               </span>
             </div>
 
             <!-- Specific Criteria Verdict Alert Box -->
-            <div id="screening-verdict-detail-box" class="p-4 rounded-xl bg-emerald-50 border border-emerald-200 text-slate-800 space-y-2">
-              <div class="flex items-center gap-2 font-bold text-emerald-800 text-sm">
-                <i data-lucide="shield-check" class="w-4 h-4"></i>
-                <span id="detail-category-rule-title">審定分析：完全符合評議受理事格（可進入實體評議審查）</span>
+            <div id="screening-verdict-detail-box" class="p-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 space-y-2">
+              <div class="flex items-center gap-2 font-bold text-slate-800 text-sm">
+                <i data-lucide="info" class="w-4 h-4 text-gov-700"></i>
+                <span id="detail-category-rule-title">審定分析：待執行</span>
               </div>
-              <p id="detail-category-rule-text" class="text-xs text-slate-700 leading-relaxed">
-                本案爭端涉及特許銀行消費交易，申請人具備一般金融消費者適格身分，且已向受評業者送出前置客訴。業者書面拒絕後迄今經過 20 日，仍在 60 天法定救濟期間內，查無法院判決或重複評議情事，符合程序正義。
+              <p id="detail-category-rule-text" class="text-xs text-slate-600 leading-relaxed">
+                填寫完成後點擊「執行適格性研判」，此處將展示依金保法作成之具體裁定理由、程序適法性分析與補正指示。
               </p>
             </div>
 
             <!-- The 4 Core Check Items Matrix -->
             <div class="space-y-4" id="audit-matrix-checklist">
               <div class="flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
-                <span id="icon-crit-complain" class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                  <i data-lucide="check" class="w-5 h-5"></i>
+                <span id="icon-crit-complain" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center shrink-0 mt-0.5">
+                  <i data-lucide="minus" class="w-5 h-5"></i>
                 </span>
                 <div class="space-y-1">
                   <div class="text-base font-bold text-slate-900">檢驗一：先行申訴與等待期前置程序（第 3、4 款）</div>
-                  <div id="desc-crit-complain" class="text-sm text-slate-600">已向受爭議金融機構正式提出客訴，且已屆滿30日或已獲拒絕回覆，符合二次救濟前置原則。</div>
+                  <div id="desc-crit-complain" class="text-sm text-slate-600">檢核消費者是否已向受爭議金融機構正式客訴，且已屆滿30日或獲拒絕回覆。</div>
                 </div>
               </div>
 
               <div class="flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
-                <span id="icon-crit-period" class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                  <i data-lucide="check" class="w-5 h-5"></i>
+                <span id="icon-crit-period" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center shrink-0 mt-0.5">
+                  <i data-lucide="minus" class="w-5 h-5"></i>
                 </span>
                 <div class="space-y-1">
                   <div class="text-base font-bold text-slate-900">檢驗二：60 天法定不變期間消滅時效（第 5 款）</div>
-                  <div id="desc-crit-period" class="text-sm text-slate-600">消費者送件時間在收到機構回覆翌日起 60 日法定有效救濟期內。</div>
+                  <div id="desc-crit-period" class="text-sm text-slate-600">檢核送件時間是否在收到機構回覆翌日起 60 日法定有效救濟期內。</div>
                 </div>
               </div>
 
               <div class="flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
-                <span id="icon-crit-court" class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5">
-                  <i data-lucide="check" class="w-5 h-5"></i>
+                <span id="icon-crit-court" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center shrink-0 mt-0.5">
+                  <i data-lucide="minus" class="w-5 h-5"></i>
                 </span>
                 <div class="space-y-1">
                   <div class="text-base font-bold text-slate-900">檢驗三：司法一事不再理、重複申請與適格排除（第 2、6、7、8 款）</div>
-                  <div id="desc-crit-court" class="text-sm text-slate-600">申請人身分適格，標的屬金融消費糾紛，無確定判決拘束，非重複提起評議。</div>
+                  <div id="desc-crit-court" class="text-sm text-slate-600">檢核當事人適格身分、標的是否屬特許金融消費糾紛及有無終局判決排他。</div>
                 </div>
               </div>
 
               <div class="flex items-start gap-4 p-4 rounded-xl bg-slate-50 border border-slate-200">
-                <span id="icon-crit-binding" class="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center shrink-0 mt-0.5">
-                  <i data-lucide="shield-alert" class="w-5 h-5"></i>
+                <span id="icon-crit-binding" class="w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center shrink-0 mt-0.5">
+                  <i data-lucide="minus" class="w-5 h-5"></i>
                 </span>
                 <div class="space-y-1">
                   <div class="text-base font-bold text-slate-900">檢驗四：金保法第 29 條一定額度強制拘束力裁定判定</div>
                   <div id="desc-crit-binding" class="text-sm text-slate-600">
-                    請求金額 NT$ 380,000 在法定 120 萬元以內。評議委員會一旦作成決議且消費者同意，金融業者必須無條件遵行並給付。
+                    檢核請求金額是否在法定 120 萬元以內。
                   </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- New Section: Similar Precedent Cases Comparison in Audit Result -->
+            <div class="pt-4 border-t border-slate-200 space-y-3">
+              <div class="flex items-center justify-between">
+                <h4 class="font-bold text-slate-900 flex items-center gap-2 text-base">
+                  <i data-lucide="git-compare" class="w-5 h-5 text-indigo-600"></i>
+                  <span>爭端爭點與歷史相似裁判案件對比</span>
+                </h4>
+                <span class="text-xs text-slate-400">依業別與爭議樣態自動對標歷年評議心證</span>
+              </div>
+              <div id="audit-similar-cases-container" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div class="col-span-2 p-4 text-center text-xs text-slate-400 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                  執行研判後，系統將自動比對庫存中案由相同、爭點重疊之歷史裁判前案與心證分水嶺說明。
                 </div>
               </div>
             </div>
@@ -1002,180 +1001,6 @@
       isCrawling: false,
       activeModalDoc: null,
 
-      // Pre-annotated Sample Cases covering All 9 Screening Categories
-      annotatedSamples: {
-        eligible_case: {
-          name: '完全符合受理事格案（信用卡盜刷）',
-          industry: '銀行業',
-          inst: '國泰世華商業銀行',
-          disputeNature: 'civil_financial',
-          consumerStatus: 'general_consumer',
-          category: '信用卡消費款爭端/盜刷',
-          amount: 380000,
-          hasComplained: 'yes',
-          complainDaysAgo: 40,
-          replyStatus: 'replied_rejected',
-          replyDaysAgo: 20,
-          formalDefect: 'valid',
-          repeatOmbuds: 'first_time',
-          courtStatus: 'none',
-          details: '消費者主張接獲偽冒扣款簡訊，已即刻掛失並主張非本人授權；機構抗辯交易帶有 3D 驗證碼，雙方對於不可歸責性責任分擔尚無共識。'
-        },
-        cat1_format: {
-          name: '第一款：申請不合程式且未補正案',
-          industry: '保險業',
-          inst: '富邦人壽保險',
-          disputeNature: 'civil_financial',
-          consumerStatus: 'general_consumer',
-          category: '必要性醫療/理賠金額認定',
-          amount: 250000,
-          hasComplained: 'yes',
-          complainDaysAgo: 45,
-          replyStatus: 'replied_rejected',
-          replyDaysAgo: 15,
-          formalDefect: 'defect_unfixed',
-          repeatOmbuds: 'first_time',
-          courtStatus: 'none',
-          details: '申請人具狀申請評議未親自簽章，且未附具體請求標的與理由。經評議中心函請於15日內補正，屆期仍未完成補正。'
-        },
-        cat2_not_fin: {
-          name: '第二款：非屬金融消費爭議案（租賃糾紛）',
-          industry: '其他金融服務業',
-          inst: '永盛租賃實業股份有限公司',
-          disputeNature: 'non_financial',
-          consumerStatus: 'general_consumer',
-          category: '其他業務爭議',
-          amount: 180000,
-          hasComplained: 'yes',
-          complainDaysAgo: 35,
-          replyStatus: 'replied_rejected',
-          replyDaysAgo: 10,
-          formalDefect: 'valid',
-          repeatOmbuds: 'first_time',
-          courtStatus: 'none',
-          details: '消費者與分期租賃車商發生租金利息折抵爭議。該租賃公司非屬金保法第3條所稱特許之金融服務業，非屬法定評議範圍。'
-        },
-        cat3_no_complain: {
-          name: '第三款：未先向金融機構申訴案',
-          industry: '銀行業',
-          inst: '玉山商業銀行',
-          disputeNature: 'civil_financial',
-          consumerStatus: 'general_consumer',
-          category: '信用卡消費款爭端/盜刷',
-          amount: 150000,
-          hasComplained: 'no',
-          complainDaysAgo: null,
-          replyStatus: 'not_replied',
-          replyDaysAgo: null,
-          formalDefect: 'valid',
-          repeatOmbuds: 'first_time',
-          courtStatus: 'none',
-          details: '消費者發現刷卡異常後，未先向發卡銀行提出正式申訴與調帳申請，直接填寫申請書向評議中心申請評議。'
-        },
-        cat4_within_30d: {
-          name: '第四款：申訴未逾30日且未獲回覆案',
-          industry: '保險業',
-          inst: '南山人壽保險',
-          disputeNature: 'civil_financial',
-          consumerStatus: 'general_consumer',
-          category: '必要性醫療/理賠金額認定',
-          amount: 520000,
-          hasComplained: 'yes',
-          complainDaysAgo: 12,
-          replyStatus: 'not_replied',
-          replyDaysAgo: null,
-          formalDefect: 'valid',
-          repeatOmbuds: 'first_time',
-          courtStatus: 'none',
-          details: '消費者向保險公司提出理賠爭議申訴僅經過 12 日，保險公司尚在契約調查期限內，消費者即逕行向評議中心送件。'
-        },
-        cat5_over_60d: {
-          name: '第五款：已逾收覆後60日法定期限案',
-          industry: '證券期貨業',
-          inst: '元大證券',
-          disputeNature: 'civil_financial',
-          consumerStatus: 'general_consumer',
-          category: '電子下單線路中斷/委託失敗',
-          amount: 880000,
-          hasComplained: 'yes',
-          complainDaysAgo: 120,
-          replyStatus: 'replied_rejected',
-          replyDaysAgo: 78,
-          formalDefect: 'valid',
-          repeatOmbuds: 'first_time',
-          courtStatus: 'none',
-          details: '投資人於收受券商正式拒絕賠償公文函翌日起算，已歷經 78 日方具狀向評議中心送件，逾越法定 60 日不變期間。'
-        },
-        cat6_standing: {
-          name: '第六款：當事人不適格案（專業投資人）',
-          industry: '銀行業',
-          inst: '台北富邦商業銀行',
-          disputeNature: 'civil_financial',
-          consumerStatus: 'pro_investor',
-          category: '業務招攬爭端/未盡告知義務',
-          amount: 2500000,
-          hasComplained: 'yes',
-          complainDaysAgo: 45,
-          replyStatus: 'replied_rejected',
-          replyDaysAgo: 20,
-          formalDefect: 'valid',
-          repeatOmbuds: 'first_time',
-          courtStatus: 'none',
-          details: '申請人於機構具名簽署為符合專業投資人條件（資產逾三千萬元並簽署具投資能力聲明），依法排除適用金保法消保機制。'
-        },
-        cat7_repeat: {
-          name: '第七款：曾經評議不成立重複申請案',
-          industry: '保險業',
-          inst: '新光人壽保險',
-          disputeNature: 'civil_financial',
-          consumerStatus: 'general_consumer',
-          category: '必要性醫療/理賠金額認定',
-          amount: 400000,
-          hasComplained: 'yes',
-          complainDaysAgo: 60,
-          replyStatus: 'replied_rejected',
-          replyDaysAgo: 25,
-          formalDefect: 'valid',
-          repeatOmbuds: 'repeat_same_case',
-          courtStatus: 'none',
-          details: '同一保單之標靶治療給付糾紛，前已於 114 年作成 114-評字第 000412 號評議不成立決定，申請人無新事證再次提出評議。'
-        },
-        cat8_res_judicata: {
-          name: '第八款：民事訴訟確定判決排他案',
-          industry: '銀行業',
-          inst: '中國信託商業銀行',
-          disputeNature: 'civil_financial',
-          consumerStatus: 'general_consumer',
-          category: '信用卡消費款爭端/盜刷',
-          amount: 600000,
-          hasComplained: 'yes',
-          complainDaysAgo: 90,
-          replyStatus: 'replied_rejected',
-          replyDaysAgo: 30,
-          formalDefect: 'valid',
-          repeatOmbuds: 'first_time',
-          courtStatus: 'determined',
-          details: '該筆爭端帳款業經台灣台北地方法院判決確定由持卡人承擔，具有既判力，不得重啟評議行政程序。'
-        },
-        cat9_policy_rate: {
-          name: '第九款：主管機關公告排除案（放款定價）',
-          industry: '銀行業',
-          inst: '臺灣銀行',
-          disputeNature: 'civil_financial',
-          consumerStatus: 'general_consumer',
-          category: '放款利率與費用定價爭議',
-          amount: 120000,
-          hasComplained: 'yes',
-          complainDaysAgo: 40,
-          replyStatus: 'replied_rejected',
-          replyDaysAgo: 15,
-          formalDefect: 'valid',
-          repeatOmbuds: 'first_time',
-          courtStatus: 'none',
-          details: '爭議主旨係質疑金融機構房貸指標利率加碼標準與定價政策，依金管會公告此屬機構自主經營政策，非評議審理客體。'
-        }
-      },
-
       // Synchronized Decision Repository with NLP Structured Metadata
       crawledDecisions: [
         {
@@ -1243,9 +1068,6 @@
           industry: '證券期貨業',
           category: '電子下單線路中斷/委託失敗',
           amount: 1800000,
-          instPayRatio: 0,
-          instPayAmount: 0,
-          consumerAmount: 1800000,
           date: '2026-09-28',
           statusDesc: '逾 60 日法定期限（時效消滅）',
           badgeClass: 'bg-rose-100 text-rose-800',
@@ -1273,9 +1095,6 @@
           industry: '保險業',
           category: '業務招攬爭端/未盡告知義務',
           amount: 980000,
-          instPayRatio: 100,
-          instPayAmount: 980000,
-          consumerAmount: 0,
           date: '2026-10-21',
           statusDesc: '評議受理審理中（餘 45 天）',
           badgeClass: 'bg-emerald-100 text-emerald-800',
@@ -1684,50 +1503,6 @@
     // ========================================================
     // SAMPLES & AUDIT ENGINE PIPELINE
     // ========================================================
-    function loadAnnotatedSample(sampleKey) {
-      const sample = portalState.annotatedSamples[sampleKey];
-      if (!sample) return;
-
-      const today = new Date();
-      const toISO = (d) => d.toISOString().split('T')[0];
-
-      document.getElementById('audit-industry').value = sample.industry;
-      document.getElementById('audit-institution').value = sample.inst;
-      document.getElementById('audit-dispute-nature').value = sample.disputeNature;
-      document.getElementById('audit-consumer-status').value = sample.consumerStatus;
-      document.getElementById('audit-category').value = sample.category;
-      document.getElementById('audit-amount').value = sample.amount;
-      document.getElementById('audit-has-complained').value = sample.hasComplained;
-      onAuditComplainStatusChange();
-
-      if (sample.hasComplained === 'yes' && sample.complainDaysAgo !== null) {
-        const d1 = new Date(today);
-        d1.setDate(today.getDate() - sample.complainDaysAgo);
-        document.getElementById('audit-complain-date').value = toISO(d1);
-      } else {
-        document.getElementById('audit-complain-date').value = '';
-      }
-
-      document.getElementById('audit-reply-status').value = sample.replyStatus;
-      onAuditReplyStatusChange();
-
-      if (sample.replyStatus === 'replied_rejected' && sample.replyDaysAgo !== null) {
-        const d2 = new Date(today);
-        d2.setDate(today.getDate() - sample.replyDaysAgo);
-        document.getElementById('audit-reply-date').value = toISO(d2);
-      } else {
-        document.getElementById('audit-reply-date').value = '';
-      }
-
-      document.getElementById('audit-formal-defect').value = sample.formalDefect;
-      document.getElementById('audit-repeat-ombuds').value = sample.repeatOmbuds;
-      document.getElementById('audit-court-status').value = sample.courtStatus;
-      document.getElementById('audit-details').value = sample.details;
-
-      runAuditEngine();
-      showToast(`已載入標註範例：${sample.name}`, 'bookmark-check');
-    }
-
     function loadPresetCase(caseId) {
       navigateTo('portal-analysis');
       const today = new Date();
@@ -1737,7 +1512,7 @@
       if (item) {
         document.getElementById('audit-industry').value = item.industry;
         document.getElementById('audit-institution').value = item.inst;
-        document.getElementById('audit-category').value = item.category.includes('盜刷') ? '信用卡消費款爭端/盜刷' : '必要性醫療/理賠金額認定';
+        document.getElementById('audit-category').value = item.category.includes('盜刷') ? '信用卡消費款爭端/盜刷' : (item.category.includes('醫療') ? '必要性醫療/理賠金額認定' : '業務招攬爭端/未盡告知義務');
         document.getElementById('audit-amount').value = item.amount;
         document.getElementById('audit-details').value = item.summary;
         document.getElementById('audit-has-complained').value = 'yes';
@@ -1802,8 +1577,56 @@
     }
 
     function resetAuditForm() {
-      document.getElementById('sample-case-selector').value = 'eligible_case';
-      loadAnnotatedSample('eligible_case');
+      document.getElementById('audit-industry').selectedIndex = 0;
+      document.getElementById('audit-institution').value = '';
+      document.getElementById('audit-dispute-nature').value = 'civil_financial';
+      document.getElementById('audit-consumer-status').value = 'general_consumer';
+      document.getElementById('audit-category').selectedIndex = 0;
+      document.getElementById('audit-amount').value = '';
+      document.getElementById('audit-has-complained').value = 'yes';
+      document.getElementById('audit-complain-date').value = '';
+      document.getElementById('audit-reply-status').value = 'replied_rejected';
+      document.getElementById('audit-reply-date').value = '';
+      document.getElementById('audit-formal-defect').value = 'valid';
+      document.getElementById('audit-repeat-ombuds').value = 'first_time';
+      document.getElementById('audit-court-status').value = 'none';
+      document.getElementById('audit-details').value = '';
+      onAuditComplainStatusChange();
+
+      // Reset Verdict Card
+      const banner = document.getElementById('audit-result-banner');
+      banner.className = "rounded-2xl p-6 sm:p-8 border-2 transition-all text-white shadow-md bg-gov-800 border-gov-700";
+      document.getElementById('audit-badge-text').innerText = "等待研判輸入";
+      document.getElementById('audit-verdict-title').innerHTML = `<span>尚未執行適格性研判</span><span class="block text-xl sm:text-2xl text-slate-300 font-bold mt-1 tracking-normal">（請於左側填寫案情要件後送出）</span>`;
+      document.getElementById('audit-verdict-desc').innerText = "請於左側表單輸入爭端金額、申訴與回覆日期等關鍵門檻要素，點擊「執行適格性研判」後，系統將依金保法第 13 條及第 24 條規定檢核，並即時比對歷史相似判例。";
+      document.getElementById('audit-countdown-box').classList.add('hidden');
+
+      // Reset Checklist
+      document.getElementById('screening-statutory-category-badge').className = "px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700";
+      document.getElementById('screening-statutory-category-badge').innerText = "待輸入檢核";
+      document.getElementById('screening-verdict-detail-box').className = "p-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 space-y-2";
+      document.getElementById('detail-category-rule-title').innerText = "審定分析：待執行";
+      document.getElementById('detail-category-rule-text').innerText = "填寫完成後點擊「執行適格性研判」，此處將展示依金保法作成之具體裁定理由、程序適法性分析與補正指示。";
+
+      ['icon-crit-complain', 'icon-crit-period', 'icon-crit-court', 'icon-crit-binding'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.className = "w-8 h-8 rounded-full bg-slate-200 text-slate-600 flex items-center justify-center shrink-0 mt-0.5";
+          el.innerHTML = '<i data-lucide="minus" class="w-5 h-5"></i>';
+        }
+      });
+      document.getElementById('desc-crit-complain').innerText = "檢核消費者是否已向受爭議金融機構正式客訴，且已屆滿30日或獲拒絕回覆。";
+      document.getElementById('desc-crit-period').innerText = "檢核送件時間是否在收到機構回覆翌日起 60 日法定有效救濟期內。";
+      document.getElementById('desc-crit-court').innerText = "檢核當事人適格身分、標的是否屬特許金融消費糾紛及有無終局判決排他。";
+      document.getElementById('desc-crit-binding').innerText = "檢核請求金額是否在法定 120 萬元以內。";
+
+      document.getElementById('audit-similar-cases-container').innerHTML = `
+        <div class="col-span-2 p-4 text-center text-xs text-slate-400 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+          執行研判後，系統將自動比對庫存中案由相同、爭點重疊之歷史裁判前案與心證分水嶺說明。
+        </div>
+      `;
+      if (window.lucide) lucide.createIcons();
+      showToast('已重設為空白審查表單', 'rotate-ccw');
     }
 
     function toggleScreeningRegulationsGuide() {
@@ -1822,10 +1645,65 @@
     }
 
     // ========================================================
-    // STATUTORY 9-CATEGORY GATEKEEPING ENGINE
+    // STATUTORY GATEKEEPING ENGINE & PRECEDENT MATCHER
     // ========================================================
+    function updateSimilarCasesComparison(category, industry) {
+      const container = document.getElementById('audit-similar-cases-container');
+      if (!container) return;
+
+      // Find matching precedents from precedentDatabase & crawledDecisions
+      const matches = [];
+      const allPrecedents = [
+        ...portalState.crawledDecisions,
+        ...Object.values(portalState.precedentDatabase)
+      ];
+
+      allPrecedents.forEach(p => {
+        if (!p.docId) return;
+        if (matches.some(m => m.docId === p.docId)) return;
+
+        let score = 0;
+        if (category && p.category && (p.category.includes(category) || category.includes(p.category))) score += 50;
+        if (industry && p.industry && p.industry === industry) score += 30;
+
+        if (score >= 30) {
+          matches.push({ ...p, matchScore: score });
+        }
+      });
+
+      matches.sort((a, b) => b.matchScore - a.matchScore);
+      const topMatches = matches.slice(0, 2);
+
+      if (topMatches.length === 0) {
+        // Fallback default sample comparison
+        topMatches.push(portalState.precedentDatabase['CASE-2026-0412']);
+        topMatches.push(portalState.precedentDatabase['CASE-2025-1190']);
+      }
+
+      container.innerHTML = '';
+      topMatches.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'p-4 rounded-xl border border-slate-200 bg-slate-50/80 hover:border-indigo-400 transition space-y-2 text-xs';
+        card.innerHTML = `
+          <div class="flex items-center justify-between">
+            <span class="font-bold text-slate-900 font-mono text-sm">${item.docId}</span>
+            <span class="px-2 py-0.5 rounded font-bold ${item.verdict.includes('成立') ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-700'}">${item.verdict}</span>
+          </div>
+          <div class="text-slate-600 font-semibold">${item.inst} ｜ 標的金額：NT$ ${Number(item.amount || 0).toLocaleString()}</div>
+          <p class="text-slate-600 leading-relaxed">${item.summary}</p>
+          <div class="pt-2 border-t border-slate-200 text-indigo-900 bg-indigo-50/60 p-2.5 rounded-lg font-medium leading-relaxed">
+            ${item.coreDistinction || '【心證分水嶺】委員會著重考量受評業者是否落實異常風險警示，以及消費者是否於合理期間內主張權利。'}
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      if (window.lucide) lucide.createIcons();
+    }
+
     function runAuditEngine() {
       const today = new Date();
+      const industry = document.getElementById('audit-industry').value;
       const nature = document.getElementById('audit-dispute-nature').value;
       const consumerStatus = document.getElementById('audit-consumer-status').value;
       const formalDefect = document.getElementById('audit-formal-defect').value;
@@ -1868,6 +1746,9 @@
         }
       };
 
+      // Update Similar Cases Comparison
+      updateSimilarCasesComparison(category, industry);
+
       // 1. Check Binding Limit (Article 29)
       const isBinding = amount <= 1200000;
       if (isBinding) {
@@ -1908,6 +1789,7 @@
         detailRuleTitle.innerText = "依金保法第24條第2項第1款駁回：不合程式";
         detailRuleText.innerText = "申請書未載明當事人完整姓名、簽名或未載明具體爭議事實，經秘書處命其補正逾期未補正，程序欠缺且無從進入實體審查。";
         if (window.lucide) lucide.createIcons();
+        showToast('研判完成：第一款程式不備未補正（不受理）', 'alert-circle');
         return;
       }
 
@@ -1930,6 +1812,7 @@
         detailRuleTitle.innerText = "依金保法第24條第2項第2款駁回：標的客體不適格";
         detailRuleText.innerText = "爭端主體或標的非屬依法特許立案之銀行、保險、證券或電子支付業務，評議中心欠缺事物管轄權，應予不受理。";
         if (window.lucide) lucide.createIcons();
+        showToast('研判完成：第二款非屬金融消費爭議（不受理）', 'alert-circle');
         return;
       }
 
@@ -1955,6 +1838,7 @@
         detailRuleTitle.innerText = "依金保法第24條第2項第6款駁回：當事人不適格";
         detailRuleText.innerText = "本案當事人非屬法律受保護之一般消費者，或欠缺民事代理管轄權，依本款應作成不受理決議。";
         if (window.lucide) lucide.createIcons();
+        showToast('研判完成：第六款當事人不適格（不受理）', 'alert-circle');
         return;
       }
 
@@ -1977,6 +1861,7 @@
         detailRuleTitle.innerText = "依金保法第24條第2項第7款駁回：重複申請評議";
         detailRuleText.innerText = "評議決定確定後，除符合法定再審事由外，同一爭端不得重複向評議中心申請，應依同法作成不受理決議。";
         if (window.lucide) lucide.createIcons();
+        showToast('研判完成：第七款曾評議不成立重複申請（不受理）', 'alert-circle');
         return;
       }
 
@@ -1999,6 +1884,7 @@
         detailRuleTitle.innerText = "依金保法第24條第2項第8款駁回：司法確定排他";
         detailRuleText.innerText = "已經普通法院民事庭作成終局確定判決，或依仲裁法/鄉鎮市調解條例成立之事項，評議中心依法無權翻案審理。";
         if (window.lucide) lucide.createIcons();
+        showToast('研判完成：第八款民事終局確定排他（不受理）', 'alert-circle');
         return;
       }
 
@@ -2017,6 +1903,7 @@
         detailRuleTitle.innerText = "依金保法第24條第2項第9款駁回：機構業務政策自主事項";
         detailRuleText.innerText = "涉案爭點屬特許金融機構商業放款加減碼原則或純粹費率政策，經金管會公告列為不受理事項，應駁回評議。";
         if (window.lucide) lucide.createIcons();
+        showToast('研判完成：第九款定價政策排除（不受理）', 'alert-circle');
         return;
       }
 
@@ -2039,6 +1926,7 @@
         detailRuleTitle.innerText = "依金保法第24條第2項第3款駁回：欠缺先行申訴程序";
         detailRuleText.innerText = "金融消費者依本法提起評議，以先向金融機構申訴為前置必要要件。未經申訴即直接申請評議者，依法應裁定不受理。";
         if (window.lucide) lucide.createIcons();
+        showToast('研判完成：第三款欠缺前置申訴（不受理）', 'alert-circle');
         return;
       }
 
@@ -2049,6 +1937,7 @@
         setVerdictTitle("程序待確認", "（請補填向機構申訴日期）", "text-slate-300");
         desc.innerText = "請載明向機構提出正式申訴之日期，以供系統精準演算 30 日調查等待期與法定時效。";
         countBox.classList.add('hidden');
+        showToast('請先填寫申訴日期以利試算時效', 'calendar');
         return;
       }
 
@@ -2081,6 +1970,7 @@
           detailRuleTitle.innerText = "依金保法第24條第2項第4款：機構 30 天合理調查期中";
           detailRuleText.innerText = "金融服務業自收受申訴日尚未逾 30 日且未逾期未答覆，申請人太早申請評議，欠缺即時救濟利益，應俟期滿後再行受件。";
           if (window.lucide) lucide.createIcons();
+          showToast(`研判完成：第四款調查中尚未逾30日（尚餘 ${remainingWait} 天）`, 'clock');
           return;
         } else {
           banner.className = "rounded-2xl p-6 sm:p-8 border-2 transition-all text-white shadow-md bg-emerald-800 border-emerald-600";
@@ -2106,6 +1996,7 @@
           setVerdictTitle("程序待確認", "（請補填收受回覆日期）", "text-slate-300");
           desc.innerText = "必須依據收受金融機構回覆函文之翌日起算，檢算是否符合法定 60 日時效。";
           countBox.classList.add('hidden');
+          showToast('請補填收受回覆日期以計算60日時效', 'calendar');
           return;
         }
 
@@ -2133,6 +2024,7 @@
           detailRuleTitle.innerText = "依金保法第24條第2項第5款駁回：逾期申請時效消滅";
           detailRuleText.innerText = "金保法第13條第2項所定 60 日為法定不變期間。逾期始申請評議者，要件欠缺且無從命其補正，應為不受理決定。";
           if (window.lucide) lucide.createIcons();
+          showToast(`研判完成：第五款逾期申請時效消滅（逾期 ${daysSinceReply - 60} 天）`, 'alert-circle');
           return;
         } else {
           const daysLeft = 60 - daysSinceReply;
@@ -2162,11 +2054,12 @@
       }
 
       if (window.lucide) lucide.createIcons();
+      showToast('適格性研判完成！已同步完成歷史相似裁判前案比對', 'check-circle');
     }
 
     function copyLegalOpinion() {
-      const inst = document.getElementById('audit-institution').value;
-      const cat = document.getElementById('audit-category').value;
+      const inst = document.getElementById('audit-institution').value || '未填寫機構';
+      const cat = document.getElementById('audit-category').value || '未指定類型';
       const amt = Number(document.getElementById('audit-amount').value || 0).toLocaleString();
       const verdict = document.getElementById('audit-verdict-title').innerText;
       const statutoryRule = document.getElementById('screening-statutory-category-badge').innerText;
@@ -2372,7 +2265,6 @@
     window.addEventListener('DOMContentLoaded', () => {
       if (window.lucide) lucide.createIcons();
       renderDecisionFeed();
-      loadAnnotatedSample('eligible_case');
     });
   </script>
 </body>
