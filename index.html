@@ -105,7 +105,7 @@
           </button>
           <button onclick="navigateTo('portal-analysis')" id="nav-portal-analysis" class="nav-tab px-4 py-2.5 rounded-lg text-base font-semibold transition text-slate-300 hover:text-white hover:bg-white/10 flex items-center gap-2">
             <i data-lucide="file-check-2" class="w-5 h-5 text-amber-400"></i>
-            <span>案件適格性深度審查 (九大類)</span>
+            <span>案件適格性深度審查</span>
           </button>
           <button onclick="navigateTo('portal-stats')" id="nav-portal-stats" class="nav-tab px-4 py-2.5 rounded-lg text-base font-semibold transition text-slate-300 hover:text-white hover:bg-white/10 flex items-center gap-2">
             <i data-lucide="bar-chart-big" class="w-5 h-5 text-cyan-400"></i>
@@ -139,7 +139,7 @@
     <!-- Mobile Nav Drawer -->
     <div id="mobile-nav-drawer" class="hidden md:hidden border-t border-slate-800 bg-gov-900 px-4 py-3 space-y-2">
       <button onclick="navigateTo('portal-home'); toggleMobileNav();" class="w-full text-left px-3 py-2.5 rounded-md text-base font-semibold text-slate-200 hover:bg-white/10">監理首頁</button>
-      <button onclick="navigateTo('portal-analysis'); toggleMobileNav();" class="w-full text-left px-3 py-2.5 rounded-md text-base font-semibold text-slate-200 hover:bg-white/10">案件適格性深度審查 (九大類)</button>
+      <button onclick="navigateTo('portal-analysis'); toggleMobileNav();" class="w-full text-left px-3 py-2.5 rounded-md text-base font-semibold text-slate-200 hover:bg-white/10">案件適格性深度審查</button>
       <button onclick="navigateTo('portal-stats'); toggleMobileNav();" class="w-full text-left px-3 py-2.5 rounded-md text-base font-semibold text-slate-200 hover:bg-white/10">大數據統計總覽</button>
     </div>
   </header>
@@ -193,13 +193,13 @@
           </div>
           <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">金融機構爭議案件全流程監理中樞</h1>
           <p class="text-slate-300 text-base max-w-3xl">
-            提供主管機關與特許金融機構法遵室即時研判消費者申訴之程序適格性（內建第 24 條九大不受理事由篩檢矩陣）、評議時效警示監控、一定額度拘束力門檻與 AI 裁判心證分析報告。
+            提供主管機關與特許金融機構法遵室即時研判消費者申訴之程序適格性（內建第 24 條不受理事由篩檢矩陣）、評議時效警示監控、一定額度拘束力門檻與 AI 裁判心證分析報告。
           </p>
         </div>
         <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
           <button onclick="navigateTo('portal-analysis')" class="flex-1 lg:flex-none inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-base font-bold shadow-lg transition transform active:scale-95">
             <i data-lucide="search-check" class="w-5 h-5"></i>
-            <span>進入適格性九類審查系統</span>
+            <span>進入適格性審查系統</span>
           </button>
           <button onclick="navigateTo('portal-stats')" class="flex-1 lg:flex-none inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-gov-700 hover:bg-gov-500 text-white rounded-xl text-base font-bold border border-slate-600 transition">
             <i data-lucide="pie-chart" class="w-5 h-5 text-cyan-400"></i>
@@ -209,7 +209,7 @@
       </div>
 
       <!-- Core Operational KPI Metrics -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between text-slate-500 mb-2">
@@ -237,33 +237,6 @@
             <span>超過法定 30 日未依規妥處回覆</span>
           </div>
         </div>
-
-        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between text-slate-500 mb-2">
-              <span class="text-sm font-bold tracking-wide">一定額度拘束力覆蓋率</span>
-              <span class="p-2 bg-emerald-50 text-emerald-600 rounded-lg"><i data-lucide="lock" class="w-5 h-5"></i></span>
-            </div>
-            <div class="text-3xl sm:text-4xl font-black text-emerald-600"><span id="kpi-binding-rate">89.4%</span></div>
-          </div>
-          <div class="text-xs text-slate-600 mt-4 flex items-center gap-1.5 pt-3 border-t border-slate-100">
-            <span class="text-slate-600 font-medium">訴求金額於 120 萬法定上限以內</span>
-          </div>
-        </div>
-
-        <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
-          <div>
-            <div class="flex items-center justify-between text-slate-500 mb-2">
-              <span class="text-sm font-bold tracking-wide">全行業平均調處和解率</span>
-              <span class="p-2 bg-indigo-50 text-indigo-600 rounded-lg"><i data-lucide="scale" class="w-5 h-5"></i></span>
-            </div>
-            <div class="text-3xl sm:text-4xl font-black text-gov-800"><span id="kpi-settle-rate">65.2%</span></div>
-          </div>
-          <div class="text-xs text-slate-600 mt-4 flex items-center gap-1.5 pt-3 border-t border-slate-100">
-            <span class="text-indigo-600 font-bold">維持穩定</span>
-            <span>評議前由金融機構自行調處成立</span>
-          </div>
-        </div>
       </div>
 
       <!-- Case Dossier Feed Table -->
@@ -272,14 +245,14 @@
           <div>
             <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
               <i data-lucide="list-ordered" class="w-6 h-6 text-gov-700"></i>
-              即時評議決定書收錄清單（點擊案號查閱 AI 斷詞語意報告與前案比對）
+              即時評議決定書收錄清單（點擊案號查閱整理與類似案件）
             </h3>
             <p class="text-sm text-slate-500 mt-1">
-              點擊任一 <span class="font-bold text-gov-700">評議字號／序號</span> 即刻調閱由 NLP 系統萃取之「兩造爭點攻防、責任比例條與心證理由」
+              點擊任一 <span class="font-bold text-gov-700">評議字號／序號</span> 即刻調閱爭端攻防整理與心證理由
             </p>
           </div>
           <div class="flex items-center gap-2">
-            <input type="text" id="feed-search-input" oninput="filterDecisionFeed()" placeholder="搜尋評議字號/機構/斷詞關鍵字..." class="px-3.5 py-2 rounded-lg border border-slate-300 text-sm outline-none focus:ring-2 focus:ring-gov-500 w-72">
+            <input type="text" id="feed-search-input" oninput="filterDecisionFeed()" placeholder="搜尋評議字號/機構/關鍵字..." class="px-3.5 py-2 rounded-lg border border-slate-300 text-sm outline-none focus:ring-2 focus:ring-gov-500 w-72">
             <span class="text-xs px-2.5 py-2 bg-emerald-50 text-emerald-700 rounded-lg font-mono border border-emerald-200 font-bold whitespace-nowrap">NLP LIVE</span>
           </div>
         </div>
@@ -288,7 +261,7 @@
           <table class="w-full text-left border-collapse text-base">
             <thead>
               <tr class="border-b-2 border-slate-200 bg-slate-50 text-slate-700 font-bold text-sm">
-                <th class="py-3.5 px-4">評議字號 / 案卷序號 (點擊開啟AI快析)</th>
+                <th class="py-3.5 px-4">評議字號 / 案卷序號 (點擊檢視)</th>
                 <th class="py-3.5 px-4">金融機構</th>
                 <th class="py-3.5 px-4">產業類別</th>
                 <th class="py-3.5 px-4">爭端類型</th>
@@ -317,9 +290,9 @@
             <i data-lucide="scale" class="w-4 h-4"></i>
             <span>金保法第 13 條與第 24 條第 2 項要件檢核矩陣</span>
           </div>
-          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">案件爭議適格性深度審查與九大類篩檢系統</h2>
+          <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">案件爭議適格性深度審查系統</h2>
           <p class="text-base text-slate-500 mt-1">
-            針對金融消費爭端，依照法定九大不受理事由（Case Screening）與強制拘束力門檻進行即時法理研判與細項說明。
+            針對金融消費爭端，依照法定不受理事由（Case Screening）與強制拘束力門檻進行即時法理研判與細項說明。
           </p>
         </div>
 
@@ -363,19 +336,19 @@
                 <i data-lucide="edit-3" class="w-5 h-5 text-gov-700"></i>
                 <span>審查個案資料輸入</span>
               </h3>
-              <span class="text-xs font-semibold px-2.5 py-1 bg-gov-50 text-gov-700 rounded-md">法定篩檢要素</span>
-            </div>
-
-            <div class="space-y-4">
-              <div>
-                <label class="block text-sm font-bold text-slate-800 mb-1.5">金融業別與主管機關監理分類</label>
-                <select id="audit-industry" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-medium focus:ring-2 focus:ring-gov-500 outline-none bg-white">
-                  <option value="保險業">保險業（人身保險 / 財產保險）</option>
-                  <option value="銀行業" selected>銀行業（商業銀行 / 信用合作社）</option>
-                  <option value="證券期貨業">證券期貨業（券商 / 投信投顧）</option>
-                  <option value="電子支付業">電子支付業 / 儲值卡發行機構</option>
-                  <option value="其他金融服務業">其他特許金融機構 / 非特許業者</option>
-                </select>
+            <!-- Section: Detailed 9-Category Analysis Breakdown -->
+            <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-4">
+                <div>
+                  <h4 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                    <i data-lucide="check-square" class="w-5 h-5 text-gov-700"></i>
+                    <span>金保法第24條第2項：法定不受理事由篩檢對照表</span>
+                  </h4>
+                  <p class="text-xs text-slate-500 mt-0.5">依照法定篩檢要件進行逐款檢核分析，確保程序合法性</p>
+                </div>
+                <span id="screening-statutory-category-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 self-start sm:self-auto">
+                  程序審查通過：無不受理事由
+                </span>
               </div>
 
               <div>
@@ -643,17 +616,17 @@
                   <p class="text-slate-600 mt-1">【要件說明】純屬金融機構之業務定價自主權（如基準利率、放款手續費標準）、授信審查風險評估或已進入消費者債務清理條例協商程序者。</p>
                 </div>
               </div>
-            </div>
-
-            <!-- Actions row -->
-            <div class="pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
-              <div class="text-xs text-slate-500">
-                審查判定由演算法依金保法施行細則即時演算
-              </div>
-              <div class="flex items-center gap-2">
-                <button onclick="copyLegalOpinion()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-sm font-bold transition flex items-center gap-1.5">
-                  <i data-lucide="copy" class="w-4 h-4"></i>
-                  <span>複製研判意見摘要</span>
+              <!-- Expandable Legal Criteria Guide (All 9 Categories in Full Detail) -->
+              <div class="border border-slate-200 rounded-xl overflow-hidden">
+                <button onclick="toggleScreeningRegulationsGuide()" class="w-full px-5 py-3.5 bg-slate-50 hover:bg-slate-100 transition flex items-center justify-between text-left">
+                  <span class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                    <i data-lucide="book-marked" class="w-4 h-4 text-gov-700"></i>
+                    <span>查閱《金融消費者保護法》第 24 條第 2 項各款不受理規範總覽</span>
+                  </span>
+                  <span class="text-xs text-gov-700 font-semibold flex items-center gap-1" id="reg-guide-toggle-text">
+                    <span>展開條文法理規範</span>
+                    <i data-lucide="chevron-down" class="w-4 h-4" id="reg-guide-chevron"></i>
+                  </span>
                 </button>
                 <button onclick="exportVerdictPDF()" class="px-4 py-2 bg-gov-700 hover:bg-gov-500 text-white rounded-lg text-sm font-bold transition flex items-center gap-1.5">
                   <i data-lucide="file-text" class="w-4 h-4"></i>
@@ -1448,7 +1421,7 @@
                 <i data-lucide="brain-circuit" class="w-4 h-4 text-emerald-600"></i>
                 <span>${c.docId}</span>
               </span>
-              <span class="text-xs text-slate-400 block">${c.id} ｜ <span class="text-emerald-700 font-semibold">✨ 開啟AI分析報告</span></span>
+              <span class="text-xs text-slate-400 block">${c.id}</span>
             </button>
           </td>
           <td class="py-3.5 px-4 font-semibold text-slate-900">${c.inst}</td>
