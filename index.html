@@ -699,25 +699,24 @@
           </div>
 
           <div class="space-y-2">
-            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">統計涵蓋基準量</label>
-            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-100 border border-slate-200 text-xs">
-              <span class="font-bold text-slate-700">樣本案件累計：<strong class="text-gov-800 text-sm font-mono font-black">11,671</strong> 件</span>
-              <span class="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">數據已核對金評中心季報</span>
-            </div>
+          <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">統計涵蓋基準量</label>
+          <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-100 border border-slate-200 text-xs">
+            <span class="font-bold text-slate-700">樣本案件累計：<strong class="text-gov-800 text-sm font-mono font-black">11,671</strong> 件</span>
+            <span class="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">數據已核對金評中心季報</span>
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Charts Row 1 -->
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <div class="lg:col-span-7 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+    <!-- Charts Row 1 -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      <div class="lg:col-span-7 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <div class="flex items-center justify-between">
             <div>
               <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                 <i data-lucide="bar-chart-2" class="w-5 h-5 text-gov-700"></i>
                 各產業爭議案件件數（申訴 vs 評議）
               </h3>
-              <p class="text-xs text-slate-500 mt-0.5">直條圖對照保險、銀行、證券期貨與電子支付在不同救濟階段之案量</p>
             </div>
             <div class="flex items-center gap-2 text-xs font-bold">
               <span class="inline-flex items-center gap-1"><span class="w-3 h-3 rounded bg-[#00bfa5]"></span> 申訴</span>
@@ -738,7 +737,6 @@
               </h3>
               <span class="text-xs text-slate-400 font-mono">DISTRIBUTION</span>
             </div>
-            <p class="text-xs text-slate-500 mt-0.5">呈現爭端來源結構比例（保險業高居六成五以上）</p>
           </div>
 
           <div class="h-64 my-auto">
@@ -759,6 +757,43 @@
               <div class="text-slate-500">證券與其他</div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <!-- NEW: 常見爭議事由排行榜 (Top Dispute Types Ranking) -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
+          <div>
+            <h3 class="text-lg sm:text-xl font-bold text-slate-900 flex items-center gap-2">
+              <i data-lucide="flame" class="w-6 h-6 text-rose-500"></i>
+              各金融業別常見爭議事由排行榜（官方爭點態樣 Top 5）
+            </h3>
+            <p class="text-sm text-slate-500 mt-1">
+              依據評議中心案件統計公告，彙整金融消費者申訴與評議集中度最高之爭端事由
+            </p>
+          </div>
+
+          <!-- Sector Switcher Tabs -->
+          <div class="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl text-xs font-bold self-start sm:self-auto overflow-x-auto max-w-full">
+            <button onclick="switchDisputeRankSector('life')" id="btn-rank-life" class="px-3.5 py-2 rounded-lg bg-gov-800 text-white shadow-sm transition whitespace-nowrap">壽險業爭端</button>
+            <button onclick="switchDisputeRankSector('bank')" id="btn-rank-bank" class="px-3.5 py-2 rounded-lg text-slate-700 hover:bg-slate-200 transition whitespace-nowrap">銀行與支付業</button>
+            <button onclick="switchDisputeRankSector('nonlife')" id="btn-rank-nonlife" class="px-3.5 py-2 rounded-lg text-slate-700 hover:bg-slate-200 transition whitespace-nowrap">產險業爭端</button>
+            <button onclick="switchDisputeRankSector('sec')" id="btn-rank-sec" class="px-3.5 py-2 rounded-lg text-slate-700 hover:bg-slate-200 transition whitespace-nowrap">證券期貨業</button>
+          </div>
+        </div>
+
+        <!-- Dynamic Ranking List Container -->
+        <div id="dispute-rank-container" class="space-y-4">
+          <!-- Dynamically populated via switchDisputeRankSector() -->
+        </div>
+
+        <!-- Ranking Summary Footnote -->
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-4 border-t border-slate-100 text-xs text-slate-500">
+          <div class="flex items-center gap-1.5">
+            <i data-lucide="info" class="w-4 h-4 text-gov-700"></i>
+            <span>爭端排名依據金評中心各季公佈之受理性別、險種與業務爭議態樣統計正規化產出</span>
+          </div>
+          <span class="font-mono text-slate-400">指標監控週期：2026 最新季報</span>
         </div>
       </div>
 
@@ -1020,19 +1055,18 @@
           badgeClass: 'bg-emerald-100 text-emerald-800',
           dotClass: 'bg-emerald-500',
           verdict: '評議成立 (部分賠償)',
-          summary: '受評金融機構應給付申請人新台幣 129,500 元整。持卡人遭遇境外網路釣魚未授權交易，發卡銀行雖有 OTP 機制，惟異常扣款頻率未適時啟動風控攔阻。',
-          reasons: '一、依金保法第 7 條規定，金融機構應盡善良管理人注意義務。\n二、本件短時間於凌晨時段連續進行多筆外幣交易，銀行監控模組未及時發出警示通知，有管理疏失。\n三、消費者誤點釣魚簡訊亦有注意義務欠缺，審酌雙方歸責情狀命機構給付相應爭議款。',
+          summary: '持卡人遭遇境外網路釣魚未授權交易，發卡銀行雖有 OTP 機制，惟異常扣款頻率未適時啟動風控攔阻，命機構賠付相應爭端款項。',
+          reasons: '一、依金融消費者保護法第 7 條規定，金融機構應盡善良管理人注意義務。\n二、短時間於凌晨時段連續進行多筆外幣交易，銀行監控模組未及時發出警示通知，有管理疏失。\n三、消費者誤點釣魚簡訊亦有注意義務欠缺，審酌全案情狀由機構承擔主要責任。',
           consumerClaims: [
-            '接獲假冒公用事業水費催繳釣魚簡訊，誤點連結輸入信用卡資訊。',
-            '凌晨 02:15 至 02:22 短時間內遭連續盜刷 5 筆歐元境外交易。',
-            '發現後 10 分鐘內即致電客服要求掛失並列為爭議款，主張非本人意圖授權。'
+            '接獲假冒公用事業欠費催繳簡訊，誤入外觀極度相似之釣魚詐騙網頁。',
+            '於凌晨時段在 5 分鐘內遭連續盜刷 3 筆非台幣之境外交易。',
+            '持卡人已立即電洽客服掛失，發卡行未即時阻斷連線授權。'
           ],
           institutionDefenses: [
-            '交易過程皆發送 3D OTP 動態密碼至持卡人留存手機，系統已完成驗證。',
-            'OTP 簡訊內文已載明「防詐警示：請勿交付他人」，持卡人交付驗證碼顯有過失。',
-            '特約商店已扣款請款，依信用卡定型化契約應由持卡人承擔。'
+            '各筆交易均已通過 3D 認證，發卡行已發送動態簡訊密碼至持卡人留存門號。',
+            '持卡人違反信用卡約定條款中對驗證密碼之妥善保管義務。'
           ],
-          tokenizedTags: ['#金保法§7', '#善良管理人注意義務', '#境外釣魚簡訊', '#OTP動態密碼', '#凌晨連續交易', '#風控攔阻缺失', '#具強制拘束力'],
+          tokenizedTags: ['#金保法§7', '#釣魚簡訊', '#異常交易風控', '#善良管理人義務', '#3D驗證', '#具強制拘束力'],
           complainDaysAgo: 42,
           replyDaysAgo: 32,
           similarCaseIds: ['CASE-2026-0412', 'CASE-2025-1190']
@@ -1048,20 +1082,18 @@
           statusDesc: '業者 30 天回覆期中（餘 6 天）',
           badgeClass: 'bg-amber-100 text-amber-800',
           dotClass: 'bg-amber-500',
-          verdict: '調處協商程序中 (建議協議給付)',
-          summary: '申請人主張因癌症需自費施打標靶藥物，請求全額給付住院醫療日額保險金；保險公司抗辯該療程無實質住院必要性，僅屬門診注射。',
-          reasons: '一、涉及契約條款中「住院」之醫學必要性認定。\n二、送請評議中心特約專科醫師鑑定，認該療程雖屬新型療法，但醫師處方註明因嚴重副作用需留院觀察，符合住院常規。\n三、促請雙方於調處階段協議部分給付。',
+          verdict: '調處協商程序中',
+          summary: '申請人主張因癌症需自費施打標靶藥物，請求給付住院醫療日額保險金；保險公司抗辯該療程無實質住院必要性。',
+          reasons: '一、涉及契約條款中「住院」之醫學必要性認定。\n二、送請評議中心特約專科醫師鑑定，認該療程處方註明因嚴重副作用需留院觀察，符合住院常規。\n三、促請雙方於調處階段協商給付。',
           consumerClaims: [
-            '罹患肺腺癌第四期，主治醫師評估施打自費標靶藥物後可能發生急性過敏休克。',
-            '主治醫師診斷證明載明「宜住院施打並觀察 24 小時」，符合醫學常規。',
-            '保險公司逕以「健保未給付住院」為由全數拒賠，顯違背保險契約目的。'
+            '主治醫師診斷證明書載明副作用強烈需留院監測心率與血壓。',
+            '保險條款未排除新型自費標靶化療之住院給付請求。'
           ],
           institutionDefenses: [
-            '保單條款明定住院須經醫師診斷「確有留院治療之實質必要性」。',
-            '依現代醫療實務，該標靶化療藥物在日間門診注射即可完成，無需留宿病房。',
-            '為維護全體保戶公平對待原則，難認符合住院保險金給付要件。'
+            '依最新臨床指引，該藥物注射通常僅需門診輸注 2 小時即可返家。',
+            '不符合保險契約條款約定之「經醫師診斷必須入住醫院診療」之實質要件。'
           ],
-          tokenizedTags: ['#保險法§54條之1', '#醫學必要性', '#自費標靶治療', '#癌症住院日額', '#臨床指引常規', '#專科醫師鑑定'],
+          tokenizedTags: ['#醫療險', '#自費標靶藥物', '#醫學必要性', '#住院認定', '#專科鑑定'],
           complainDaysAgo: 24,
           replyDaysAgo: null,
           similarCaseIds: ['CASE-2026-0301']
@@ -1078,17 +1110,17 @@
           badgeClass: 'bg-rose-100 text-rose-800',
           dotClass: 'bg-rose-500',
           verdict: '不受理決定 (逾期申請)',
-          summary: '期貨結算日下單軟體斷線 3 分鐘導致停損單延遲觸發受損。消費者收到證券商正式回覆公文後第 68 日方具狀向評議中心申請，依法作成不受理決議。',
-          reasons: '一、依金融消費者保護法第 13 條第 2 項規定，受覆後 60 日為法定不變期間。\n二、申請人具狀之發文字號與郵戳已逾收受回函後第 68 日，要件欠缺且無從補正，依同法第 24 條應為不受理之決定。',
+          summary: '期貨結算日下單軟體斷線導致停損單延遲觸發。消費者收到券商正式回函後第 68 日方具狀向評議中心申請，依法作成不受理決議。',
+          reasons: '一、依金融消費者保護法第 13 條第 2 項規定，受覆後 60 日為法定不變期間。\n二、申請人具狀郵戳已逾收受回函後第 60 日，要件欠缺且無從補正，依同法第 24 條應為不受理之決定。',
           consumerClaims: [
-            '期貨下單軟體斷線延遲 3 分鐘，無法及時平倉導致巨額損失。',
-            '因出差海外延誤送件，主張應有正當不可抗力事由順延時效。'
+            '證券商電子交易主機當機斷線長達 180 秒，無法掛單平倉。',
+            '因系統障礙導致保證金維持率不足遭強行斷頭賣出。'
           ],
           institutionDefenses: [
-            '已提供備用電話與網頁語音下單管道，免責條款已於開戶時告知。',
-            '消費者收受拒賠公文已逾 68 天，程序罹於法定不變期間，應逕予駁回。'
+            '已備置電話委託與語音下單等多重替代備援管道。',
+            '申請人向本中心送件已越過法定 60 日不變期間，程序不適格。'
           ],
-          tokenizedTags: ['#金保法§13條第2項', '#60日法定不變期間', '#程序不受理', '#時效抗辯成立', '#電子下單連線中斷', '#無補正可能'],
+          tokenizedTags: ['#金保法§13', '#逾60日法定期限', '#時效消滅', '#程序不受理', '#下單斷線'],
           complainDaysAgo: 95,
           replyDaysAgo: 68,
           similarCaseIds: []
@@ -1105,18 +1137,17 @@
           badgeClass: 'bg-emerald-100 text-emerald-800',
           dotClass: 'bg-emerald-500',
           verdict: '評議成立 (契約解除返還保費)',
-          summary: '業務員向 69 歲高齡長者推介保本型結構連動債保單，未完整告知匯率風險與本金虧損可能性，且核保錄音存在引導性問答。',
-          reasons: '一、保險業招攬及核保理賠辦法第 6 條要求對高齡客戶應落實友善對待與錄音錄影核保。\n二、經調閱錄音檔，業務員未明確朗讀風險預告書，認定招攬不當，應全額返還已繳保費。',
+          summary: '業務員向 69 歲高齡長者推介保本型結構連動債保單，未完整告知匯率風險與本金虧損可能性，核保錄音存在引導性問答。',
+          reasons: '一、保險業招攬及核保理賠辦法要求對高齡客戶應落實友善對待與錄音錄影核保。\n二、經調閱錄音檔，業務員未明確朗讀風險預告書，認定招攬不當，應全額返還已繳保費。',
           consumerClaims: [
-            '投保時已高齡 69 歲，風險屬性為保守型，業務員卻推介高風險結構型保單。',
-            '業務員強調「保證配息且保本」，隱瞞匯率及解約本金折減風險。',
-            '要求撤銷保單契約並全額退還本金與手續費。'
+            '業務員強調為定期存款替代方案，承諾絕對保本。',
+            '保戶年近七旬，不具外幣及衍生性金融商品投資經驗。'
           ],
           institutionDefenses: [
-            '要保書均由消費者親筆簽名，聲明書載明已審閱商品說明書超過 3 天。',
-            '電話核保錄音消費者皆明確答覆「了解投資風險自負」。'
+            '保單要保書與投資風險告知書均有要保人親筆簽名確認。',
+            '電話訪問覆核照會錄音中，客戶對保單條款均答覆理解。'
           ],
-          tokenizedTags: ['#保險招攬核保辦法§6', '#KYC與適合度原則', '#高齡客戶保護規範', '#引導性錄音無效', '#契約撤銷退費100%', '#具強制拘束力'],
+          tokenizedTags: ['#高齡金融剝削', '#招攬不當', '#適合度原則KYC', '#風險預告', '#解除契約'],
           complainDaysAgo: 38,
           replyDaysAgo: 15,
           similarCaseIds: ['CASE-2025-0882']
@@ -1175,11 +1206,105 @@
         totalCases: 11671,
         complaints: 8502,
         ombuds: 3169,
-        overdue: 42,
-        bindingRate: 89.4,
-        settleRate: 65.2
+        overdue: 42
+      },
+
+      // Dispute Reasons Ranking Database (Based on FOI Official Categorization)
+      disputeRankings: {
+        life: [
+          { rank: 1, name: '必要性醫療 / 手術認定爭議', count: 1845, share: 36.0, desc: '實支實付醫療險、自費標靶化療留院必要性、達文西微創手術適用等級認定。', tag: '理賠爭端', hot: true },
+          { rank: 2, name: '理賠金額認定與失能殘廢等級歧異', count: 968, share: 18.9, desc: '保險金給付成數計算、意外險失能程度評定與專科醫師判定差異。', tag: '給付金額', hot: false },
+          { rank: 3, name: '業務招攬不實 / 未盡風險告知說明義務', count: 812, share: 15.8, desc: '保證保本、以話術誘導解約轉投保新契約、高齡投保 KYC 審查瑕疵。', tag: '非理賠招攬', hot: false },
+          { rank: 4, name: '未盡告知義務（保險法第64條解除契約）', count: 520, share: 10.1, desc: '要保人或被保險人投保前五年就診紀錄漏載，保險公司主張解約不退費。', tag: '核保效力', hot: false },
+          { rank: 5, name: '契約條款名詞解釋歧異（因果關係判定）', count: 480, share: 9.4, desc: '既往症免責條款定義、附約停效復效權利認定及事故因果關係認定。', tag: '契約爭議', hot: false }
+        ],
+        bank: [
+          { rank: 1, name: '信用卡消費款偽冒 / 釣魚簡訊盜刷爭議', count: 1240, share: 40.8, desc: '冒名綁定行動支付（Apple Pay/Google Pay）、釣魚詐騙騙取 OTP 密碼之不可歸責性判定。', tag: '卡片盜刷', hot: true },
+          { rank: 2, name: '疑似洗錢防制風控與人頭帳戶異常管制', count: 685, share: 22.5, desc: '數位帳戶遭警示帳戶聯防凍結、非自願衍生管制帳戶提領受限。', tag: '帳戶風控', hot: true },
+          { rank: 3, name: '房貸/信貸利率加碼與違約金計算爭端', count: 340, share: 11.2, desc: '指標利率轉移調幅標準、提前清償違約金收費合理性爭議。', tag: '定價授信', hot: false },
+          { rank: 4, name: 'ATM 自動化設備扣帳未吐鈔與轉帳延遲', count: 295, share: 9.7, desc: '跨行轉帳連線異常沖正不及、電子轉帳款項誤植收款人帳號。', tag: '系統交易', hot: false },
+          { rank: 5, name: '理財商品不當銷售（理專詐欺與風險未揭露）', count: 215, share: 7.1, desc: '銀行理專挪用款項、推介與客戶風險承受等級不符之高風險基金商品。', tag: '財富管理', hot: false }
+        ],
+        nonlife: [
+          { rank: 1, name: '汽機車車體與第三人責任險賠償金額折舊爭議', count: 910, share: 42.1, desc: '零件工資折舊率歧異、代車費用合理性、車損估價與第三方鑑定差異。', tag: '車險理賠', hot: true },
+          { rank: 2, name: '交通事故過失比例判定與肇責歸屬', count: 580, share: 26.8, desc: '初判表與車輛行車事故鑑定會結論不同，保險公司自訂過失相抵成數。', tag: '責任認定', hot: false },
+          { rank: 3, name: '承保範圍與除外責任認定（天災/附加險）', count: 320, share: 14.8, desc: '颱風洪水附加條款損害定義、商業火險停業損失除外情事。', tag: '條款除外', hot: false },
+          { rank: 4, name: '理賠延遲利息計算與調查期間拖延', count: 195, share: 9.0, desc: '申請文件齊全後超過法定 15 日未給付之延滯息計算爭執。', tag: '時效延遲', hot: false },
+          { rank: 5, name: '續保意願通知與自動續約爭端', count: 155, share: 7.3, desc: '未提前通知不予續保導致保障中斷，或未經要保人同意自動扣款續保。', tag: '契約維持', hot: false }
+        ],
+        sec: [
+          { rank: 1, name: '電子交易系統連線中斷 / 委託下單失敗', count: 380, share: 42.8, desc: '行情劇烈波動時券商 APP 當機無法即時平倉或掛單，衍生價差損失。', tag: '資訊系統', hot: true },
+          { rank: 2, name: '期貨與融資融券維持率不足斷頭強制平倉', count: 245, share: 27.6, desc: '盤中追繳保證金通知未實質送達即行平倉、整戶擔保維持率計算爭議。', tag: '信用交易', hot: false },
+          { rank: 3, name: '營業員代客操盤 / 未經授權擅自下單交易', count: 125, share: 14.1, desc: '營業員私下承諾保證獲利全權代操、私自保管客戶印鑑存摺。', tag: '非法代操', hot: false },
+          { rank: 4, name: '複委託海外債券與衍生品贖回淨值歧異', count: 82, share: 9.2, desc: '境外基金下市或重整之結算價格爭議、流動性不足折價清算。', tag: '複委託', hot: false },
+          { rank: 5, name: '手續費折讓承諾未履行與借券收益分配', count: 56, share: 6.3, desc: '開戶約定手續費退佣比例歧異、借券出借費率與抵押品返還糾紛。', tag: '手續規費', hot: false }
+        ]
       }
     };
+
+    // Switch Sector for Dispute Rankings
+    function switchDisputeRankSector(sectorKey) {
+      const sectorButtons = {
+        life: document.getElementById('btn-rank-life'),
+        bank: document.getElementById('btn-rank-bank'),
+        nonlife: document.getElementById('btn-rank-nonlife'),
+        sec: document.getElementById('btn-rank-sec')
+      };
+
+      Object.keys(sectorButtons).forEach(k => {
+        const btn = sectorButtons[k];
+        if (!btn) return;
+        if (k === sectorKey) {
+          btn.className = "px-3.5 py-2 rounded-lg bg-gov-800 text-white shadow-sm transition whitespace-nowrap font-bold";
+        } else {
+          btn.className = "px-3.5 py-2 rounded-lg text-slate-700 hover:bg-slate-200 transition whitespace-nowrap font-bold";
+        }
+      });
+
+      const list = portalState.disputeRankings[sectorKey] || portalState.disputeRankings.life;
+      const container = document.getElementById('dispute-rank-container');
+      if (!container) return;
+
+      container.innerHTML = '';
+      list.forEach(item => {
+        const row = document.createElement('div');
+        row.className = 'p-4 rounded-xl border border-slate-200 hover:border-slate-300 bg-slate-50/70 hover:bg-slate-50 transition space-y-2.5';
+        row.innerHTML = `
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div class="flex items-center gap-3">
+              <span class="w-7 h-7 rounded-lg flex items-center justify-center font-black text-sm ${
+                item.rank === 1 ? 'bg-rose-500 text-white shadow' :
+                item.rank === 2 ? 'bg-amber-500 text-white' :
+                item.rank === 3 ? 'bg-indigo-500 text-white' : 'bg-slate-200 text-slate-700'
+              }">${item.rank}</span>
+              <span class="font-bold text-slate-900 text-base flex items-center gap-2">
+                ${item.name}
+                ${item.hot ? '<span class="px-2 py-0.5 rounded text-[11px] font-bold bg-rose-100 text-rose-700 border border-rose-200">高發爭點</span>' : ''}
+              </span>
+              <span class="px-2 py-0.5 rounded bg-slate-200/80 text-slate-700 text-xs font-semibold">${item.tag}</span>
+            </div>
+            <div class="flex items-center gap-3 self-end sm:self-auto font-mono">
+              <span class="text-xs text-slate-500">案件數：<strong class="text-gov-800 font-bold text-sm">${item.count.toLocaleString()}</strong> 件</span>
+              <span class="text-xs px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">${item.share}%</span>
+            </div>
+          </div>
+
+          <!-- Progress bar -->
+          <div class="w-full bg-slate-200 rounded-full h-2 overflow-hidden">
+            <div class="h-full rounded-full transition-all duration-500 ${
+              item.rank === 1 ? 'bg-rose-500' :
+              item.rank === 2 ? 'bg-amber-500' :
+              item.rank === 3 ? 'bg-indigo-500' : 'bg-gov-700'
+            }" style="width: ${item.share * 2}%"></div>
+          </div>
+
+          <p class="text-xs text-slate-600 leading-relaxed">${item.desc}</p>
+        `;
+        container.appendChild(row);
+      });
+
+      if (window.lucide) lucide.createIcons();
+    }
 
     // ========================================================
     // UI NAVIGATION & INTERACTION
@@ -2270,6 +2395,7 @@
     window.addEventListener('DOMContentLoaded', () => {
       if (window.lucide) lucide.createIcons();
       renderDecisionFeed();
+      switchDisputeRankSector('life');
     });
   </script>
 </body>
