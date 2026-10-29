@@ -292,7 +292,7 @@
           </div>
           <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">案件爭議適格性深度審查系統</h2>
           <p class="text-base text-slate-500 mt-1">
-            針對金融消費爭端，依照法定不受理事由（Case Screening）與強制拘束力門檻進行即時法理研判與細項說明。
+            針對金融消費爭端，依照法定不受理事由與強制拘束力門檻進行即時法理研判與細項說明。
           </p>
         </div>
 
@@ -318,10 +318,6 @@
           <button onclick="resetAuditForm()" class="px-4 py-2.5 border border-slate-300 text-slate-700 hover:bg-slate-50 rounded-xl text-sm font-semibold transition">
             重設
           </button>
-          <button onclick="runAuditEngine()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-bold shadow transition flex items-center gap-2">
-            <i data-lucide="play" class="w-4 h-4"></i>
-            <span>執行研判</span>
-          </button>
         </div>
       </div>
 
@@ -336,19 +332,19 @@
                 <i data-lucide="edit-3" class="w-5 h-5 text-gov-700"></i>
                 <span>審查個案資料輸入</span>
               </h3>
-            <!-- Section: Detailed 9-Category Analysis Breakdown -->
-            <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
-              <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-4">
-                <div>
-                  <h4 class="text-lg font-bold text-slate-900 flex items-center gap-2">
-                    <i data-lucide="check-square" class="w-5 h-5 text-gov-700"></i>
-                    <span>金保法第24條第2項：法定不受理事由篩檢對照表</span>
-                  </h4>
-                  <p class="text-xs text-slate-500 mt-0.5">依照法定篩檢要件進行逐款檢核分析，確保程序合法性</p>
-                </div>
-                <span id="screening-statutory-category-badge" class="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-800 self-start sm:self-auto">
-                  程序審查通過：無不受理事由
-                </span>
+              <span class="text-xs font-semibold px-2.5 py-1 bg-gov-50 text-gov-700 rounded-md">法定篩檢要素</span>
+            </div>
+
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-bold text-slate-800 mb-1.5">金融業別與主管機關監理分類</label>
+                <select id="audit-industry" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-medium focus:ring-2 focus:ring-gov-500 outline-none bg-white">
+                  <option value="保險業">保險業（人身保險 / 財產保險）</option>
+                  <option value="銀行業" selected>銀行業（商業銀行 / 信用合作社）</option>
+                  <option value="證券期貨業">證券期貨業（券商 / 投信投顧）</option>
+                  <option value="電子支付業">電子支付業 / 儲值卡發行機構</option>
+                  <option value="其他金融服務業">其他特許金融機構 / 非特許業者</option>
+                </select>
               </div>
 
               <div>
@@ -464,6 +460,17 @@
               <label class="block text-sm font-bold text-slate-800 mb-1.5">爭端事證與事實摘要簡述</label>
               <textarea id="audit-details" rows="3" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-gov-500 outline-none">消費者主張接獲偽冒扣款簡訊，已即刻掛失並主張非本人授權；機構抗辯交易帶有 3D 驗證碼，雙方對於不可歸責性責任分擔尚無共識。</textarea>
             </div>
+
+            <!-- Submit Action moved to bottom of input panel -->
+            <div class="pt-4 border-t border-slate-200 flex items-center justify-between gap-3">
+              <button onclick="resetAuditForm()" class="px-4 py-2.5 border border-slate-300 text-slate-600 hover:bg-slate-50 rounded-xl text-sm font-bold transition">
+                清除重填
+              </button>
+              <button onclick="runAuditEngine()" class="flex-1 py-3 px-5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-base font-bold shadow-md transition flex items-center justify-center gap-2 transform active:scale-98">
+                <i data-lucide="play" class="w-5 h-5"></i>
+                <span>執行適格性研判</span>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -494,13 +501,13 @@
             </div>
           </div>
 
-          <!-- Section: Detailed 9-Category Analysis Breakdown -->
+          <!-- Section: Detailed Analysis Breakdown -->
           <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 pb-4">
               <div>
                 <h4 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                   <i data-lucide="check-square" class="w-5 h-5 text-gov-700"></i>
-                  <span>金保法第24條第2項：九大不受理事由篩檢對照表</span>
+                  <span>金保法第24條第2項：法定不受理事由篩檢對照表</span>
                 </h4>
                 <p class="text-xs text-slate-500 mt-0.5">依照法定篩檢要件進行逐款檢核分析，確保程序合法性</p>
               </div>
@@ -565,12 +572,12 @@
               </div>
             </div>
 
-            <!-- Expandable Legal Criteria Guide (All 9 Categories in Full Detail) -->
+            <!-- Expandable Legal Criteria Guide -->
             <div class="border border-slate-200 rounded-xl overflow-hidden">
               <button onclick="toggleScreeningRegulationsGuide()" class="w-full px-5 py-3.5 bg-slate-50 hover:bg-slate-100 transition flex items-center justify-between text-left">
                 <span class="text-sm font-bold text-slate-800 flex items-center gap-2">
                   <i data-lucide="book-marked" class="w-4 h-4 text-gov-700"></i>
-                  <span>查閱《金融消費者保護法》第 24 條第 2 項九大款不受理規範總覽</span>
+                  <span>查閱《金融消費者保護法》第 24 條第 2 項各款不受理規範總覽</span>
                 </span>
                 <span class="text-xs text-gov-700 font-semibold flex items-center gap-1" id="reg-guide-toggle-text">
                   <span>展開條文法理規範</span>
@@ -616,17 +623,17 @@
                   <p class="text-slate-600 mt-1">【要件說明】純屬金融機構之業務定價自主權（如基準利率、放款手續費標準）、授信審查風險評估或已進入消費者債務清理條例協商程序者。</p>
                 </div>
               </div>
-              <!-- Expandable Legal Criteria Guide (All 9 Categories in Full Detail) -->
-              <div class="border border-slate-200 rounded-xl overflow-hidden">
-                <button onclick="toggleScreeningRegulationsGuide()" class="w-full px-5 py-3.5 bg-slate-50 hover:bg-slate-100 transition flex items-center justify-between text-left">
-                  <span class="text-sm font-bold text-slate-800 flex items-center gap-2">
-                    <i data-lucide="book-marked" class="w-4 h-4 text-gov-700"></i>
-                    <span>查閱《金融消費者保護法》第 24 條第 2 項各款不受理規範總覽</span>
-                  </span>
-                  <span class="text-xs text-gov-700 font-semibold flex items-center gap-1" id="reg-guide-toggle-text">
-                    <span>展開條文法理規範</span>
-                    <i data-lucide="chevron-down" class="w-4 h-4" id="reg-guide-chevron"></i>
-                  </span>
+            </div>
+
+            <!-- Actions row -->
+            <div class="pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+              <div class="text-xs text-slate-500">
+                審查判定由演算法依金保法施行細則即時演算
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="copyLegalOpinion()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-sm font-bold transition flex items-center gap-1.5">
+                  <i data-lucide="copy" class="w-4 h-4"></i>
+                  <span>複製研判意見摘要</span>
                 </button>
                 <button onclick="exportVerdictPDF()" class="px-4 py-2 bg-gov-700 hover:bg-gov-500 text-white rounded-lg text-sm font-bold transition flex items-center gap-1.5">
                   <i data-lucide="file-text" class="w-4 h-4"></i>
