@@ -37,12 +37,12 @@
             statusOk: '#10b981'
           },
           fontSize: {
-            'base': '1.05rem',
-            'lg': '1.18rem',
-            'xl': '1.35rem',
-            '2xl': '1.65rem',
-            '3xl': '2.1rem',
-            '4xl': '2.6rem',
+            'base': '1.15rem',
+            'lg': '1.28rem',
+            'xl': '1.45rem',
+            '2xl': '1.8rem',
+            '3xl': '2.25rem',
+            '4xl': '2.8rem',
           }
         }
       }
@@ -52,8 +52,8 @@
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;900&display=swap');
     body {
       font-family: 'Noto Sans TC', sans-serif;
-      font-size: 1.05rem;
-      line-height: 1.6;
+      font-size: 1.15rem;
+      line-height: 1.65;
     }
     .custom-scroll::-webkit-scrollbar {
       width: 7px;
@@ -90,26 +90,26 @@
           </div>
           <div class="whitespace-nowrap">
             <div class="flex items-center gap-2">
-              <span class="text-lg lg:text-xl font-black tracking-tight text-white">金融消費爭議與監理中控台</span>
-              <span class="px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-400/40">專業機構版</span>
+              <span class="text-xl lg:text-2xl font-black tracking-tight text-white">金融消費爭議與監理中控台</span>
+              <span class="px-2 py-0.5 rounded text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-400/40">專業機構版</span>
             </div>
-            <span class="text-[11px] text-slate-300 font-mono tracking-wider block">FINANCIAL OMBUDSMAN REGULATORY PORTAL</span>
+            <span class="text-xs text-slate-300 font-mono tracking-wider block">FINANCIAL OMBUDSMAN REGULATORY PORTAL</span>
           </div>
         </div>
 
-        <!-- Navigation Tabs (Optimized Single-line Pills) -->
-        <nav class="hidden lg:flex items-center space-x-1.5 shrink-0">
-          <button onclick="navigateTo('portal-home')" id="nav-portal-home" class="nav-tab px-3.5 py-2 rounded-lg text-sm font-bold transition bg-white/15 text-white flex items-center gap-2 whitespace-nowrap">
-            <i data-lucide="layout-dashboard" class="w-4 h-4 text-emerald-400 shrink-0"></i>
+        <!-- Navigation Tabs (Restored full labels with large font size) -->
+        <nav class="hidden lg:flex items-center space-x-2 shrink-0">
+          <button onclick="navigateTo('portal-home')" id="nav-portal-home" class="nav-tab px-4 py-2.5 rounded-lg text-base font-bold transition bg-white/15 text-white flex items-center gap-2 whitespace-nowrap">
+            <i data-lucide="layout-dashboard" class="w-5 h-5 text-emerald-400 shrink-0"></i>
             <span>監理首頁</span>
           </button>
-          <button onclick="navigateTo('portal-analysis')" id="nav-portal-analysis" class="nav-tab px-3.5 py-2 rounded-lg text-sm font-bold transition text-slate-300 hover:text-white hover:bg-white/10 flex items-center gap-2 whitespace-nowrap">
-            <i data-lucide="file-check-2" class="w-4 h-4 text-amber-400 shrink-0"></i>
-            <span>適格性審查</span>
+          <button onclick="navigateTo('portal-analysis')" id="nav-portal-analysis" class="nav-tab px-4 py-2.5 rounded-lg text-base font-bold transition text-slate-300 hover:text-white hover:bg-white/10 flex items-center gap-2 whitespace-nowrap">
+            <i data-lucide="file-check-2" class="w-5 h-5 text-amber-400 shrink-0"></i>
+            <span>案件適格性深度審查</span>
           </button>
-          <button onclick="navigateTo('portal-stats')" id="nav-portal-stats" class="nav-tab px-3.5 py-2 rounded-lg text-sm font-bold transition text-slate-300 hover:text-white hover:bg-white/10 flex items-center gap-2 whitespace-nowrap">
-            <i data-lucide="bar-chart-big" class="w-4 h-4 text-cyan-400 shrink-0"></i>
-            <span>大數據總覽</span>
+          <button onclick="navigateTo('portal-stats')" id="nav-portal-stats" class="nav-tab px-4 py-2.5 rounded-lg text-base font-bold transition text-slate-300 hover:text-white hover:bg-white/10 flex items-center gap-2 whitespace-nowrap">
+            <i data-lucide="bar-chart-big" class="w-5 h-5 text-cyan-400 shrink-0"></i>
+            <span>大數據統計總覽</span>
           </button>
         </nav>
 
