@@ -97,7 +97,7 @@
           </div>
         </div>
 
-        <!-- Navigation Tabs (Restored full labels with large font size) -->
+        <!-- Navigation Tabs -->
         <nav class="hidden lg:flex items-center space-x-2 shrink-0">
           <button onclick="navigateTo('portal-home')" id="nav-portal-home" class="nav-tab px-4 py-2.5 rounded-lg text-base font-bold transition bg-white/15 text-white flex items-center gap-2 whitespace-nowrap">
             <i data-lucide="layout-dashboard" class="w-5 h-5 text-emerald-400 shrink-0"></i>
@@ -170,17 +170,17 @@
           </div>
           <div>
             <div class="flex items-center gap-2">
-              <span class="font-bold text-base text-white">官方評議決定書實時爬取 ＆ AI 語意斷詞分析中樞</span>
+              <span class="font-bold text-base text-white">官方評議決定書實時爬取 ＆ 語意解析中樞</span>
               <span class="px-2 py-0.5 rounded text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">NLP 語意引擎在線</span>
             </div>
-            <p class="text-xs text-slate-300 mt-0.5">即刻解析金融消費評議中心最新作成之評議與不受理決定書，自動提取兩造爭端攻防、法規錨點與責任分擔比率。</p>
+            <p class="text-xs text-slate-300 mt-0.5">即刻解析金融消費評議中心最新作成之評議與不受理決定書，自動提取兩造爭端攻防、法規錨點與核心心證理由。</p>
           </div>
         </div>
 
         <div class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end">
           <div class="text-right">
             <div class="text-[11px] text-slate-400">已剖析評議書庫存</div>
-            <div id="stat-total-crawled-badge" class="text-lg font-black font-mono text-emerald-400">11,671 <span class="text-xs text-slate-400 font-normal">篇</span></div>
+            <div id="stat-total-crawled-badge" class="text-lg font-black font-mono text-emerald-400">8,588 <span class="text-xs text-slate-400 font-normal">篇</span></div>
           </div>
           <button onclick="triggerLiveCrawlerSync()" id="btn-sync-crawler-home" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-bold transition flex items-center gap-2 shadow-md">
             <i id="crawler-refresh-icon" data-lucide="refresh-cw" class="w-4 h-4"></i>
@@ -198,7 +198,7 @@
           </div>
           <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight">金融機構爭議案件全流程監理中樞</h1>
           <p class="text-slate-300 text-base max-w-3xl">
-            提供主管機關與特許金融機構法遵室即時研判消費者申訴之程序適格性（內建第 24 條不受理事由篩檢矩陣）、評議時效警示監控、一定額度拘束力門檻與 AI 裁判心證分析報告。
+            提供主管機關與保險、證券等特許金融機構法遵室即時研判爭議案件之程序適格性（內建第 24 條不受理事由篩檢矩陣）、評議時效警示監控與裁判心證對照。
           </p>
         </div>
         <div class="flex flex-wrap items-center gap-3 w-full lg:w-auto">
@@ -208,7 +208,7 @@
           </button>
           <button onclick="navigateTo('portal-stats')" class="flex-1 lg:flex-none inline-flex items-center justify-center gap-2 px-6 py-3.5 bg-gov-700 hover:bg-gov-500 text-white rounded-xl text-base font-bold border border-slate-600 transition">
             <i data-lucide="pie-chart" class="w-5 h-5 text-cyan-400"></i>
-            <span>檢視全行業統計數據</span>
+            <span>檢視統計數據總覽</span>
           </button>
         </div>
       </div>
@@ -221,11 +221,11 @@
               <span class="text-sm font-bold tracking-wide">當年度受理爭議案件總數</span>
               <span class="p-2 bg-blue-50 text-blue-600 rounded-lg"><i data-lucide="layers" class="w-5 h-5"></i></span>
             </div>
-            <div class="text-3xl sm:text-4xl font-black text-gov-800"><span id="kpi-total-cases">11,671</span> <span class="text-sm font-normal text-slate-500">件</span></div>
+            <div class="text-3xl sm:text-4xl font-black text-gov-800"><span id="kpi-total-cases">8,588</span> <span class="text-sm font-normal text-slate-500">件</span></div>
           </div>
           <div class="text-xs text-slate-600 mt-4 flex items-center gap-1.5 pt-3 border-t border-slate-100">
-            <span class="text-emerald-600 font-bold flex items-center"><i data-lucide="arrow-up-right" class="w-4 h-4"></i> +3.8%</span>
-            <span>申訴：<span id="kpi-complaint-count">8,502</span> ｜ 評議：<span id="kpi-ombuds-count">3,169</span></span>
+            <span class="text-emerald-600 font-bold flex items-center"><i data-lucide="arrow-up-right" class="w-4 h-4"></i> +2.9%</span>
+            <span>申訴：<span id="kpi-complaint-count">6,031</span> ｜ 評議：<span id="kpi-ombuds-count">2,557</span></span>
           </div>
         </div>
 
@@ -235,7 +235,7 @@
               <span class="text-sm font-bold tracking-wide">30天逾期未覆警示案件</span>
               <span class="p-2 bg-amber-50 text-amber-600 rounded-lg"><i data-lucide="alert-triangle" class="w-5 h-5"></i></span>
             </div>
-            <div class="text-3xl sm:text-4xl font-black text-amber-600"><span id="kpi-overdue-cases">42</span> <span class="text-sm font-normal text-slate-500">件警戒</span></div>
+            <div class="text-3xl sm:text-4xl font-black text-amber-600"><span id="kpi-overdue-cases">29</span> <span class="text-sm font-normal text-slate-500">件警戒</span></div>
           </div>
           <div class="text-xs text-slate-600 mt-4 flex items-center gap-1.5 pt-3 border-t border-slate-100">
             <span class="text-amber-600 font-bold">需加速督導</span>
@@ -288,7 +288,7 @@
     <!-- ======================================================== -->
     <section id="portal-analysis" class="portal-section space-y-8">
       
-      <!-- Top Screening Header (Blank Form & Direct Operations) -->
+      <!-- Top Screening Header -->
       <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
         <div>
           <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-gov-700">
@@ -327,16 +327,14 @@
                 <select id="audit-industry" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-medium focus:ring-2 focus:ring-gov-500 outline-none bg-white">
                   <option value="" selected disabled>請選擇金融業別...</option>
                   <option value="保險業">保險業（人身保險 / 財產保險）</option>
-                  <option value="銀行業">銀行業（商業銀行 / 信用合作社）</option>
                   <option value="證券期貨業">證券期貨業（券商 / 投信投顧）</option>
-                  <option value="電子支付業">電子支付業 / 儲值卡發行機構</option>
                   <option value="其他金融服務業">其他特許金融機構 / 非特許業者</option>
                 </select>
               </div>
 
               <div>
                 <label class="block text-sm font-bold text-slate-800 mb-1.5">金融機構或相對人名稱</label>
-                <input type="text" id="audit-institution" placeholder="例如：國泰世華商業銀行、富邦人壽..." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-medium focus:ring-2 focus:ring-gov-500 outline-none">
+                <input type="text" id="audit-institution" placeholder="例如：富邦人壽、國泰產險、元大證券..." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-medium focus:ring-2 focus:ring-gov-500 outline-none">
               </div>
 
               <div>
@@ -344,7 +342,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                   <select id="audit-dispute-nature" class="px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold focus:ring-2 focus:ring-gov-500 outline-none bg-white">
                     <option value="civil_financial" selected>合法消費爭議（特許商品/服務）</option>
-                    <option value="non_financial">非特許業務（如純租賃借貸、投資虛擬幣）</option>
+                    <option value="non_financial">非特許業務（如純民間借貸、投資虛擬幣）</option>
                   </select>
                   <select id="audit-consumer-status" class="px-3 py-2 rounded-xl border border-slate-300 text-xs font-bold focus:ring-2 focus:ring-gov-500 outline-none bg-white">
                     <option value="general_consumer" selected>一般自然人消費者（具適格身分）</option>
@@ -358,11 +356,11 @@
                 <label class="block text-sm font-bold text-slate-800 mb-1.5">爭端類型分類</label>
                 <select id="audit-category" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-medium focus:ring-2 focus:ring-gov-500 outline-none bg-white">
                   <option value="" selected disabled>請選擇爭端類型...</option>
-                  <option value="信用卡消費款爭端/盜刷">信用卡消費款爭端 / 偽冒交易</option>
                   <option value="必要性醫療/理賠金額認定">必要性醫療 / 保險理賠金額認定爭議</option>
                   <option value="業務招攬爭端/未盡告知義務">業務招攬爭端 / 未盡風險告知義務</option>
+                  <option value="汽機車責任險/事故過失責任">汽機車責任險 / 事故賠償責任歸屬</option>
                   <option value="電子下單線路中斷/委託失敗">電子下單系統連線中斷 / 委託買賣失敗</option>
-                  <option value="放款利率與費用定價爭議">機構定價政策 / 利率或手續費標準歧異</option>
+                  <option value="期貨保證金不足強制平倉爭議">期貨與融資保證金斷頭強制平倉爭議</option>
                   <option value="其他業務爭議">其他一般業務糾紛</option>
                 </select>
               </div>
@@ -371,7 +369,7 @@
                 <label class="block text-sm font-bold text-slate-800 mb-1.5">爭議標的請求金額 (新台幣 NTD)</label>
                 <div class="relative">
                   <span class="absolute left-4 top-2.5 text-slate-400 font-bold text-sm">$</span>
-                  <input type="number" id="audit-amount" placeholder="請輸入請求金額，如 180000" class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-300 text-sm font-mono font-bold focus:ring-2 focus:ring-gov-500 outline-none">
+                  <input type="number" id="audit-amount" placeholder="請輸入請求金額，如 620000" class="w-full pl-9 pr-4 py-2.5 rounded-xl border border-slate-300 text-sm font-mono font-bold focus:ring-2 focus:ring-gov-500 outline-none">
                 </div>
                 <p class="text-xs text-slate-500 mt-1">現行法定具強制拘束力金額：120 萬元以下</p>
               </div>
@@ -560,7 +558,7 @@
               </div>
             </div>
 
-            <!-- New Section: Similar Precedent Cases Comparison in Audit Result -->
+            <!-- Similar Precedent Cases Comparison in Audit Result -->
             <div class="pt-4 border-t border-slate-200 space-y-3">
               <div class="flex items-center justify-between">
                 <h4 class="font-bold text-slate-900 flex items-center gap-2 text-base">
@@ -624,7 +622,7 @@
                 </div>
                 <div class="pt-2">
                   <span class="font-bold text-gov-800 text-sm">第九款：其他主管機關規定排除事由</span>
-                  <p class="text-slate-600 mt-1">【要件說明】純屬金融機構之業務定價自主權（如基準利率、放款手續費標準）、授信審查風險評估或已進入消費者債務清理條例協商程序者。</p>
+                  <p class="text-slate-600 mt-1">【要件說明】純屬金融機構之業務定價自主權、授信審查風險評估或已進入消費者債務清理條例協商程序者。</p>
                 </div>
               </div>
             </div>
@@ -667,7 +665,7 @@
                 <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">各產業爭議案件監理大數據中心</h2>
                 <span class="px-2.5 py-0.5 rounded text-xs font-bold bg-gov-100 text-gov-700">官方指標同步</span>
               </div>
-              <p class="text-base text-slate-500 mt-0.5">財團法人金融消費評議中心統計基準 ｜ 申訴與評議雙軸線綜合監理儀表板</p>
+              <p class="text-base text-slate-500 mt-0.5">財團法人金融消費評議中心統計基準 ｜ 保險與證券期貨業監理儀表板</p>
             </div>
           </div>
 
@@ -691,26 +689,26 @@
           <div class="space-y-2">
             <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">金融產業聚焦</label>
             <select id="stats-industry-filter" onchange="updateChartsData()" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm font-semibold bg-white outline-none focus:ring-2 focus:ring-gov-500">
-              <option value="all">全金融產業綜合比較</option>
-              <option value="insurance">保險業（65.03% 最大宗）</option>
-              <option value="bank">銀行業（26.06% 第二大）</option>
-              <option value="securities">證券期貨業（7.61%）</option>
+              <option value="all">全特許產業綜合比較</option>
+              <option value="insurance">保險業（88.38% 最大宗）</option>
+              <option value="securities">證券期貨業（10.34%）</option>
+              <option value="other">其他特許金融服務業</option>
             </select>
           </div>
 
           <div class="space-y-2">
-          <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">統計涵蓋基準量</label>
-          <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-100 border border-slate-200 text-xs">
-            <span class="font-bold text-slate-700">樣本案件累計：<strong class="text-gov-800 text-sm font-mono font-black">11,671</strong> 件</span>
-            <span class="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">數據已核對金評中心季報</span>
+            <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">統計涵蓋基準量</label>
+            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-100 border border-slate-200 text-xs">
+              <span class="font-bold text-slate-700">樣本案件累計：<strong class="text-gov-800 text-sm font-mono font-black">8,588</strong> 件</span>
+              <span class="text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">數據已核對金評中心季報</span>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Charts Row 1 -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-      <div class="lg:col-span-7 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-4">
+      <!-- Charts Row 1 -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        <div class="lg:col-span-7 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-4">
           <div class="flex items-center justify-between">
             <div>
               <h3 class="text-lg font-bold text-slate-900 flex items-center gap-2">
@@ -743,24 +741,20 @@
             <canvas id="govDonutChart"></canvas>
           </div>
 
-          <div class="grid grid-cols-3 gap-2 pt-3 border-t border-slate-100 text-center text-xs">
-            <div class="p-2 rounded bg-slate-50">
-              <div class="font-bold text-[#00bfa5] text-base">65.03%</div>
+          <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100 text-center text-xs">
+            <div class="p-2.5 rounded bg-slate-50">
+              <div class="font-bold text-[#00bfa5] text-base">88.38%</div>
               <div class="text-slate-500">保險業爭議</div>
             </div>
-            <div class="p-2 rounded bg-slate-50">
-              <div class="font-bold text-[#f87171] text-base">26.06%</div>
-              <div class="text-slate-500">銀行業爭端</div>
-            </div>
-            <div class="p-2 rounded bg-slate-50">
-              <div class="font-bold text-[#facc15] text-base">7.61%</div>
-              <div class="text-slate-500">證券與其他</div>
+            <div class="p-2.5 rounded bg-slate-50">
+              <div class="font-bold text-[#facc15] text-base">10.34%</div>
+              <div class="text-slate-500">證券期貨業</div>
             </div>
           </div>
         </div>
       </div>
 
-      <!-- NEW: 常見爭議事由排行榜 (Top Dispute Types Ranking) -->
+      <!-- 常見爭議事由排行榜 (Top Dispute Types Ranking - Excluded Banks) -->
       <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-5">
           <div>
@@ -776,7 +770,6 @@
           <!-- Sector Switcher Tabs -->
           <div class="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl text-xs font-bold self-start sm:self-auto overflow-x-auto max-w-full">
             <button onclick="switchDisputeRankSector('life')" id="btn-rank-life" class="px-3.5 py-2 rounded-lg bg-gov-800 text-white shadow-sm transition whitespace-nowrap">壽險業爭端</button>
-            <button onclick="switchDisputeRankSector('bank')" id="btn-rank-bank" class="px-3.5 py-2 rounded-lg text-slate-700 hover:bg-slate-200 transition whitespace-nowrap">銀行與支付業</button>
             <button onclick="switchDisputeRankSector('nonlife')" id="btn-rank-nonlife" class="px-3.5 py-2 rounded-lg text-slate-700 hover:bg-slate-200 transition whitespace-nowrap">產險業爭端</button>
             <button onclick="switchDisputeRankSector('sec')" id="btn-rank-sec" class="px-3.5 py-2 rounded-lg text-slate-700 hover:bg-slate-200 transition whitespace-nowrap">證券期貨業</button>
           </div>
@@ -812,41 +805,33 @@
             <thead>
               <tr class="bg-gov-900 text-white text-sm">
                 <th class="py-3 px-4 text-left">案件類型</th>
-                <th class="py-3 px-4">其他金融服務業</th>
                 <th class="py-3 px-4 bg-teal-800">保險業</th>
-                <th class="py-3 px-4">電子支付業</th>
-                <th class="py-3 px-4 bg-rose-900">銀行業</th>
                 <th class="py-3 px-4 bg-amber-800">證券期貨業</th>
+                <th class="py-3 px-4">其他特許金融</th>
                 <th class="py-3 px-4 font-black bg-slate-800">全產業總計</th>
               </tr>
             </thead>
             <tbody class="divide-y divide-slate-200 text-slate-800 font-mono">
               <tr class="hover:bg-slate-50">
                 <td class="py-3.5 px-4 text-left font-bold font-sans text-gov-700">評議件數</td>
-                <td class="py-3.5 px-4">8</td>
                 <td class="py-3.5 px-4 font-bold text-teal-700">2,461</td>
-                <td class="py-3.5 px-4">10</td>
-                <td class="py-3.5 px-4 font-bold text-rose-700">602</td>
                 <td class="py-3.5 px-4 font-bold text-amber-700">88</td>
-                <td class="py-3.5 px-4 font-black text-slate-900 bg-slate-50">3,169</td>
+                <td class="py-3.5 px-4">8</td>
+                <td class="py-3.5 px-4 font-black text-slate-900 bg-slate-50">2,557</td>
               </tr>
               <tr class="hover:bg-slate-50">
                 <td class="py-3.5 px-4 text-left font-bold font-sans text-gov-700">申訴件數</td>
-                <td class="py-3.5 px-4">102</td>
                 <td class="py-3.5 px-4 font-bold text-teal-700">5,129</td>
-                <td class="py-3.5 px-4">32</td>
-                <td class="py-3.5 px-4 font-bold text-rose-700">2,439</td>
                 <td class="py-3.5 px-4 font-bold text-amber-700">800</td>
-                <td class="py-3.5 px-4 font-black text-slate-900 bg-slate-50">8,502</td>
+                <td class="py-3.5 px-4">102</td>
+                <td class="py-3.5 px-4 font-black text-slate-900 bg-slate-50">6,031</td>
               </tr>
               <tr class="bg-gov-50 font-black text-gov-900 border-t-2 border-slate-300">
                 <td class="py-4 px-4 text-left font-sans">總計</td>
-                <td class="py-4 px-4">110</td>
                 <td class="py-4 px-4 text-teal-800">7,590</td>
-                <td class="py-4 px-4">42</td>
-                <td class="py-4 px-4 text-rose-800">3,041</td>
                 <td class="py-4 px-4 text-amber-800">888</td>
-                <td class="py-4 px-4 text-slate-900 bg-slate-200 text-lg">11,671</td>
+                <td class="py-4 px-4">110</td>
+                <td class="py-4 px-4 text-slate-900 bg-slate-200 text-lg">8,588</td>
               </tr>
             </tbody>
           </table>
@@ -871,8 +856,8 @@
           </span>
           <div>
             <div class="flex items-center gap-2">
-              <span id="modal-doc-id" class="text-sm font-mono font-bold bg-gov-100 text-gov-800 px-2.5 py-0.5 rounded">115-評字第 000891 號</span>
-              <span id="modal-doc-industry-badge" class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700">銀行業</span>
+              <span id="modal-doc-id" class="text-sm font-mono font-bold bg-gov-100 text-gov-800 px-2.5 py-0.5 rounded">115-評字第 000904 號</span>
+              <span id="modal-doc-industry-badge" class="text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700">保險業</span>
               <span class="text-xs font-bold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 flex items-center gap-1 border border-emerald-300">
                 <i data-lucide="sparkles" class="w-3.5 h-3.5 text-emerald-600"></i>
                 AI分析報告已生成
@@ -979,7 +964,7 @@
           </div>
         </div>
 
-        <!-- Precedent & Similar Cases Section with Similarity Score -->
+        <!-- Precedent & Similar Cases Section -->
         <div class="pt-4 border-t border-slate-200 space-y-3">
           <div class="flex items-center justify-between">
             <h4 class="font-bold text-slate-900 flex items-center gap-2 text-base">
@@ -1020,7 +1005,7 @@
           <i data-lucide="shield-check" class="w-5 h-5 text-regtech-500"></i>
           <span>金融消費評議與監理智慧中控平台 ｜ 專業機構版</span>
         </div>
-        <p class="text-xs text-slate-400">專供金融監督主管機關、特許金融服務業法遵室與消保評議仲裁委員會調閱研判。</p>
+        <p class="text-xs text-slate-400">專供金融監督主管機關、保險與證券期貨業法遵室與消保評議仲裁委員會調閱研判。</p>
       </div>
       <div class="text-center md:text-right text-xs text-slate-400 space-y-1">
         <div>依據《金融消費者保護法》、《金融消費爭議處理機構設立及管理辦法》</div>
@@ -1041,36 +1026,8 @@
       isCrawling: false,
       activeModalDoc: null,
 
-      // Synchronized Decision Repository with NLP Structured Metadata
+      // Synchronized Decision Repository without Bank Institutions
       crawledDecisions: [
-        {
-          id: 'CASE-2026-0891',
-          docId: '115-評字第 000891 號',
-          inst: '國泰世華商業銀行',
-          industry: '銀行業',
-          category: '信用卡消費款爭端/盜刷',
-          amount: 185000,
-          date: '2026-10-18',
-          statusDesc: '評議 60 日時效內（餘 28 天）',
-          badgeClass: 'bg-emerald-100 text-emerald-800',
-          dotClass: 'bg-emerald-500',
-          verdict: '評議成立 (部分賠償)',
-          summary: '持卡人遭遇境外網路釣魚未授權交易，發卡銀行雖有 OTP 機制，惟異常扣款頻率未適時啟動風控攔阻，命機構賠付相應爭端款項。',
-          reasons: '一、依金融消費者保護法第 7 條規定，金融機構應盡善良管理人注意義務。\n二、短時間於凌晨時段連續進行多筆外幣交易，銀行監控模組未及時發出警示通知，有管理疏失。\n三、消費者誤點釣魚簡訊亦有注意義務欠缺，審酌全案情狀由機構承擔主要責任。',
-          consumerClaims: [
-            '接獲假冒公用事業欠費催繳簡訊，誤入外觀極度相似之釣魚詐騙網頁。',
-            '於凌晨時段在 5 分鐘內遭連續盜刷 3 筆非台幣之境外交易。',
-            '持卡人已立即電洽客服掛失，發卡行未即時阻斷連線授權。'
-          ],
-          institutionDefenses: [
-            '各筆交易均已通過 3D 認證，發卡行已發送動態簡訊密碼至持卡人留存門號。',
-            '持卡人違反信用卡約定條款中對驗證密碼之妥善保管義務。'
-          ],
-          tokenizedTags: ['#金保法§7', '#釣魚簡訊', '#異常交易風控', '#善良管理人義務', '#3D驗證', '#具強制拘束力'],
-          complainDaysAgo: 42,
-          replyDaysAgo: 32,
-          similarCaseIds: ['CASE-2026-0412', 'CASE-2025-1190']
-        },
         {
           id: 'CASE-2026-0904',
           docId: '115-評字第 000904 號',
@@ -1097,6 +1054,33 @@
           complainDaysAgo: 24,
           replyDaysAgo: null,
           similarCaseIds: ['CASE-2026-0301']
+        },
+        {
+          id: 'CASE-2026-1025',
+          docId: '115-評字第 001025 號',
+          inst: '南山人壽保險',
+          industry: '保險業',
+          category: '業務招攬爭端/未盡告知義務',
+          amount: 980000,
+          date: '2026-10-21',
+          statusDesc: '評議受理審理中（餘 45 天）',
+          badgeClass: 'bg-emerald-100 text-emerald-800',
+          dotClass: 'bg-emerald-500',
+          verdict: '評議成立 (契約解除返還保費)',
+          summary: '業務員向 69 歲高齡長者推介保本型結構連動保單，未完整告知匯率風險與本金虧損可能性，核保錄音存在引導性問答。',
+          reasons: '一、保險業招攬及核保理賠辦法要求對高齡客戶應落實友善對待與錄音錄影核保。\n二、經調閱錄音檔，業務員未明確朗讀風險預告書，認定招攬不當，應全額返還已繳保費。',
+          consumerClaims: [
+            '業務員強調為定期存款替代方案，承諾絕對保本。',
+            '保戶年近七旬，不具外幣及衍生性金融商品投資經驗。'
+          ],
+          institutionDefenses: [
+            '保單要保書與投資風險告知書均有要保人親筆簽名確認。',
+            '電話訪問覆核照會錄音中，客戶對保單條款均答覆理解。'
+          ],
+          tokenizedTags: ['#高齡金融剝削', '#招攬不當', '#適合度原則KYC', '#風險預告', '#解除契約'],
+          complainDaysAgo: 38,
+          replyDaysAgo: 15,
+          similarCaseIds: ['CASE-2025-0882']
         },
         {
           id: 'CASE-2026-0742',
@@ -1126,61 +1110,38 @@
           similarCaseIds: []
         },
         {
-          id: 'CASE-2026-1025',
-          docId: '115-評字第 001025 號',
-          inst: '南山人壽保險',
+          id: 'CASE-2026-0618',
+          docId: '115-評字第 000618 號',
+          inst: '國泰世紀產物保險',
           industry: '保險業',
-          category: '業務招攬爭端/未盡告知義務',
-          amount: 980000,
-          date: '2026-10-21',
-          statusDesc: '評議受理審理中（餘 45 天）',
+          category: '汽機車責任險/事故過失責任',
+          amount: 320000,
+          date: '2026-10-05',
+          statusDesc: '評議 60 日時效內（餘 35 天）',
           badgeClass: 'bg-emerald-100 text-emerald-800',
           dotClass: 'bg-emerald-500',
-          verdict: '評議成立 (契約解除返還保費)',
-          summary: '業務員向 69 歲高齡長者推介保本型結構連動債保單，未完整告知匯率風險與本金虧損可能性，核保錄音存在引導性問答。',
-          reasons: '一、保險業招攬及核保理賠辦法要求對高齡客戶應落實友善對待與錄音錄影核保。\n二、經調閱錄音檔，業務員未明確朗讀風險預告書，認定招攬不當，應全額返還已繳保費。',
+          verdict: '評議成立 (給付理賠金)',
+          summary: '車體險與第三方責任險折舊計算爭議。保險公司逕依固定資產折舊率扣減工資費用，評議會認工資無折舊依據，命補足差額。',
+          reasons: '一、依損害賠償原則，零件之更換始有折舊適用，修復所支出之必要工資費用不應予以折舊。\n二、產險公司自行調高扣除比例欠缺契約依據，應全額給付爭議之修復工資。',
           consumerClaims: [
-            '業務員強調為定期存款替代方案，承諾絕對保本。',
-            '保戶年近七旬，不具外幣及衍生性金融商品投資經驗。'
+            '受損車輛進原廠修繕，產險公司擅將必要鈑金工資費用列入折舊扣減。',
+            '請求全額給付修復必要之工資與零件費用。'
           ],
           institutionDefenses: [
-            '保單要保書與投資風險告知書均有要保人親筆簽名確認。',
-            '電話訪問覆核照會錄音中，客戶對保單條款均答覆理解。'
+            '參酌所得稅法固定資產折舊耐用年數表進行零件與工資綜合計提折舊。'
           ],
-          tokenizedTags: ['#高齡金融剝削', '#招攬不當', '#適合度原則KYC', '#風險預告', '#解除契約'],
-          complainDaysAgo: 38,
-          replyDaysAgo: 15,
-          similarCaseIds: ['CASE-2025-0882']
+          tokenizedTags: ['#產物車險', '#工資不折舊', '#損害賠償', '#必要費用', '#具強制拘束力'],
+          complainDaysAgo: 31,
+          replyDaysAgo: 12,
+          similarCaseIds: ['CASE-2025-0955']
         }
       ],
 
-      // Standalone Reference Precedents with Similarity Metrics
+      // Standalone Reference Precedents (Insurance & Securities/Futures)
       precedentDatabase: {
-        'CASE-2026-0412': {
-          docId: '115-評字第 000412 號',
-          inst: '玉山商業銀行',
-          industry: '銀行業',
-          category: '信用卡消費款爭端/盜刷',
-          amount: 142000,
-          similarity: '91% (高相關性)',
-          verdict: '評議成立 (部分賠償)',
-          summary: '持卡人因偽冒公用事業簡訊連結誤植 OTP，評議會認發卡行簡訊未載明完整幣別，命給付部分款項。',
-          coreDistinction: '【心證分水嶺】發卡行發送之簡訊未載明完整幣別（僅標示數字），致持卡人誤信為小額繳費，銀行注意義務缺失較本案更為顯著。'
-        },
-        'CASE-2025-1190': {
-          docId: '114-評字第 001190 號',
-          inst: '台新國際商業銀行',
-          industry: '銀行業',
-          category: '信用卡消費款爭端/盜刷',
-          amount: 220000,
-          similarity: '84% (對比判例)',
-          verdict: '評議不成立 (消費者承擔)',
-          summary: '消費者主動將 3D 認證碼轉傳他人，且該認證碼簡訊已特別以粗體警示不得提供他人，消費者顯有重大過失。',
-          coreDistinction: '【心證分水嶺】持卡人非在偽冒網頁輸入，而是主動將驗證碼以通訊軟體私訊傳予詐騙集團，判定持卡人存在重大過失，免除銀行賠償責任。'
-        },
         'CASE-2026-0301': {
           docId: '115-評字第 000301 號',
-          inst: '中國人壽保險',
+          inst: '凱基人壽保險',
           industry: '保險業',
           category: '必要性醫療/理賠金額認定',
           amount: 450000,
@@ -1199,17 +1160,28 @@
           verdict: '評議成立 (解除契約)',
           summary: '向未具投資經驗保戶推銷高槓桿投資型保險，違反 KYC 適當性原則。',
           coreDistinction: '【心證分水嶺】業務員以代操獲利之口頭承諾引導投保，且核保錄音背景有業務員低聲指導發言，錄音存證失效。'
+        },
+        'CASE-2025-0955': {
+          docId: '114-評字第 000955 號',
+          inst: '富邦產物保險',
+          industry: '保險業',
+          category: '汽機車責任險/事故過失責任',
+          amount: 280000,
+          similarity: '92% (責任險前案)',
+          verdict: '評議成立 (補足工資理賠)',
+          summary: '車輛追撞事故維修工資爭議，判定工資不計折舊。',
+          coreDistinction: '【心證分水嶺】委員會認定更換新品始得依耐用年限扣除折舊，修復之純勞務工資不應列入折舊扣減範圍。'
         }
       },
 
       metrics: {
-        totalCases: 11671,
-        complaints: 8502,
-        ombuds: 3169,
-        overdue: 42
+        totalCases: 8588,
+        complaints: 6031,
+        ombuds: 2557,
+        overdue: 29
       },
 
-      // Dispute Reasons Ranking Database (Based on FOI Official Categorization)
+      // Dispute Reasons Ranking Database (Only Life, Non-life & Securities)
       disputeRankings: {
         life: [
           { rank: 1, name: '必要性醫療 / 手術認定爭議', count: 1845, share: 36.0, desc: '實支實付醫療險、自費標靶化療留院必要性、達文西微創手術適用等級認定。', tag: '理賠爭端', hot: true },
@@ -1217,13 +1189,6 @@
           { rank: 3, name: '業務招攬不實 / 未盡風險告知說明義務', count: 812, share: 15.8, desc: '保證保本、以話術誘導解約轉投保新契約、高齡投保 KYC 審查瑕疵。', tag: '非理賠招攬', hot: false },
           { rank: 4, name: '未盡告知義務（保險法第64條解除契約）', count: 520, share: 10.1, desc: '要保人或被保險人投保前五年就診紀錄漏載，保險公司主張解約不退費。', tag: '核保效力', hot: false },
           { rank: 5, name: '契約條款名詞解釋歧異（因果關係判定）', count: 480, share: 9.4, desc: '既往症免責條款定義、附約停效復效權利認定及事故因果關係認定。', tag: '契約爭議', hot: false }
-        ],
-        bank: [
-          { rank: 1, name: '信用卡消費款偽冒 / 釣魚簡訊盜刷爭議', count: 1240, share: 40.8, desc: '冒名綁定行動支付（Apple Pay/Google Pay）、釣魚詐騙騙取 OTP 密碼之不可歸責性判定。', tag: '卡片盜刷', hot: true },
-          { rank: 2, name: '疑似洗錢防制風控與人頭帳戶異常管制', count: 685, share: 22.5, desc: '數位帳戶遭警示帳戶聯防凍結、非自願衍生管制帳戶提領受限。', tag: '帳戶風控', hot: true },
-          { rank: 3, name: '房貸/信貸利率加碼與違約金計算爭端', count: 340, share: 11.2, desc: '指標利率轉移調幅標準、提前清償違約金收費合理性爭議。', tag: '定價授信', hot: false },
-          { rank: 4, name: 'ATM 自動化設備扣帳未吐鈔與轉帳延遲', count: 295, share: 9.7, desc: '跨行轉帳連線異常沖正不及、電子轉帳款項誤植收款人帳號。', tag: '系統交易', hot: false },
-          { rank: 5, name: '理財商品不當銷售（理專詐欺與風險未揭露）', count: 215, share: 7.1, desc: '銀行理專挪用款項、推介與客戶風險承受等級不符之高風險基金商品。', tag: '財富管理', hot: false }
         ],
         nonlife: [
           { rank: 1, name: '汽機車車體與第三人責任險賠償金額折舊爭議', count: 910, share: 42.1, desc: '零件工資折舊率歧異、代車費用合理性、車損估價與第三方鑑定差異。', tag: '車險理賠', hot: true },
@@ -1246,7 +1211,6 @@
     function switchDisputeRankSector(sectorKey) {
       const sectorButtons = {
         life: document.getElementById('btn-rank-life'),
-        bank: document.getElementById('btn-rank-bank'),
         nonlife: document.getElementById('btn-rank-nonlife'),
         sec: document.getElementById('btn-rank-sec')
       };
@@ -1306,9 +1270,7 @@
       if (window.lucide) lucide.createIcons();
     }
 
-    // ========================================================
-    // UI NAVIGATION & INTERACTION
-    // ========================================================
+    // Navigation Logic
     function navigateTo(sectionId) {
       portalState.currentView = sectionId;
 
@@ -1357,9 +1319,7 @@
       }, 3200);
     }
 
-    // ========================================================
-    // CASE FEED & AI DOSSIER MODAL PIPELINE
-    // ========================================================
+    // Render Case Feed
     function renderDecisionFeed(filteredList = null) {
       const tbody = document.getElementById('decision-feed-tbody');
       if (!tbody) return;
@@ -1417,11 +1377,10 @@
       renderDecisionFeed(filtered);
     }
 
-    // Opens the Enhanced AI Tokenization & Executive Intelligence Dossier Modal
+    // Opens the Enhanced AI Dossier Modal
     function openDecisionDossier(caseId) {
       let doc = portalState.crawledDecisions.find(c => c.id === caseId);
       
-      // If not in primary, lookup in precedent cache
       if (!doc && portalState.precedentDatabase[caseId]) {
         const prec = portalState.precedentDatabase[caseId];
         doc = {
@@ -1434,8 +1393,8 @@
           verdict: prec.verdict,
           summary: prec.summary,
           reasons: '依主管機關評議作業辦法與金融消費者保護法第 13 條及第 24 條規定之裁判心證作成。\n' + (prec.coreDistinction || ''),
-          consumerClaims: ['申請人檢具具體受損證明主張機構違反法令與善良管理人注意義務。', '爭執標的符合契約約定之權益範圍。'],
-          institutionDefenses: ['相對人抗辯均已恪遵定型化契約規範與風險告知書條款。', '主張不可歸責於特許機構之免責事由。'],
+          consumerClaims: ['申請人檢具具體受損證明主張機構違反法令與善良管理人注意義務。', '爭執標的符合保險或委託契約約定之權益範圍。'],
+          institutionDefenses: ['相對人抗辯均已恪遵定型化契約規範與風險告知書條款。', '主張保險條款除外或非可歸責事由。'],
           tokenizedTags: ['#金保法適用', '#契約條款審查', '#判例引據', '#心證對比'],
           similarCaseIds: []
         };
@@ -1444,7 +1403,6 @@
       if (!doc) return;
       portalState.activeModalDoc = doc;
 
-      // Header & Primary Identifiers
       document.getElementById('modal-doc-id').innerText = doc.docId;
       document.getElementById('modal-doc-industry-badge').innerText = doc.industry;
       document.getElementById('modal-doc-title').innerText = `${doc.category} ｜ AI分析報告`;
@@ -1457,10 +1415,9 @@
       document.getElementById('modal-doc-binding').innerText = isBinding ? '具法定拘束力 (<=120萬)' : '超逾上限無強制拘束力';
       document.getElementById('modal-doc-binding').className = `font-bold text-base mt-0.5 ${isBinding ? 'text-emerald-600' : 'text-amber-600'}`;
 
-      // Cross-Examination Lists (兩造攻防)
       const claimList = document.getElementById('modal-claim-list');
       claimList.innerHTML = '';
-      (doc.consumerClaims || ['申請人主張非本人授權，已即時向機構表達異議。']).forEach(item => {
+      (doc.consumerClaims || ['申請人主張已備妥具體就診與事故證明，請求依法履行給付。']).forEach(item => {
         const li = document.createElement('li');
         li.innerText = item;
         claimList.appendChild(li);
@@ -1468,16 +1425,15 @@
 
       const defenseList = document.getElementById('modal-defense-list');
       defenseList.innerHTML = '';
-      (doc.institutionDefenses || ['機構抗辯交易驗證程序完備，無管理疏失。']).forEach(item => {
+      (doc.institutionDefenses || ['機構抗辯契約條款定義明確，不符實質理賠或違約要件。']).forEach(item => {
         const li = document.createElement('li');
         li.innerText = item;
         defenseList.appendChild(li);
       });
 
-      // Tokenized Semantic Tags (斷詞與法規錨點)
       const tagContainer = document.getElementById('modal-tokenized-tags');
       tagContainer.innerHTML = '';
-      (doc.tokenizedTags || ['#金保法§7', '#未授權扣款', '#善良管理人注意義務']).forEach(tag => {
+      (doc.tokenizedTags || ['#金保法§7', '#契約認定', '#善良管理人注意義務']).forEach(tag => {
         const span = document.createElement('span');
         span.className = 'px-2.5 py-1 rounded-lg bg-gov-800 text-emerald-300 font-mono font-semibold border border-slate-700 shadow-sm hover:border-emerald-400 cursor-pointer transition';
         span.innerText = tag;
@@ -1487,11 +1443,9 @@
         tagContainer.appendChild(span);
       });
 
-      // Ratio Decidendi & Legal Reasons
       document.getElementById('modal-doc-summary').innerText = doc.summary;
       document.getElementById('modal-doc-reasons').innerText = doc.reasons;
 
-      // Precedents & Vector Similarity Radar
       const similarContainer = document.getElementById('modal-similar-cases-list');
       similarContainer.innerHTML = '';
 
@@ -1523,7 +1477,6 @@
         });
       }
 
-      // Load Button Action
       const loadBtn = document.getElementById('modal-doc-load-btn');
       loadBtn.onclick = () => {
         closeDecisionModal();
@@ -1560,9 +1513,7 @@
       document.body.removeChild(t);
     }
 
-    // ========================================================
-    // LIVE CRAWLER & NLP AUTO-SYNCHRONIZATION ENGINE
-    // ========================================================
+    // Live Crawler Pipeline for Insurance/Securities Decisions
     function triggerLiveCrawlerSync() {
       if (portalState.isCrawling) return;
       portalState.isCrawling = true;
@@ -1570,7 +1521,7 @@
       const refreshIcon = document.getElementById('crawler-refresh-icon');
       if (refreshIcon) refreshIcon.classList.add('animate-spin');
 
-      showToast('正在向評議庫抓取最新評議書並啟動 NLP 斷詞與語意攻防抽取...', 'radio');
+      showToast('正在向評議庫抓取最新保險與證券評議書並啟動 NLP 語意分析...', 'radio');
 
       setTimeout(() => {
         const now = new Date();
@@ -1580,30 +1531,28 @@
         const freshDoc = {
           id: `CASE-2026-${randId}`,
           docId: newCaseNumber,
-          inst: '玉山商業銀行',
-          industry: '銀行業',
-          category: '信用卡消費款爭端/盜刷',
-          amount: 245000,
+          inst: '新光人壽保險',
+          industry: '保險業',
+          category: '必要性醫療/理賠金額認定',
+          amount: 510000,
           date: now.toISOString().split('T')[0],
           statusDesc: '最新送件（AI分析完畢）',
           badgeClass: 'bg-emerald-100 text-emerald-800',
           dotClass: 'bg-emerald-500',
-          verdict: '評議成立 (部分賠償)',
-          summary: '消費者遭假冒自來水公司停水催繳簡訊騙取個資，玉山銀行於凌晨密集連續外幣交易未觸發二次風控核身通知，應負擔相應爭端款項（NT$ 183,750）。',
-          reasons: '一、依金融消費者保護法第 7 條規定，金融機構應盡善良管理人注意義務。\n二、本件凌晨連續發起多筆短間隔境外交易，銀行監控模組未適時阻斷，存在風控過失。\n三、消費者點擊釣魚網站亦有注意義務欠缺，判定由機構分擔賠償責任。',
+          verdict: '評議成立 (給付保險金)',
+          summary: '被保險人實施微創達文西手術切除腫瘤，保險公司認屬處置非手術拒賠。評議會審酌最新健保與醫學常規，認定應按保險金條款給付。',
+          reasons: '一、保險契約約定之手術項目若未隨醫療科技進步更新，應作有利於被保險人之解釋。\n二、本件經專家鑑定確認具實質手術侵入性與麻醉監控必要，保險公司應依約給付。',
           consumerClaims: [
-            '接獲假冒自來水水費催繳簡訊，網址仿真度極高，誤植個資。',
-            '凌晨時分於 3 分鐘內遭連續刷卡 4 筆未授權境外貨幣交易。',
-            '銀行當下並無即時阻斷或致電持卡人核實，致損害擴大。'
+            '主治醫師診斷證明書已明載達文西切除手術及全身麻醉處置。',
+            '新型微創手術取代傳統開腹，符合現代醫學實質手術標準。'
           ],
           institutionDefenses: [
-            '交易均經過 3D OTP 驗證機制，驗證碼已傳至持卡人手機。',
-            '簡訊內已註記防範詐騙標語，持卡人未盡保密義務交付密碼。'
+            '全民健保醫療費用支付標準未列於第二部第二章第七節之手術項下。'
           ],
-          tokenizedTags: ['#金保法§7', '#境外偽冒連續交易', '#風控模組延遲', '#善良管理人責任', '#自來水催繳釣魚', '#具強制拘束力'],
-          complainDaysAgo: 28,
-          replyDaysAgo: 5,
-          similarCaseIds: ['CASE-2026-0891', 'CASE-2026-0412']
+          tokenizedTags: ['#醫療險', '#達文西微創手術', '#契約解釋原則', '#醫學必要性', '#具強制拘束力'],
+          complainDaysAgo: 29,
+          replyDaysAgo: 8,
+          similarCaseIds: ['CASE-2026-0904', 'CASE-2026-0301']
         };
 
         portalState.crawledDecisions.unshift(freshDoc);
@@ -1619,7 +1568,7 @@
         renderDecisionFeed();
 
         if (barChartInstance) {
-          barChartInstance.data.datasets[1].data[1] += 1;
+          barChartInstance.data.datasets[1].data[0] += 1;
           barChartInstance.update();
         }
 
@@ -1630,9 +1579,6 @@
       }, 1400);
     }
 
-    // ========================================================
-    // SAMPLES & AUDIT ENGINE PIPELINE
-    // ========================================================
     function loadPresetCase(caseId) {
       navigateTo('portal-analysis');
       const today = new Date();
@@ -1642,7 +1588,7 @@
       if (item) {
         document.getElementById('audit-industry').value = item.industry;
         document.getElementById('audit-institution').value = item.inst;
-        document.getElementById('audit-category').value = item.category.includes('盜刷') ? '信用卡消費款爭端/盜刷' : (item.category.includes('醫療') ? '必要性醫療/理賠金額認定' : '業務招攬爭端/未盡告知義務');
+        document.getElementById('audit-category').value = item.category.includes('醫療') ? '必要性醫療/理賠金額認定' : (item.category.includes('責任') ? '汽機車責任險/事故過失責任' : '業務招攬爭端/未盡告知義務');
         document.getElementById('audit-amount').value = item.amount;
         document.getElementById('audit-details').value = item.summary;
         document.getElementById('audit-has-complained').value = 'yes';
@@ -1723,7 +1669,6 @@
       document.getElementById('audit-details').value = '';
       onAuditComplainStatusChange();
 
-      // Reset Verdict Card
       const banner = document.getElementById('audit-result-banner');
       banner.className = "rounded-2xl p-6 sm:p-8 border-2 transition-all text-white shadow-md bg-gov-800 border-gov-700";
       document.getElementById('audit-badge-text').innerText = "等待研判輸入";
@@ -1731,7 +1676,6 @@
       document.getElementById('audit-verdict-desc').innerText = "請於左側表單輸入爭端金額、申訴與回覆日期等關鍵門檻要素，點擊「執行適格性研判」後，系統將依金保法第 13 條及第 24 條規定檢核，並即時比對歷史相似判例。";
       document.getElementById('audit-countdown-box').classList.add('hidden');
 
-      // Reset Checklist
       document.getElementById('screening-statutory-category-badge').className = "px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700";
       document.getElementById('screening-statutory-category-badge').innerText = "待輸入檢核";
       document.getElementById('screening-verdict-detail-box').className = "p-4 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 space-y-2";
@@ -1762,7 +1706,6 @@
     function toggleScreeningRegulationsGuide() {
       const body = document.getElementById('screening-regulations-guide-body');
       const text = document.getElementById('reg-guide-toggle-text');
-      const chevron = document.getElementById('reg-guide-chevron');
 
       if (body.classList.contains('hidden')) {
         body.classList.remove('hidden');
@@ -1774,14 +1717,10 @@
       if (window.lucide) lucide.createIcons();
     }
 
-    // ========================================================
-    // STATUTORY GATEKEEPING ENGINE & PRECEDENT MATCHER
-    // ========================================================
     function updateSimilarCasesComparison(category, industry) {
       const container = document.getElementById('audit-similar-cases-container');
       if (!container) return;
 
-      // Find matching precedents from precedentDatabase & crawledDecisions
       const matches = [];
       const allPrecedents = [
         ...portalState.crawledDecisions,
@@ -1805,9 +1744,8 @@
       const topMatches = matches.slice(0, 2);
 
       if (topMatches.length === 0) {
-        // Fallback default sample comparison
-        topMatches.push(portalState.precedentDatabase['CASE-2026-0412']);
-        topMatches.push(portalState.precedentDatabase['CASE-2025-1190']);
+        topMatches.push(portalState.precedentDatabase['CASE-2026-0301']);
+        topMatches.push(portalState.precedentDatabase['CASE-2025-0882']);
       }
 
       container.innerHTML = '';
@@ -1822,7 +1760,7 @@
           <div class="text-slate-600 font-semibold">${item.inst} ｜ 標的金額：NT$ ${Number(item.amount || 0).toLocaleString()}</div>
           <p class="text-slate-600 leading-relaxed">${item.summary}</p>
           <div class="pt-2 border-t border-slate-200 text-indigo-900 bg-indigo-50/60 p-2.5 rounded-lg font-medium leading-relaxed">
-            ${item.coreDistinction || '【心證分水嶺】委員會著重考量受評業者是否落實異常風險警示，以及消費者是否於合理期間內主張權利。'}
+            ${item.coreDistinction || '【心證分水嶺】委員會著重考量受評業者是否落實保險商品告知義務，以及醫學必要性是否具客觀鑑定支持。'}
           </div>
         `;
         container.appendChild(card);
@@ -1876,10 +1814,9 @@
         }
       };
 
-      // Update Similar Cases Comparison
       updateSimilarCasesComparison(category, industry);
 
-      // 1. Check Binding Limit (Article 29)
+      // Check Binding Limit (Article 29)
       const isBinding = amount <= 1200000;
       if (isBinding) {
         iconBinding.className = "w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5";
@@ -1891,7 +1828,6 @@
         descBinding.innerHTML = `請求金額 <strong>NT$ ${amount.toLocaleString()}</strong> 已超過法定拘束力上限（120 萬元）。評議結果對業者無絕對強制接受拘束力，但仍具高度調處公信力。`;
       }
 
-      // Default Status Checklist States
       iconCourt.className = "w-8 h-8 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center shrink-0 mt-0.5";
       iconCourt.innerHTML = '<i data-lucide="check" class="w-5 h-5"></i>';
       descCourt.innerText = "申請人身分適格，標的屬金融消費糾紛，無確定判決拘束，非重複提起評議。";
@@ -1928,7 +1864,7 @@
         banner.className = "rounded-2xl p-6 sm:p-8 border-2 transition-all text-white shadow-md bg-slate-800 border-slate-600";
         badge.innerText = "標的不合：金保法第 24 條第 2 項第 2 款";
         setVerdictTitle("依法應為不受理之決定", "（非屬金融消費爭議範疇）", "text-rose-300");
-        desc.innerText = "本爭端非屬金融服務業提供金融商品或服務所生之民事爭議（例如單純租賃、民間借貸或非法特許機構），非評議中心管轄客體。";
+        desc.innerText = "本爭端非屬金融服務業提供保險或特許商品服務所生之民事爭議（例如單純民間借貸或非法業者），非評議中心管轄客體。";
         countBox.classList.add('hidden');
 
         statutoryCategoryBadge.className = "px-3 py-1 rounded-full text-xs font-bold bg-slate-200 text-slate-800";
@@ -1936,11 +1872,11 @@
 
         iconCourt.className = "w-8 h-8 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center shrink-0 mt-0.5";
         iconCourt.innerHTML = '<i data-lucide="x" class="w-5 h-5"></i>';
-        descCourt.innerText = "爭端性質不合《金融消費者保護法》第3條規定之金融服務業特許客體。";
+        descCourt.innerText = "爭端性質不合《金融消費者保護法》第3條規定之特許金融服務業客體。";
 
         verdictDetailBox.className = "p-4 rounded-xl bg-slate-100 border border-slate-300 text-slate-800 space-y-2";
         detailRuleTitle.innerText = "依金保法第24條第2項第2款駁回：標的客體不適格";
-        detailRuleText.innerText = "爭端主體或標的非屬依法特許立案之銀行、保險、證券或電子支付業務，評議中心欠缺事物管轄權，應予不受理。";
+        detailRuleText.innerText = "爭端主體或標的非屬依法特許立案之保險或證券期貨業務，評議中心欠缺事物管轄權，應予不受理。";
         if (window.lucide) lucide.createIcons();
         showToast('研判完成：第二款非屬金融消費爭議（不受理）', 'alert-circle');
         return;
@@ -2015,25 +1951,6 @@
         detailRuleText.innerText = "已經普通法院民事庭作成終局確定判決，或依仲裁法/鄉鎮市調解條例成立之事項，評議中心依法無權翻案審理。";
         if (window.lucide) lucide.createIcons();
         showToast('研判完成：第八款民事終局確定排他（不受理）', 'alert-circle');
-        return;
-      }
-
-      // Category 9: Policy / Rate exclusion
-      if (category === '放款利率與費用定價爭議') {
-        banner.className = "rounded-2xl p-6 sm:p-8 border-2 transition-all text-white shadow-md bg-amber-800 border-amber-600";
-        badge.innerText = "主管機關排除：金保法第 24 條第 2 項第 9 款";
-        setVerdictTitle("依法應為不受理之決定", "（純屬機構定價政策自主範疇）", "text-amber-200");
-        desc.innerText = "爭議涉金融機構放款利率、手續費定價政策或核貸授信自主審查權益，依金管會公告原則非屬評議救濟之實質範疇。";
-        countBox.classList.add('hidden');
-
-        statutoryCategoryBadge.className = "px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-800";
-        statutoryCategoryBadge.innerText = "第九款不受理：主管機關公告排除事由";
-
-        verdictDetailBox.className = "p-4 rounded-xl bg-amber-50 border border-amber-200 text-slate-800 space-y-2";
-        detailRuleTitle.innerText = "依金保法第24條第2項第9款駁回：機構業務政策自主事項";
-        detailRuleText.innerText = "涉案爭點屬特許金融機構商業放款加減碼原則或純粹費率政策，經金管會公告列為不受理事項，應駁回評議。";
-        if (window.lucide) lucide.createIcons();
-        showToast('研判完成：第九款定價政策排除（不受理）', 'alert-circle');
         return;
       }
 
@@ -2222,9 +2139,7 @@
       }, 1000);
     }
 
-    // ========================================================
-    // CHART.JS OFFICIAL STATS RENDERERS
-    // ========================================================
+    // Chart.js Official Stats (Excluding Banks)
     let barChartInstance = null;
     let donutChartInstance = null;
 
@@ -2238,17 +2153,17 @@
       barChartInstance = new Chart(barCtx, {
         type: 'bar',
         data: {
-          labels: ['保險業', '銀行業', '證券期貨業', '其他金融', '電子支付業'],
+          labels: ['保險業', '證券期貨業', '其他特許金融'],
           datasets: [
             {
               label: '申訴件數 (前置調處)',
-              data: [5129, 2439, 800, 102, 32],
+              data: [5129, 800, 102],
               backgroundColor: '#00bfa5',
               borderRadius: 6
             },
             {
               label: '評議件數 (正式審議)',
-              data: [2461, 602, 88, 8, 10],
+              data: [2461, 88, 8],
               backgroundColor: '#334e68',
               borderRadius: 6
             }
@@ -2281,15 +2196,13 @@
       donutChartInstance = new Chart(donutCtx, {
         type: 'doughnut',
         data: {
-          labels: ['保險業', '銀行業', '證券期貨業', '其他特許金融', '電子支付業'],
+          labels: ['保險業', '證券期貨業', '其他特許金融'],
           datasets: [{
-            data: [65.03, 26.06, 7.61, 0.94, 0.36],
+            data: [88.38, 10.34, 1.28],
             backgroundColor: [
               '#00bfa5',
-              '#f87171',
               '#facc15',
-              '#a855f7',
-              '#06b6d4'
+              '#a855f7'
             ],
             borderWidth: 2,
             borderColor: '#ffffff'
@@ -2372,26 +2285,24 @@
       }
 
       if (industryFilter === 'insurance') {
-        barChartInstance.data.datasets[0].data = [5129, 0, 0, 0, 0];
-        barChartInstance.data.datasets[1].data = [2461, 0, 0, 0, 0];
-      } else if (industryFilter === 'bank') {
-        barChartInstance.data.datasets[0].data = [0, 2439, 0, 0, 0];
-        barChartInstance.data.datasets[1].data = [0, 602, 0, 0, 0];
+        barChartInstance.data.datasets[0].data = [5129, 0, 0];
+        barChartInstance.data.datasets[1].data = [2461, 0, 0];
       } else if (industryFilter === 'securities') {
-        barChartInstance.data.datasets[0].data = [0, 0, 800, 0, 0];
-        barChartInstance.data.datasets[1].data = [0, 0, 88, 0, 0];
+        barChartInstance.data.datasets[0].data = [0, 800, 0];
+        barChartInstance.data.datasets[1].data = [0, 88, 0];
+      } else if (industryFilter === 'other') {
+        barChartInstance.data.datasets[0].data = [0, 0, 102];
+        barChartInstance.data.datasets[1].data = [0, 0, 8];
       } else {
-        barChartInstance.data.datasets[0].data = [5129, 2439, 800, 102, 32];
-        barChartInstance.data.datasets[1].data = [2461, 602, 88, 8, 10];
+        barChartInstance.data.datasets[0].data = [5129, 800, 102];
+        barChartInstance.data.datasets[1].data = [2461, 88, 8];
       }
 
       barChartInstance.update();
       donutChartInstance.update();
     }
 
-    // ========================================================
-    // PORTAL INITIALIZATION
-    // ========================================================
+    // Portal Initialization
     window.addEventListener('DOMContentLoaded', () => {
       if (window.lucide) lucide.createIcons();
       renderDecisionFeed();
