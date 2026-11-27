@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
@@ -10,6 +10,8 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <!-- Chart.js for Regulatory Statistics -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- PapaParse for GitHub CSV Parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -51,7 +53,6 @@
       }
     };
   </script>
-  <!-- 原生保底 CSS：確保任何網路或 GitHub Pages 環境下排版、導覽列、分頁切換皆絕對穩固 -->
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;600;700;900&family=JetBrains+Mono:wght@500;700;800&display=swap');
     
@@ -66,7 +67,6 @@
     }
     .font-mono { font-family: 'JetBrains Mono', monospace; }
     
-    /* 核心分頁切換保護 */
     .portal-section {
       display: none;
       animation: enterFade 0.25s ease-out;
@@ -79,7 +79,6 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* 頂部深色導覽列保底樣式 */
     header.top-portal-header {
       background-color: #061320;
       color: #ffffff;
@@ -92,7 +91,6 @@
       background-color: rgba(255, 255, 255, 0.16);
       color: #ffffff;
     }
-    /* 全站單行防折行保護輔助類別 */
     .no-wrap-chip,
     button,
     th {
@@ -147,11 +145,11 @@
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
               </span>
-              <span class="text-slate-200 font-bold">系統連線正常</span>
+              <span id="csv-connection-status" class="text-slate-200 font-bold">CSV 資料載入中...</span>
             </div>
             <div class="flex items-center gap-1 text-[11px] text-slate-400 mt-0.5 pl-3.5">
-              <span>更新時間</span>
-              <span id="crawler-last-sync-time" class="font-mono text-emerald-300 font-bold">16:10:00</span>
+              <span>資料源</span>
+              <span id="crawler-last-sync-time" class="font-mono text-emerald-300 font-bold">GitHub Pages CSV</span>
             </div>
           </div>
 
@@ -188,29 +186,29 @@
     <!-- ======================================================== -->
     <section id="portal-home" class="portal-section active space-y-8">
       
-      <!-- Crawler Live Sync Control Integrated in Home -->
+      <!-- CSV Data Sync Control Integrated in Home -->
       <div class="bg-gov-900 border border-slate-700/80 rounded-2xl p-5 text-white shadow-md flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div class="flex items-center gap-4">
           <div class="w-12 h-12 rounded-xl bg-regtech-500/20 border border-regtech-500/30 flex items-center justify-center text-regtech-400 shrink-0">
-            <i data-lucide="radio" class="w-6 h-6 animate-pulse"></i>
+            <i data-lucide="database" class="w-6 h-6"></i>
           </div>
           <div>
             <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 whitespace-nowrap">
-              <span class="font-bold text-base text-white">官方評議決定書實時爬取與文本解析中樞</span>
-              <span class="px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">ods.foi.org.tw 同步節點</span>
+              <span class="font-bold text-base text-white">LLM 評議決定書結構化解析資料庫</span>
+              <span class="px-2 py-0.5 rounded text-xs font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">GitHub CSV 四表關聯引擎</span>
             </div>
-            <p class="text-xs text-slate-300 mt-0.5">即刻解析金融消費評議中心最新作成之評議決定書，自動萃取兩造爭點、計算獲賠成數與審理天數並聯動更新全站指標。</p>
+            <p class="text-xs text-slate-300 mt-0.5">自動串接 <code class="text-emerald-300 font-mono">llm_cases.csv</code>、<code class="text-emerald-300 font-mono">llm_rejections.csv</code>、<code class="text-emerald-300 font-mono">llm_surgeries.csv</code> 與 <code class="text-emerald-300 font-mono">llm_syllogisms.csv</code>。</p>
           </div>
         </div>
 
         <div class="flex items-center gap-4 w-full md:w-auto justify-between md:justify-end shrink-0 whitespace-nowrap">
           <div class="text-right">
-            <div class="text-xs text-slate-400">目前收錄評議書庫存</div>
-            <div id="stat-total-crawled-badge" class="text-lg font-black font-mono text-emerald-400">8,588 <span class="text-xs text-slate-400 font-normal">篇</span></div>
+            <div class="text-xs text-slate-400">目前載入評議案件數</div>
+            <div id="stat-total-crawled-badge" class="text-lg font-black font-mono text-emerald-400">0 <span class="text-xs text-slate-400 font-normal">件</span></div>
           </div>
-          <button onclick="triggerLiveCrawlerSync()" id="btn-sync-crawler-home" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-bold transition flex items-center gap-2 shadow-md whitespace-nowrap">
+          <button onclick="reloadAllCsvData()" id="btn-sync-crawler-home" class="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-bold transition flex items-center gap-2 shadow-md whitespace-nowrap">
             <i id="crawler-refresh-icon" data-lucide="refresh-cw" class="w-4 h-4 shrink-0"></i>
-            <span>同步最新評議書</span>
+            <span>重新讀取 CSV</span>
           </button>
         </div>
       </div>
@@ -223,57 +221,55 @@
               <span class="text-sm font-bold tracking-wide">已解析評議決定書總量</span>
               <span class="p-2 bg-blue-50 text-blue-600 rounded-lg shrink-0"><i data-lucide="file-text" class="w-5 h-5"></i></span>
             </div>
-            <div class="text-3xl sm:text-4xl font-black text-gov-800 whitespace-nowrap"><span id="kpi-total-cases">8,588</span> <span class="text-sm font-normal text-slate-500">篇</span></div>
+            <div class="text-3xl sm:text-4xl font-black text-gov-800 whitespace-nowrap"><span id="kpi-total-cases">0</span> <span class="text-sm font-normal text-slate-500">件</span></div>
           </div>
           <div class="text-xs text-slate-600 mt-4 flex items-center gap-1.5 pt-3 border-t border-slate-100 whitespace-nowrap">
-            <span class="text-emerald-600 font-bold flex items-center"><i data-lucide="arrow-up-right" class="w-4 h-4"></i> 100%</span>
-            <span>已完成 NLP 兩造爭點與獲賠成數解析</span>
+            <span class="text-emerald-600 font-bold flex items-center"><i data-lucide="check-circle" class="w-4 h-4 mr-1"></i> ollama:qwen3:8b</span>
+            <span>已完成結構化標註</span>
           </div>
         </div>
 
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between text-slate-500 mb-2 gap-2 whitespace-nowrap">
-              <span class="text-sm font-bold tracking-wide">實體成立 / 部分成立佔比</span>
-              <span class="p-2 bg-emerald-50 text-emerald-600 rounded-lg shrink-0"><i data-lucide="check-circle-2" class="w-5 h-5"></i></span>
+              <span class="text-sm font-bold tracking-wide">醫療手術處置萃取總筆數</span>
+              <span class="p-2 bg-amber-50 text-amber-600 rounded-lg shrink-0"><i data-lucide="stethoscope" class="w-5 h-5"></i></span>
             </div>
-            <div class="text-3xl sm:text-4xl font-black text-emerald-600 whitespace-nowrap">32.7%</div>
+            <div class="text-3xl sm:text-4xl font-black text-amber-600 whitespace-nowrap"><span id="kpi-total-surgeries">0</span> <span class="text-sm font-normal text-slate-500">筆</span></div>
           </div>
           <div class="text-xs text-slate-600 mt-4 flex items-center gap-1.5 pt-3 border-t border-slate-100 whitespace-nowrap">
-            <span class="text-emerald-700 font-bold">全部成立 14.2%</span>
-            <span>｜ 部分成立 18.5%</span>
+            <span id="kpi-surgery-top-part" class="text-amber-700 font-bold">涵蓋手術名稱、部位與術式</span>
           </div>
         </div>
 
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between text-slate-500 mb-2 gap-2 whitespace-nowrap">
-              <span class="text-sm font-bold tracking-wide">全庫案件平均審理週期</span>
-              <span class="p-2 bg-cyan-50 text-cyan-600 rounded-lg shrink-0"><i data-lucide="clock" class="w-5 h-5"></i></span>
+              <span class="text-sm font-bold tracking-wide">駁回／不符理由萃取總數</span>
+              <span class="p-2 bg-rose-50 text-rose-600 rounded-lg shrink-0"><i data-lucide="scale" class="w-5 h-5"></i></span>
             </div>
-            <div class="text-3xl sm:text-4xl font-black text-gov-800 whitespace-nowrap">84.5 <span class="text-sm font-normal text-slate-500">天</span></div>
+            <div class="text-3xl sm:text-4xl font-black text-rose-700 whitespace-nowrap"><span id="kpi-total-rejections">0</span> <span class="text-sm font-normal text-slate-500">條</span></div>
           </div>
           <div class="text-xs text-slate-600 mt-4 flex items-center gap-1.5 pt-3 border-t border-slate-100 whitespace-nowrap">
-            <span class="text-cyan-700 font-bold">法定 90 天內結案率 68.4%</span>
+            <span class="text-rose-700 font-bold">高頻依據：健保支付標準 2-2-7</span>
           </div>
         </div>
 
         <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between text-slate-500 mb-2 gap-2 whitespace-nowrap">
-              <span class="text-sm font-bold tracking-wide">程序補正通知觸發率</span>
-              <span class="p-2 bg-purple-50 text-purple-600 rounded-lg shrink-0"><i data-lucide="file-warning" class="w-5 h-5"></i></span>
+              <span class="text-sm font-bold tracking-wide">法律三段論法精析案件</span>
+              <span class="p-2 bg-purple-50 text-purple-600 rounded-lg shrink-0"><i data-lucide="brain-circuit" class="w-5 h-5"></i></span>
             </div>
-            <div class="text-3xl sm:text-4xl font-black text-purple-700 whitespace-nowrap">28.4%</div>
+            <div class="text-3xl sm:text-4xl font-black text-purple-700 whitespace-nowrap"><span id="kpi-total-syllogisms">0</span> <span class="text-sm font-normal text-slate-500">件</span></div>
           </div>
           <div class="text-xs text-slate-600 mt-4 flex items-center gap-1.5 pt-3 border-t border-slate-100 whitespace-nowrap">
-            <span class="text-purple-700 font-bold">首要因素</span>
-            <span>缺漏「業者申訴回覆函」</span>
+            <span class="text-purple-700 font-bold">大前提・小前提・涵攝結論驗證</span>
           </div>
         </div>
       </div>
 
-      <!-- Case Dossier Feed Table (智能資料庫案件查詢：支援三大查詢模式) -->
+      <!-- Case Dossier Feed Table -->
       <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-5">
         <div class="flex flex-col xl:flex-row xl:items-center justify-between gap-4 border-b border-slate-100 pb-4">
           <div>
@@ -281,8 +277,8 @@
               <i data-lucide="database" class="w-6 h-6 text-gov-700 shrink-0"></i>
               <span>評議決定書全文智能檢索資料庫</span>
             </h3>
-            <p class="text-sm text-slate-500 mt-1 whitespace-nowrap">
-              支援 <span class="font-bold text-gov-700">案號精準查詢</span>、<span class="font-bold text-cyan-700">相似案件語意比對</span> 及 <span class="font-bold text-emerald-700">NLP 分析結果衍生特徵查詢</span>
+            <p class="text-sm text-slate-500 mt-1">
+              支援 <span class="font-bold text-gov-700">案號／傷病／院所查詢</span>、<span class="font-bold text-cyan-700">相似案件語意比對</span> 及 <span class="font-bold text-purple-700">LLM 結構化衍生特徵查詢</span>（點擊任一案號可檢視三段論法與駁回明細）
             </p>
           </div>
           
@@ -290,7 +286,7 @@
           <div class="flex items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-200 shrink-0 overflow-x-auto">
             <button onclick="switchSearchMode('docId')" id="tab-search-docId" class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold bg-gov-800 text-white shadow-sm transition flex items-center gap-1.5 whitespace-nowrap">
               <i data-lucide="hash" class="w-4 h-4 text-emerald-400 shrink-0"></i>
-              <span>1. 案號查詢</span>
+              <span>1. 案號與條件查詢</span>
             </button>
             <button onclick="switchSearchMode('similar')" id="tab-search-similar" class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold text-slate-700 hover:bg-white/70 transition flex items-center gap-1.5 whitespace-nowrap">
               <i data-lucide="git-compare" class="w-4 h-4 text-cyan-600 shrink-0"></i>
@@ -298,7 +294,7 @@
             </button>
             <button onclick="switchSearchMode('nlp')" id="tab-search-nlp" class="px-3.5 py-2 rounded-lg text-xs sm:text-sm font-bold text-slate-700 hover:bg-white/70 transition flex items-center gap-1.5 whitespace-nowrap">
               <i data-lucide="brain-circuit" class="w-4 h-4 text-purple-600 shrink-0"></i>
-              <span>3. NLP 分析衍生查詢</span>
+              <span>3. LLM 衍生特徵查詢</span>
             </button>
           </div>
         </div>
@@ -308,31 +304,28 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
             <div class="relative">
               <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3"></i>
-              <input type="text" id="feed-search-input" oninput="filterDecisionFeed()" placeholder="輸入評議字號（如 114、5624）..." class="w-full pl-9 pr-3.5 py-2 rounded-lg border border-slate-300 text-sm outline-none focus:ring-2 focus:ring-gov-500 bg-white font-mono">
+              <input type="text" id="feed-search-input" oninput="filterDecisionFeed()" placeholder="搜尋案號、傷病、手術或院所..." class="w-full pl-9 pr-3.5 py-2 rounded-lg border border-slate-300 text-sm outline-none focus:ring-2 focus:ring-gov-500 bg-white">
             </div>
             <div>
-              <select id="feed-filter-industry" onchange="filterDecisionFeed()" class="w-full px-3.5 py-2 rounded-lg border border-slate-300 text-sm font-medium outline-none focus:ring-2 focus:ring-gov-500 bg-white">
-                <option value="all">全部金融業別</option>
-                <option value="保險業">保險業（人壽 / 產物）</option>
-                <option value="證券期貨業">證券期貨業</option>
+              <select id="feed-filter-setting" onchange="filterDecisionFeed()" class="w-full px-3.5 py-2 rounded-lg border border-slate-300 text-sm font-medium outline-none focus:ring-2 focus:ring-gov-500 bg-white">
+                <option value="all">全部就醫型態（門診 / 住院）</option>
+                <option value="門診">門診</option>
+                <option value="住院">住院</option>
+                <option value="不明">不明</option>
               </select>
             </div>
             <div>
               <select id="feed-filter-verdict" onchange="filterDecisionFeed()" class="w-full px-3.5 py-2 rounded-lg border border-slate-300 text-sm font-medium outline-none focus:ring-2 focus:ring-gov-500 bg-white">
-                <option value="all">全部裁判結果</option>
-                <option value="全部成立">全部成立</option>
-                <option value="部分成立">部分成立</option>
-                <option value="評議不成立">評議不成立</option>
-                <option value="不受理">程序不受理</option>
+                <option value="all">全部評議結果</option>
+                <option value="不准許">不准許</option>
+                <option value="部分准許">部分准許</option>
               </select>
             </div>
             <div>
-              <select id="feed-filter-duration" onchange="filterDecisionFeed()" class="w-full px-3.5 py-2 rounded-lg border border-slate-300 text-sm font-medium outline-none focus:ring-2 focus:ring-gov-500 bg-white">
-                <option value="all">全部審理天數級距</option>
-                <option value="fast">60 天內（快速結案）</option>
-                <option value="normal">61～90 天（正常法定期間）</option>
-                <option value="extended">91～150 天（延長鑑定審理）</option>
-                <option value="over">150 天以上（重大複雜案件）</option>
+              <select id="feed-filter-syllogism" onchange="filterDecisionFeed()" class="w-full px-3.5 py-2 rounded-lg border border-slate-300 text-sm font-medium outline-none focus:ring-2 focus:ring-gov-500 bg-white">
+                <option value="all">全部三段論法標註狀態</option>
+                <option value="yes">具備完整三段論法解析 (20案)</option>
+                <option value="no">一般爭點與駁回依據解析</option>
               </select>
             </div>
           </div>
@@ -343,15 +336,16 @@
           <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
             <span class="text-xs font-bold text-cyan-900 flex items-center gap-1.5">
               <i data-lucide="sparkles" class="w-4 h-4 text-cyan-600"></i>
-              <span>輸入手邊爭端事實、手術名稱或爭執點，系統將比對決定書資料庫並計算語意相似度排行：</span>
+              <span>輸入手邊爭端事實、手術名稱或傷病關鍵字，系統將比對 220 件真實決定書並計算相似度排行：</span>
             </span>
             <div class="flex flex-wrap gap-1.5">
-              <button onclick="fillSimilarQuery('心導管血管支架放置與氣球擴張，健保放射線診療章手術認定')" class="text-[11px] px-2.5 py-1 rounded bg-white border border-cyan-300 text-cyan-800 hover:bg-cyan-100 font-bold transition">帶入：心導管支架案</button>
-              <button onclick="fillSimilarQuery('高齡長者投保連動債保單，核保錄音有引導問答未告知風險')" class="text-[11px] px-2.5 py-1 rounded bg-white border border-cyan-300 text-cyan-800 hover:bg-cyan-100 font-bold transition">帶入：高齡招攬錄音案</button>
+              <button onclick="fillSimilarQuery('陰道雷射手術治療，健保支付標準第二部第二章第七節')" class="text-[11px] px-2.5 py-1 rounded bg-white border border-cyan-300 text-cyan-800 hover:bg-cyan-100 font-bold transition">帶入：陰道雷射手術</button>
+              <button onclick="fillSimilarQuery('大腸鏡檢查及大腸瘜肉切除術 門診手術')" class="text-[11px] px-2.5 py-1 rounded bg-white border border-cyan-300 text-cyan-800 hover:bg-cyan-100 font-bold transition">帶入：大腸瘜肉切除</button>
+              <button onclick="fillSimilarQuery('頸椎活動關節置放手術 住院 健保2-2-7')" class="text-[11px] px-2.5 py-1 rounded bg-white border border-cyan-300 text-cyan-800 hover:bg-cyan-100 font-bold transition">帶入：頸椎關節置放</button>
             </div>
           </div>
           <div class="flex flex-col sm:flex-row gap-3">
-            <input type="text" id="similar-case-query-input" placeholder="請描述案件關鍵事實（例如：癌症自費標靶藥物住院必要性、車禍維修工資折舊...）" class="flex-1 px-4 py-2.5 rounded-xl border border-cyan-300 text-sm outline-none focus:ring-2 focus:ring-cyan-500 bg-white">
+            <input type="text" id="similar-case-query-input" placeholder="請描述案件關鍵事實（例如：靜脈曲張鹽水閉合術、高頻熱凝療法神經阻斷術...）" class="flex-1 px-4 py-2.5 rounded-xl border border-cyan-300 text-sm outline-none focus:ring-2 focus:ring-cyan-500 bg-white">
             <button onclick="runSimilarCaseSearch()" class="px-5 py-2.5 bg-cyan-700 hover:bg-cyan-600 text-white rounded-xl text-sm font-bold transition flex items-center justify-center gap-2 whitespace-nowrap shadow-sm">
               <i data-lucide="git-compare" class="w-4 h-4"></i>
               <span>比對相似判例</span>
@@ -367,47 +361,51 @@
           <div class="flex items-center justify-between">
             <span class="text-xs font-bold text-purple-900 flex items-center gap-1.5">
               <i data-lucide="cpu" class="w-4 h-4 text-purple-600"></i>
-              <span>依據 NLP 全文解析萃取之「衍生法理與程序特徵欄位」進行多維度交集檢索：</span>
+              <span>依據 LLM 全文解析萃取之「衍生法理、術式與檢核欄位」進行多維度交集檢索：</span>
             </span>
-            <button onclick="resetAllSearchFilters()" class="text-xs text-purple-700 hover:underline font-bold">清除所有 NLP 條件</button>
+            <button onclick="resetAllSearchFilters()" class="text-xs text-purple-700 hover:underline font-bold">清除所有條件</button>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label class="block text-[11px] font-bold text-purple-900 mb-1">1. 決定書援引法條維度</label>
+              <label class="block text-[11px] font-bold text-purple-900 mb-1">1. 駁回依據／法條關鍵字</label>
               <select id="nlp-filter-law" onchange="runNlpDerivedSearch()" class="w-full px-3 py-2 rounded-lg border border-purple-300 text-xs font-bold outline-none focus:ring-2 focus:ring-purple-500 bg-white">
-                <option value="all">不限援引法條</option>
-                <option value="金保法§7">《金保法》第 7 條（公平合理原則）</option>
-                <option value="保險法§54">《保險法》第 54 條（有利被保險人解釋）</option>
-                <option value="金保法§9/§10">《金保法》第 9/10 條（KYC 與說明義務）</option>
-                <option value="保險法§64">《保險法》第 64 條（據實說明義務）</option>
-                <option value="金保法§13/§24">《金保法》第 13/24 條（程序與時效）</option>
+                <option value="all">不限駁回依據</option>
+                <option value="第二部第二章第七節">健保支付標準第二部第二章第七節</option>
+                <option value="除外責任">系爭附約【除外責任】條款</option>
+                <option value="名詞定義">系爭附約【名詞定義】條款</option>
+                <option value="衛署醫字">行政院衛生署衛署醫字函釋</option>
+                <option value="醫療法">醫療法相關規定</option>
               </select>
             </div>
             <div>
-              <label class="block text-[11px] font-bold text-purple-900 mb-1">2. 外部專科醫療顧問鑑定</label>
-              <select id="nlp-filter-expert" onchange="runNlpDerivedSearch()" class="w-full px-3 py-2 rounded-lg border border-purple-300 text-xs font-bold outline-none focus:ring-2 focus:ring-purple-500 bg-white">
-                <option value="all">不限是否送鑑定</option>
-                <option value="yes">有送請特約專科醫師／顧問鑑定</option>
-                <option value="no">未送外部醫療鑑定</option>
+              <label class="block text-[11px] font-bold text-purple-900 mb-1">2. 手術處置方式分類</label>
+              <select id="nlp-filter-method" onchange="runNlpDerivedSearch()" class="w-full px-3 py-2 rounded-lg border border-purple-300 text-xs font-bold outline-none focus:ring-2 focus:ring-purple-500 bg-white">
+                <option value="all">不限手術方式</option>
+                <option value="雷射">雷射治療 / 手術</option>
+                <option value="內視鏡">內視鏡 / 腹腔鏡 / 關節鏡</option>
+                <option value="微波">微波熱能處置</option>
+                <option value="高頻熱凝">高頻熱凝神經阻斷</option>
+                <option value="注射">硬化劑 / 藥物注射</option>
               </select>
             </div>
             <div>
-              <label class="block text-[11px] font-bold text-purple-900 mb-1">3. 程序補正觸發紀錄</label>
-              <select id="nlp-filter-rectify" onchange="runNlpDerivedSearch()" class="w-full px-3 py-2 rounded-lg border border-purple-300 text-xs font-bold outline-none focus:ring-2 focus:ring-purple-500 bg-white">
-                <option value="all">不限是否經歷補正</option>
-                <option value="yes">內文載明曾通知「補正文件」</option>
-                <option value="no">一次送件完備（無補正紀錄）</option>
+              <label class="block text-[11px] font-bold text-purple-900 mb-1">3. 系統檢核通過狀態</label>
+              <select id="nlp-filter-audit" onchange="runNlpDerivedSearch()" class="w-full px-3 py-2 rounded-lg border border-purple-300 text-xs font-bold outline-none focus:ring-2 focus:ring-purple-500 bg-white">
+                <option value="all">不限檢核狀態</option>
+                <option value="passed">全部通過自動化檢核（未通過檢核為空）</option>
+                <option value="flagged">標註待覆核項目（有未通過檢核紀錄）</option>
               </select>
             </div>
-            <div>
-              <label class="block text-[11px] font-bold text-purple-900 mb-1">4. 爭議標的獲賠成數區間</label>
-              <select id="nlp-filter-ratio" onchange="runNlpDerivedSearch()" class="w-full px-3 py-2 rounded-lg border border-purple-300 text-xs font-bold outline-none focus:ring-2 focus:ring-purple-500 bg-white">
-                <option value="all">不限獲賠成數</option>
-                <option value="full">100% 全額獲賠</option>
-                <option value="partial">1% ～ 99% 部分獲賠（酌減/比例）</option>
-                <option value="zero">0% 未獲賠（不成立或不受理）</option>
-              </select>
-            </div>
+          </div>
+        </div>
+
+        <!-- Result Count & Pagination Info -->
+        <div class="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500">
+          <div>共篩選出 <span id="feed-result-count" class="font-mono font-bold text-gov-800">0</span> 筆評議決定書（目前顯示第 <span id="feed-showing-range" class="font-mono font-bold">0-0</span> 筆）</div>
+          <div class="flex items-center gap-2">
+            <button onclick="changeFeedPage(-1)" id="btn-prev-page" class="px-3 py-1 rounded border border-slate-300 bg-white hover:bg-slate-50 disabled:opacity-40 font-bold text-slate-700">上一頁</button>
+            <span id="feed-page-indicator" class="font-mono font-bold text-slate-700">1 / 1</span>
+            <button onclick="changeFeedPage(1)" id="btn-next-page" class="px-3 py-1 rounded border border-slate-300 bg-white hover:bg-slate-50 disabled:opacity-40 font-bold text-slate-700">下一頁</button>
           </div>
         </div>
 
@@ -415,18 +413,17 @@
           <table class="w-full text-left border-collapse text-sm">
             <thead>
               <tr class="border-b-2 border-slate-200 bg-slate-50 text-slate-700 font-bold text-sm whitespace-nowrap">
-                <th class="py-3 px-3">評議字號(點擊檢視)</th>
-                <th class="py-3 px-3">產業類別</th>
-                <th class="py-3 px-3">爭端類型/關鍵手術</th>
-                <th class="py-3 px-3">NLP衍生特徵標籤</th>
-                <th class="py-3 px-3">請求/判賠金額</th>
-                <th class="py-3 px-3">獲賠成數</th>
-                <th class="py-3 px-3">審理天數</th>
-                <th class="py-3 px-3">裁判結論</th>
+                <th class="py-3 px-3">評議字號（點擊檢視精析）</th>
+                <th class="py-3 px-3">就醫型態</th>
+                <th class="py-3 px-3">傷病與關鍵手術處置</th>
+                <th class="py-3 px-3">LLM 萃取標籤</th>
+                <th class="py-3 px-3">請求 / 准許金額</th>
+                <th class="py-3 px-3">就醫院所</th>
+                <th class="py-3 px-3">評議結果</th>
               </tr>
             </thead>
             <tbody id="decision-feed-tbody" class="divide-y divide-slate-100 text-slate-800 text-sm">
-              <!-- Dynamically populated -->
+              <!-- Dynamically populated from CSV -->
             </tbody>
           </table>
         </div>
@@ -447,7 +444,7 @@
           </div>
           <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">案件爭議適格性深度審查系統</h2>
           <p class="text-base text-slate-500 mt-1">
-            請輸入受審個案資料，系統將依據金保法法定要件進行即時適格性研判，並比對關聯之歷史相似裁判案件。
+            請輸入受審個案資料，系統將依據金保法法定要件進行即時適格性研判，並自動比對 CSV 資料庫中之歷史相似裁判案件。
           </p>
         </div>
 
@@ -591,10 +588,10 @@
 
             <div>
               <label class="block text-sm font-bold text-slate-800 mb-1.5">爭端事證與事實摘要簡述</label>
-              <textarea id="audit-details" rows="3" placeholder="請簡述兩造爭執之核心事實、契約條款爭議或佐證資料..." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-gov-500 outline-none"></textarea>
+              <textarea id="audit-details" rows="3" placeholder="請簡述兩造爭執之核心事實、手術處置名稱或佐證資料..." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-gov-500 outline-none"></textarea>
             </div>
 
-            <!-- Action Submit Button placed cleanly at the bottom of Input Panel -->
+            <!-- Action Submit Button -->
             <div class="pt-4 border-t border-slate-200 flex items-center gap-3">
               <button onclick="runAuditEngine()" class="flex-1 py-3.5 px-5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-base font-bold shadow-lg transition transform active:scale-95 flex items-center justify-center gap-2">
                 <i data-lucide="play" class="w-5 h-5"></i>
@@ -623,7 +620,7 @@
                   <span id="audit-verdict-subtag" class="block text-xl sm:text-2xl text-cyan-300 font-bold mt-1 tracking-normal">（填妥後點擊下方「執行適格性研判」）</span>
                 </h3>
                 <p id="audit-verdict-desc" class="text-slate-200 text-base leading-relaxed">
-                  系統將自動檢核《金融消費者保護法》第 13 條時效要件、第 24 條第 2 項法定不受理事由、第 29 條強制拘束力門檻，並為您調出歷史相似裁判案件進行心證對比。
+                  系統將自動檢核《金融消費者保護法》第 13 條時效要件、第 24 條第 2 項法定不受理事由、第 29 條強制拘束力門檻，並為您調出 CSV 資料庫中之歷史相似裁判案件進行心證對比。
                 </p>
               </div>
               <div id="audit-countdown-box" class="hidden shrink-0 bg-white/10 backdrop-blur-md border border-white/25 p-5 rounded-xl text-center min-w-[190px]">
@@ -709,9 +706,9 @@
                 <div>
                   <h4 class="text-lg font-bold text-slate-900 flex items-center gap-2">
                     <i data-lucide="git-compare" class="w-5 h-5 text-cyan-600"></i>
-                    <span>爭端爭點與歷史相似裁判案件對比</span>
+                    <span>爭端爭點與歷史相似裁判案件對比（來源：CSV 資料庫）</span>
                   </h4>
-                  <p class="text-xs text-slate-500 mt-0.5">依據本案之業別與爭端類型，自動調取評議中心歷年高度類似案例進行心證尺度與責任比對</p>
+                  <p class="text-xs text-slate-500 mt-0.5">依據本案之事實摘要與爭端類型，自動調取資料庫高度類似案例進行心證尺度與駁回依據比對</p>
                 </div>
                 <span class="px-2.5 py-1 rounded bg-cyan-50 text-cyan-800 border border-cyan-200 text-xs font-bold self-start sm:self-auto">
                   類案心證對照
@@ -776,19 +773,15 @@
               </div>
             </div>
 
-            <!-- Actions row -->
+            <!-- Actions row (已移除「產生正式公文審定書」) -->
             <div class="pt-4 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
               <div class="text-xs text-slate-500">
                 審查判定由演算法依金保法施行細則即時演算
               </div>
               <div class="flex items-center gap-2">
-                <button onclick="copyLegalOpinion()" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg text-sm font-bold transition flex items-center gap-1.5">
+                <button onclick="copyLegalOpinion()" class="px-4 py-2 bg-gov-700 hover:bg-gov-500 text-white rounded-lg text-sm font-bold transition flex items-center gap-1.5 shadow-sm">
                   <i data-lucide="copy" class="w-4 h-4"></i>
                   <span>複製研判意見摘要</span>
-                </button>
-                <button onclick="exportVerdictPDF()" class="px-4 py-2 bg-gov-700 hover:bg-gov-500 text-white rounded-lg text-sm font-bold transition flex items-center gap-1.5">
-                  <i data-lucide="file-text" class="w-4 h-4"></i>
-                  <span>產生正式公文審定書</span>
                 </button>
               </div>
             </div>
@@ -799,7 +792,7 @@
     </section>
 
     <!-- ======================================================== -->
-    <!-- SECTION 3: 大數據統計總覽 (七大評議衍生指標架構)         -->
+    <!-- SECTION 3: 大數據統計總覽 (六大評議衍生指標架構)         -->
     <!-- ======================================================== -->
     <section id="portal-stats" class="portal-section space-y-8">
       
@@ -813,27 +806,27 @@
             <div>
               <div class="flex items-center gap-2">
                 <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900">評議決定書全文衍生大數據統計中心</h2>
-                <span class="px-2.5 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">七大深度分析模組就緒</span>
+                <span class="px-2.5 py-0.5 rounded text-xs font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">六大深度分析模組就緒</span>
               </div>
-              <p class="text-base text-slate-500 mt-0.5">基於評議決定書非結構化文本萃取之程序、法條、手術熱度、獲賠成數與審理效率統計</p>
+              <p class="text-base text-slate-500 mt-0.5">基於 GitHub CSV 評議決定書非結構化文本萃取之程序、法條、手術熱度與就醫型態統計</p>
             </div>
           </div>
 
           <div class="flex flex-wrap items-center gap-2">
             <button onclick="setYearPeriod('all')" id="btn-period-all" class="px-3.5 py-1.5 rounded-lg text-sm font-bold bg-gov-800 text-white transition">全期累計樣本</button>
-            <button onclick="setYearPeriod('recent')" id="btn-period-recent" class="px-3.5 py-1.5 rounded-lg text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">近三年度</button>
-            <button onclick="setYearPeriod('latest')" id="btn-period-latest" class="px-3.5 py-1.5 rounded-lg text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">當年度即時</button>
+            <button onclick="setYearPeriod('113')" id="btn-period-113" class="px-3.5 py-1.5 rounded-lg text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">113 年度案件</button>
+            <button onclick="setYearPeriod('syllogism')" id="btn-period-syllogism" class="px-3.5 py-1.5 rounded-lg text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition">三段論法精析樣本</button>
           </div>
         </div>
 
-        <!-- 預留後端 API 串接接口狀態提示條 -->
+        <!-- CSV 串接狀態提示條 -->
         <div class="pt-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs">
           <div class="flex items-center gap-2 text-slate-600">
-            <span class="w-2.5 h-2.5 rounded-full bg-cyan-500"></span>
-            <span>圖表渲染引擎已掛載標準化 JSON 介面（<code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-gov-700">window.updateAnalyticsCharts(data)</code>），後續可直接灌入後端真實統計數據。</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+            <span>圖表數據即時由 <code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-gov-700">llm_cases.csv</code>、<code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-gov-700">llm_rejections.csv</code>、<code class="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-gov-700">llm_surgeries.csv</code> 動態聚合運算生成。</span>
           </div>
-          <div class="font-bold text-gov-800 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200 font-mono">
-            目前基準解析決定書：8,588 篇
+          <div id="stats-sample-badge" class="font-bold text-gov-800 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200 font-mono">
+            目前基準解析決定書：0 篇
           </div>
         </div>
       </div>
@@ -845,7 +838,7 @@
           <div class="flex items-center justify-between border-b border-slate-100 pb-3">
             <div>
               <span class="text-xs font-bold text-rose-600 uppercase tracking-wider">指標 01 ｜ 程序駁回熱點</span>
-              <h3 class="text-lg font-bold text-slate-900 mt-0.5">金保法第 24 條第 2 項：1～9 款不受理案件分佈</h3>
+              <h3 class="text-lg font-bold text-slate-900 mt-0.5">金保法第 24 條第 2 項：1～9 款不受理案件分佈基準</h3>
             </div>
             <span class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-rose-50 text-rose-700 border border-rose-200">長條圖</span>
           </div>
@@ -854,12 +847,12 @@
           </div>
         </div>
 
-        <!-- 2. 裁判結果統計 (圓餅圖) -->
+        <!-- 2. 裁判結果統計 (圓餅圖 - 由 llm_cases.csv 即時計算) -->
         <div class="lg:col-span-5 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-4 flex flex-col justify-between">
           <div class="flex items-center justify-between border-b border-slate-100 pb-3">
             <div>
-              <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">指標 02 ｜ 實質審定結局</span>
-              <h3 class="text-lg font-bold text-slate-900 mt-0.5">評議裁判結果四象限比例分佈</h3>
+              <span class="text-xs font-bold text-emerald-600 uppercase tracking-wider">指標 02 ｜ 實質審定結局（CSV 即時統計）</span>
+              <h3 class="text-lg font-bold text-slate-900 mt-0.5">評議結果比例分佈</h3>
             </div>
             <span class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">圓餅圖</span>
           </div>
@@ -868,48 +861,33 @@
             <canvas id="chart-verdict-pie"></canvas>
           </div>
 
-          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-3 border-t border-slate-100 text-center text-xs">
-            <div class="p-2 rounded-lg bg-emerald-50 border border-emerald-100">
-              <div class="font-black text-emerald-700 text-sm">14.2%</div>
-              <div class="text-slate-600 font-bold">全部成立</div>
-            </div>
-            <div class="p-2 rounded-lg bg-cyan-50 border border-cyan-100">
-              <div class="font-black text-cyan-700 text-sm">18.5%</div>
-              <div class="text-slate-600 font-bold">部分成立</div>
-            </div>
-            <div class="p-2 rounded-lg bg-slate-100 border border-slate-200">
-              <div class="font-black text-slate-700 text-sm">52.8%</div>
-              <div class="text-slate-600 font-bold">評議不成立</div>
-            </div>
-            <div class="p-2 rounded-lg bg-rose-50 border border-rose-100">
-              <div class="font-black text-rose-700 text-sm">14.5%</div>
-              <div class="text-slate-600 font-bold">程序不受理</div>
-            </div>
+          <div id="verdict-summary-cards" class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100 text-center text-xs">
+            <!-- Dynamically populated from llm_cases.csv -->
           </div>
         </div>
       </div>
 
-      <!-- ROW 2: 指標 3 (法條援引熱度前5) & 指標 5 (常見手術熱度前5) -->
+      <!-- ROW 2: 指標 3 (法條/駁回依據援引熱度前5) & 指標 4 (常見手術熱度前5) -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-        <!-- 3. 法條援引熱度前 5 -->
+        <!-- 3. 法條/駁回依據援引熱度前 5 (由 llm_rejections.csv 即時計算) -->
         <div class="lg:col-span-6 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-5">
           <div class="flex items-center justify-between border-b border-slate-100 pb-3">
             <div>
-              <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">指標 03 ｜ 裁判法理依據</span>
-              <h3 class="text-lg font-bold text-slate-900 mt-0.5">評議書法條援引熱度 Top 5 排行榜</h3>
+              <span class="text-xs font-bold text-indigo-600 uppercase tracking-wider">指標 03 ｜ 裁判法理與條款依據（llm_rejections.csv）</span>
+              <h3 class="text-lg font-bold text-slate-900 mt-0.5">評議書引用條款與規範熱度 Top 5 排行榜</h3>
             </div>
             <i data-lucide="book-open" class="w-5 h-5 text-indigo-600"></i>
           </div>
           <div id="stat-top5-laws-container" class="space-y-3.5">
-            <!-- Dynamically rendered -->
+            <!-- Dynamically rendered from CSV -->
           </div>
         </div>
 
-        <!-- 5. 常見手術熱度前 5 -->
+        <!-- 4. 常見手術熱度前 5 (由 llm_surgeries.csv 即時計算) -->
         <div class="lg:col-span-6 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-5">
           <div class="flex items-center justify-between border-b border-slate-100 pb-3">
             <div>
-              <span class="text-xs font-bold text-amber-600 uppercase tracking-wider">指標 05 ｜ 醫療險高頻爭點</span>
+              <span class="text-xs font-bold text-amber-600 uppercase tracking-wider">指標 04 ｜ 醫療險高頻爭點（llm_surgeries.csv）</span>
               <h3 class="text-lg font-bold text-slate-900 mt-0.5">常見爭議手術與處置熱度 Top 5</h3>
             </div>
             <button onclick="toggleAllSurgeriesView()" id="btn-toggle-surgeries" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100 transition">
@@ -917,43 +895,23 @@
             </button>
           </div>
           <div id="stat-top5-surgeries-container" class="space-y-3.5">
-            <!-- Dynamically rendered -->
+            <!-- Dynamically rendered from CSV -->
           </div>
         </div>
       </div>
 
-      <!-- ROW 3: 指標 4 (不同爭端類型的平均獲賠成數) -->
-      <div class="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm space-y-6">
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 pb-4">
-          <div>
-            <span class="text-xs font-bold text-teal-600 uppercase tracking-wider">指標 04 ｜ 實質給付預期基準（決定主文判賠金額 ÷ 評議請求標的）</span>
-            <h3 class="text-xl font-bold text-slate-900 mt-0.5 flex items-center gap-2">
-              不同爭端類型的平均獲賠成數與裁判傾向
-            </h3>
-            <p class="text-sm text-slate-500 mt-0.5">協助消費者與機構評估各類爭端進入實體評議後之平均獲賠比例與過失分攤基準</p>
-          </div>
-          <span class="text-xs font-bold px-3 py-1.5 rounded-lg bg-teal-50 text-teal-800 border border-teal-200 self-start sm:self-auto">
-            不含先前已賠金額之純爭議標的計算基準
-          </span>
-        </div>
-
-        <div id="stat-payout-ratio-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <!-- Dynamically rendered payout ratio cards -->
-        </div>
-      </div>
-
-      <!-- ROW 4: 指標 6 (平均審理天數分佈 + 耗時案型細究) & 指標 7 (補正缺失資料頻率 + 防呆設計) -->
+      <!-- ROW 3: 指標 5 (就醫型態與治療方式分佈) & 指標 6 (補正缺失資料頻率 + 防呆設計) -->
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
         
-        <!-- 6. 平均審理天數分佈 -->
+        <!-- 5. 就醫型態與高頻術式分佈 (由 llm_cases.csv & llm_surgeries.csv 即時計算) -->
         <div class="lg:col-span-6 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-5 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
-                <span class="text-xs font-bold text-cyan-600 uppercase tracking-wider">指標 06 ｜ 金保法第 27 條審理週期</span>
-                <h3 class="text-lg font-bold text-slate-900 mt-0.5">平均審理天數級距分佈與耗時案型分析</h3>
+                <span class="text-xs font-bold text-cyan-600 uppercase tracking-wider">指標 05 ｜ 住院與門診手術認定爭議</span>
+                <h3 class="text-lg font-bold text-slate-900 mt-0.5">案件就醫型態（門診 vs. 住院）與爭議術式分佈</h3>
               </div>
-              <span class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-cyan-50 text-cyan-800 border border-cyan-200">平均 84.5 天</span>
+              <span class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-cyan-50 text-cyan-800 border border-cyan-200">CSV 即時統計</span>
             </div>
 
             <div class="h-64 w-full mt-4">
@@ -961,26 +919,23 @@
             </div>
           </div>
 
-          <!-- 細究哪些類型/手術所需天數較長 -->
           <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2.5">
             <div class="text-xs font-bold text-gov-800 flex items-center gap-1.5">
-              <i data-lucide="clock" class="w-4 h-4 text-amber-600"></i>
-              <span>延長審理（91～150天以上）高耗時案型與手術細究：</span>
+              <i data-lucide="stethoscope" class="w-4 h-4 text-amber-600"></i>
+              <span>高頻爭議手術方式與部位交叉觀察（llm_surgeries.csv）：</span>
             </div>
-            <ul class="text-xs text-slate-600 space-y-1.5 list-disc list-inside leading-relaxed">
-              <li><strong class="text-slate-800">須送特約專科醫師鑑定案（平均 118 天）</strong>：如「達文西微創手術比照認定」、「心導管支架放置手術章節認定」、「癌症自費標靶住院必要性」。</li>
-              <li><strong class="text-slate-800">失能等級與神經障害鑑定案（平均 134 天）</strong>：需調閱多年完整病歷並函詢多家醫學中心複檢。</li>
-              <li><strong class="text-slate-800">高齡保單招攬錄音逐字稿比對案（平均 106 天）</strong>：需逐段勘驗業務員核保錄音與要保文件筆跡。</li>
+            <ul id="surgery-insight-list" class="text-xs text-slate-600 space-y-1.5 list-disc list-inside leading-relaxed">
+              <!-- Dynamically populated -->
             </ul>
           </div>
         </div>
 
-        <!-- 7. 補正缺失資料的頻率與防呆應用 -->
+        <!-- 6. 補正缺失資料的頻率與防呆應用 -->
         <div class="lg:col-span-6 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm space-y-5 flex flex-col justify-between">
           <div>
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
-                <span class="text-xs font-bold text-purple-600 uppercase tracking-wider">指標 07 ｜ 金保法第 24 條程序補正統計</span>
+                <span class="text-xs font-bold text-purple-600 uppercase tracking-wider">指標 06 ｜ 金保法第 24 條程序補正統計</span>
                 <h3 class="text-lg font-bold text-slate-900 mt-0.5">補正程序缺失資料頻率排行</h3>
               </div>
               <span class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-purple-50 text-purple-800 border border-purple-200">整體補正率 28.4%</span>
@@ -991,7 +946,6 @@
             </div>
           </div>
 
-          <!-- 後續應用：表單防呆提醒設計建議 -->
           <div class="p-4 rounded-xl bg-purple-50/70 border border-purple-200 space-y-2">
             <div class="text-xs font-bold text-purple-900 flex items-center gap-1.5">
               <i data-lucide="shield-alert" class="w-4 h-4 text-purple-700"></i>
@@ -1021,11 +975,11 @@
           </span>
           <div>
             <div class="flex flex-wrap sm:flex-nowrap items-center gap-2 whitespace-nowrap">
-              <span id="modal-doc-id" class="text-sm font-mono font-bold bg-gov-100 text-gov-800 px-3 py-1 rounded">114-評字第005624號</span>
-              <span id="modal-doc-industry-badge" class="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700">保險業</span>
-              <span class="text-xs font-bold px-2.5 py-1 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">NLP 自動斷詞萃取完成</span>
+              <span id="modal-doc-id" class="text-sm font-mono font-bold bg-gov-100 text-gov-800 px-3 py-1 rounded">113年評字第004325號</span>
+              <span id="modal-doc-industry-badge" class="text-xs font-semibold px-2.5 py-1 rounded bg-slate-100 text-slate-700">住院</span>
+              <span id="modal-doc-model-badge" class="text-xs font-bold px-2.5 py-1 rounded bg-emerald-100 text-emerald-800 border border-emerald-200">ollama:qwen3:8b</span>
             </div>
-            <h3 id="modal-doc-title" class="text-xl sm:text-2xl font-black text-slate-900 mt-1.5">評議決定書 AI 爭點分析報告書</h3>
+            <h3 id="modal-doc-title" class="text-xl sm:text-2xl font-black text-slate-900 mt-1.5">評議決定書 AI 爭點與三段論法分析報告</h3>
           </div>
         </div>
         <button onclick="closeDecisionModal()" class="text-slate-400 hover:text-slate-700 p-2 rounded-lg hover:bg-slate-100 transition shrink-0">
@@ -1033,79 +987,60 @@
         </button>
       </div>
 
-      <!-- Quick KPI Chips -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs bg-slate-50 p-5 rounded-xl border border-slate-200">
-        <div class="whitespace-nowrap">
-          <div class="text-slate-400 font-semibold">請求 / 判賠金額</div>
-          <div id="modal-doc-amount" class="font-bold text-gov-800 font-mono text-base mt-1">-</div>
+      <!-- Quick KPI Chips (已移除「獲賠成數」卡片) -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs bg-slate-50 p-5 rounded-xl border border-slate-200">
+        <div>
+          <div class="text-slate-400 font-semibold">請求金額 / 准許金額 / 已給付</div>
+          <div id="modal-doc-amount" class="font-bold text-gov-800 font-mono text-sm mt-1">-</div>
         </div>
-        <div class="whitespace-nowrap">
-          <div class="text-slate-400 font-semibold">爭議標的獲賠成數</div>
-          <div id="modal-doc-ratio" class="font-bold text-teal-700 font-mono text-base mt-1">-</div>
+        <div>
+          <div class="text-slate-400 font-semibold">就醫院所與傷病診斷</div>
+          <div id="modal-doc-hospital" class="font-bold text-slate-900 text-sm mt-1">-</div>
         </div>
-        <div class="whitespace-nowrap">
-          <div class="text-slate-400 font-semibold">審理耗時天數</div>
-          <div id="modal-doc-days" class="font-bold text-slate-900 font-mono text-base mt-1">-</div>
-        </div>
-        <div class="whitespace-nowrap">
+        <div>
           <div class="text-slate-400 font-semibold">作成決定結論</div>
           <div id="modal-doc-verdict" class="font-bold text-base mt-1">-</div>
         </div>
       </div>
 
-      <!-- Section 1: NLP Tokenized Keywords -->
+      <!-- Section 1: Extracted Surgeries & NLP Tags -->
       <div class="bg-slate-900 text-slate-200 p-5 rounded-xl border border-slate-700 space-y-2.5">
         <div class="flex items-center justify-between text-xs whitespace-nowrap">
           <span class="font-bold text-emerald-400 flex items-center gap-1.5">
-            <i data-lucide="tags" class="w-4 h-4"></i>
-            <span>關鍵法律爭點與特徵詞萃取</span>
+            <i data-lucide="stethoscope" class="w-4 h-4"></i>
+            <span>萃取手術處置與保單商品特徵（llm_surgeries.csv）</span>
           </span>
-          <span class="text-slate-400 font-mono">TF-IDF & Legal NER</span>
+          <span class="text-slate-400 font-mono">Medical Entity Extraction</span>
         </div>
         <div id="modal-nlp-tags" class="flex flex-wrap gap-2 pt-1"></div>
+        <div id="modal-surgery-evidence" class="text-xs text-slate-300 pt-2 border-t border-slate-800 leading-relaxed"></div>
       </div>
 
-      <!-- Section 2: Two-Party Dispute Matrix -->
-      <div class="space-y-3">
+      <!-- Section 2: Legal Syllogism (三段論法) if available in llm_syllogisms.csv -->
+      <div id="modal-syllogism-section" class="hidden space-y-3">
         <h4 class="font-bold text-slate-900 flex items-center gap-2 text-base whitespace-nowrap">
-          <i data-lucide="swords" class="w-5 h-5 text-gov-700"></i>
-          <span>兩造爭端攻防主張對照矩陣</span>
+          <i data-lucide="scale" class="w-5 h-5 text-purple-600"></i>
+          <span>法律三段論法精析（llm_syllogisms.csv）</span>
         </h4>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-          <div class="p-5 rounded-xl bg-blue-50/70 border border-blue-200 space-y-2.5">
-            <div class="flex items-center gap-2 font-bold text-blue-900 text-sm border-b border-blue-200 pb-2 whitespace-nowrap">
-              <i data-lucide="user" class="w-4 h-4 text-blue-600"></i>
-              <span>申請人（金融消費者）主張要點</span>
-            </div>
-            <ul id="modal-consumer-claims" class="text-sm text-slate-800 space-y-2 list-disc list-inside leading-relaxed"></ul>
-          </div>
-
-          <div class="p-5 rounded-xl bg-amber-50/70 border border-amber-200 space-y-2.5">
-            <div class="flex items-center gap-2 font-bold text-amber-900 text-sm border-b border-amber-200 pb-2 whitespace-nowrap">
-              <i data-lucide="building-2" class="w-4 h-4 text-amber-600"></i>
-              <span>相對人（金融服務業）抗辯要點</span>
-            </div>
-            <ul id="modal-institution-defenses" class="text-sm text-slate-800 space-y-2 list-disc list-inside leading-relaxed"></ul>
-          </div>
-        </div>
+        <div id="modal-syllogism-list" class="space-y-4"></div>
       </div>
 
-      <!-- Section 3: Committee Decision & Legal Reasons -->
+      <!-- Section 3: Dispute Issue & Rejection Reasons (llm_rejections.csv) -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <div>
           <h4 class="font-bold text-slate-900 flex items-center gap-2 text-base mb-2 whitespace-nowrap">
-            <i data-lucide="gavel" class="w-5 h-5 text-gov-700"></i>
-            <span>評議委員會決定主文與案情摘要</span>
+            <i data-lucide="help-circle" class="w-5 h-5 text-gov-700"></i>
+            <span>核心爭點與請求標的（llm_cases.csv）</span>
           </h4>
-          <div id="modal-doc-summary" class="p-5 bg-emerald-50/70 rounded-xl text-slate-800 text-sm leading-relaxed border border-emerald-200 font-medium h-[calc(100%-2.2rem)]">-</div>
+          <div id="modal-doc-summary" class="p-5 bg-blue-50/70 rounded-xl text-slate-800 text-sm leading-relaxed border border-blue-200 font-medium space-y-2"></div>
         </div>
 
         <div>
           <h4 class="font-bold text-slate-900 flex items-center gap-2 text-base mb-2 whitespace-nowrap">
-            <i data-lucide="book-open" class="w-5 h-5 text-gov-700"></i>
-            <span>核心裁判心證與法理推論整理</span>
+            <i data-lucide="file-warning" class="w-5 h-5 text-rose-600"></i>
+            <span>駁回／不符理由明細（llm_rejections.csv）</span>
           </h4>
-          <div id="modal-doc-reasons" class="p-5 bg-slate-50 rounded-xl text-slate-700 text-sm leading-relaxed border border-slate-200 whitespace-pre-line h-[calc(100%-2.2rem)]">-</div>
+          <div id="modal-doc-reasons" class="p-5 bg-rose-50/50 rounded-xl text-slate-800 text-sm leading-relaxed border border-rose-200 space-y-2.5 max-h-80 overflow-y-auto custom-scroll"></div>
         </div>
       </div>
 
@@ -1114,16 +1049,16 @@
         <div class="flex items-center justify-between whitespace-nowrap">
           <h4 class="font-bold text-slate-900 flex items-center gap-2 text-base">
             <i data-lucide="git-branch" class="w-5 h-5 text-cyan-600"></i>
-            <span>智慧關聯：同類型歷年裁判前案比對</span>
+            <span>智慧關聯：同類型手術或爭點前案比對</span>
           </h4>
-          <span class="text-xs text-slate-400">依斷詞特徵相似度自動配對</span>
+          <span class="text-xs text-slate-400">依傷病與手術特徵自動配對</span>
         </div>
         <div id="modal-similar-cases-list" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
       </div>
 
       <!-- Modal Footer -->
       <div class="pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-3 whitespace-nowrap">
-        <span class="text-xs text-slate-400">資料來源：財團法人金融消費評議中心公開評議書庫</span>
+        <span class="text-xs text-slate-400">資料來源：GitHub CSV 評議決定書結構化資料集</span>
         <div class="flex items-center gap-2.5 w-full sm:w-auto justify-end">
           <button onclick="copyAIAnalysisSummary()" class="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-sm font-bold transition flex items-center gap-1.5 whitespace-nowrap">
             <i data-lucide="copy" class="w-4 h-4"></i>
@@ -1153,260 +1088,236 @@
       </div>
       <div class="text-center md:text-right text-xs text-slate-400 space-y-1">
         <div>依據《金融消費者保護法》、《金融消費爭議處理機構設立及管理辦法》</div>
-        <div>法規版本：2026 最新修正案 ｜ 系統狀態：即時雙向連線</div>
+        <div>法規版本：2026 最新修正案 ｜ 資料架構：GitHub Static CSV Relational Engine</div>
       </div>
     </div>
   </footer>
 
   <script>
+    // ========================================================
+    // 全域狀態管理與四份 CSV 資料倉儲
+    // ========================================================
     const portalState = {
       currentView: 'portal-home',
       activePeriod: 'all',
-      caseTypeFilter: 'all',
       searchMode: 'docId',
       chartsInitialized: false,
-      isCrawling: false,
       activeModalDoc: null,
       showAllSurgeries: false,
 
-      crawledDecisions: [
-        {
-          id: 'CASE-2025-5624',
-          docId: '114-評字第005624號',
-          industry: '保險業',
-          category: '手術項目與條款解釋爭議（心導管支架放置）',
-          amount: 100000,
-          awardedAmount: 42000,
-          payoutRatio: 42,
-          processingDays: 98,
-          durationBucket: 'extended',
-          citedLaws: ['保險法§54', '金保法§7'],
-          hasMedicalExpert: true,
-          hasRectification: true,
-          date: '2026-03-06',
-          verdictType: '部分成立',
-          badgeClass: 'bg-cyan-100 text-cyan-800',
-          dotClass: 'bg-cyan-500',
-          verdict: '部分成立',
-          summary: '申請人因冠狀動脈疾病接受心導管氣球擴張並置放塗藥支架，請求補差額10萬元；評議會諮詢醫療顧問後比照健保「瘻管之修補手術」按36倍核算，扣除已賠3萬後判賠42,000元。',
-          reasons: '一、心導管介入治療具一定風險且對兩條冠狀動脈進行氣球擴張與支架置放，僅以心導管檢查核算為不合理。\n二、比照全民健保支付標準「瘻管之修補手術」（編號68022B，36,604點）按36倍核算為72,000元，扣除已給付之30,000元，尚應給付42,000元。',
-          consumerClaims: [
-            '實質執行血管支架放置與氣球擴張之治療性處置，健保點數達27.6萬點，應按上限50倍給付。',
-            '請求相對人補給付手術醫療保險金10萬元。'
-          ],
-          institutionDefenses: [
-            '該治療屬健保「放射線診療章（33076B）」，非「手術章」，且收據無手術費項目。',
-            '已依心導管檢查及比照程度相當手術15倍給付保險金在案。'
-          ],
-          tokenizedTags: ['#手術項目認定', '#心導管支架放置', '#比照相當手術', '#諮詢醫療顧問'],
-          complainDaysAgo: 45,
-          replyDaysAgo: 18,
-          similarCaseIds: ['CASE-2026-0904', 'CASE-2026-0301']
-        },
-        {
-          id: 'CASE-2026-0904',
-          docId: '115-評字第000904號',
-          industry: '保險業',
-          category: '必要性醫療/理賠金額認定（癌症自費標靶）',
-          amount: 620000,
-          awardedAmount: 620000,
-          payoutRatio: 100,
-          processingDays: 112,
-          durationBucket: 'extended',
-          citedLaws: ['保險法§54', '金保法§7'],
-          hasMedicalExpert: true,
-          hasRectification: false,
-          date: '2026-10-14',
-          verdictType: '全部成立',
-          badgeClass: 'bg-emerald-100 text-emerald-800',
-          dotClass: 'bg-emerald-500',
-          verdict: '全部成立',
-          summary: '申請人主張因癌症需自費施打標靶藥物，請求給付住院醫療日額保險金；相對人抗辯該療程無實質住院必要性。',
-          reasons: '一、涉及契約條款中「住院」之醫學必要性認定。\n二、送請評議中心特約專科醫師鑑定，認該療程處方註明因嚴重副作用需留院觀察，符合住院常規。',
-          consumerClaims: [
-            '主治醫師診斷證明書載明副作用強烈需留院監測心率與血壓。',
-            '保險條款未排除新型自費標靶化療之住院給付請求。'
-          ],
-          institutionDefenses: [
-            '依最新臨床指引，該藥物注射通常僅需門診輸注2小時即可返家。',
-            '不符合保險契約條款約定之「經醫師診斷必須入住醫院診療」之實質要件。'
-          ],
-          tokenizedTags: ['#自費標靶藥物', '#醫學必要性', '#住院認定', '#專科醫師鑑定'],
-          complainDaysAgo: 24,
-          replyDaysAgo: null,
-          similarCaseIds: ['CASE-2025-5624', 'CASE-2026-0301']
-        },
-        {
-          id: 'CASE-2026-1025',
-          docId: '115-評字第001025號',
-          industry: '保險業',
-          category: '業務招攬爭端/未盡告知義務（高齡保單）',
-          amount: 980000,
-          awardedAmount: 980000,
-          payoutRatio: 100,
-          processingDays: 85,
-          durationBucket: 'normal',
-          citedLaws: ['金保法§9/§10', '金保法§7'],
-          hasMedicalExpert: false,
-          hasRectification: true,
-          date: '2026-10-21',
-          verdictType: '全部成立',
-          badgeClass: 'bg-emerald-100 text-emerald-800',
-          dotClass: 'bg-emerald-500',
-          verdict: '全部成立',
-          summary: '業務員向69歲高齡長者推介保本型結構連動保單，未完整告知匯率風險與本金虧損可能性，核保錄音存在引導性問答。',
-          reasons: '一、保險業招攬及核保理賠辦法要求對高齡客戶應落實友善對待與錄音錄影核保。\n二、經調閱錄音檔，業務員未明確朗讀風險預告書，認定招攬不當，應全額返還已繳保費。',
-          consumerClaims: [
-            '業務員強調為定期存款替代方案，承諾絕對保本。',
-            '保戶年近七旬，不具外幣及衍生性金融商品投資經驗。'
-          ],
-          institutionDefenses: [
-            '保單要保書與投資風險告知書均有要保人親筆簽名確認。',
-            '電話訪問覆核照會錄音中，客戶對保單條款均答覆理解。'
-          ],
-          tokenizedTags: ['#高齡金融剝削', '#招攬不當', '#適合度原則KYC', '#核保錄音瑕疵'],
-          complainDaysAgo: 38,
-          replyDaysAgo: 15,
-          similarCaseIds: ['CASE-2025-0882']
-        },
-        {
-          id: 'CASE-2026-0742',
-          docId: '115-評字第000742號',
-          industry: '證券期貨業',
-          category: '電子下單線路中斷/委託失敗',
-          amount: 1800000,
-          awardedAmount: 0,
-          payoutRatio: 0,
-          processingDays: 28,
-          durationBucket: 'fast',
-          citedLaws: ['金保法§13/§24'],
-          hasMedicalExpert: false,
-          hasRectification: false,
-          date: '2026-09-28',
-          verdictType: '不受理',
-          badgeClass: 'bg-rose-100 text-rose-800',
-          dotClass: 'bg-rose-500',
-          verdict: '程序不受理',
-          summary: '期貨結算日下單軟體斷線導致停損單延遲觸發。消費者收到相對人正式回函後第68日方具狀向評議中心申請，依法作成不受理決議。',
-          reasons: '一、依金融消費者保護法第13條第2項規定，受覆後60日為法定不變期間。\n二、申請人具狀郵戳已逾收受回函後第60日，要件欠缺且無從補正，依同法第24條應為不受理之決定。',
-          consumerClaims: [
-            '電子交易主機當機斷線長達180秒，無法掛單平倉。',
-            '因系統障礙導致保證金維持率不足遭強行斷頭賣出。'
-          ],
-          institutionDefenses: [
-            '已備置電話委託與語音下單等多重替代備援管道。',
-            '申請人向本中心送件已越過法定60日不變期間，程序不適格。'
-          ],
-          tokenizedTags: ['#金保法§13', '#逾60日法定期限', '#程序不受理', '#下單斷線'],
-          complainDaysAgo: 95,
-          replyDaysAgo: 68,
-          similarCaseIds: []
-        },
-        {
-          id: 'CASE-2026-0618',
-          docId: '115-評字第000618號',
-          industry: '保險業',
-          category: '汽機車責任險/工資折舊與過失責任',
-          amount: 320000,
-          awardedAmount: 224000,
-          payoutRatio: 70,
-          processingDays: 74,
-          durationBucket: 'normal',
-          citedLaws: ['金保法§7'],
-          hasMedicalExpert: false,
-          hasRectification: false,
-          date: '2026-10-05',
-          verdictType: '部分成立',
-          badgeClass: 'bg-cyan-100 text-cyan-800',
-          dotClass: 'bg-cyan-500',
-          verdict: '部分成立',
-          summary: '車體險與第三方責任險折舊計算爭議。相對人逕依固定資產折舊率扣減工資費用，評議會認工資無折舊依據，命補足差額。',
-          reasons: '一、依損害賠償原則，零件之更換始有折舊適用，修復所支出之必要工資費用不應予以折舊。\n二、自行調高扣除比例欠缺契約依據，應全額給付爭議之修復工資。',
-          consumerClaims: [
-            '受損車輛進原廠修繕，相對人擅將必要鈑金工資費用列入折舊扣減。',
-            '請求全額給付修復必要之工資與零件費用。'
-          ],
-          institutionDefenses: [
-            '參酌所得稅法固定資產折舊耐用年數表進行零件與工資綜合計提折舊。'
-          ],
-          tokenizedTags: ['#產物車險', '#工資不折舊', '#損害賠償', '#具強制拘束力'],
-          complainDaysAgo: 31,
-          replyDaysAgo: 12,
-          similarCaseIds: ['CASE-2025-0955']
-        },
-        {
-          id: 'CASE-2026-0489',
-          docId: '115-評字第000489號',
-          industry: '保險業',
-          category: '帶病投保/違反據實說明義務',
-          amount: 800000,
-          awardedAmount: 0,
-          payoutRatio: 0,
-          processingDays: 88,
-          durationBucket: 'normal',
-          citedLaws: ['保險法§64'],
-          hasMedicalExpert: false,
-          hasRectification: true,
-          date: '2026-08-19',
-          verdictType: '評議不成立',
-          badgeClass: 'bg-slate-200 text-slate-800',
-          dotClass: 'bg-slate-500',
-          verdict: '評議不成立',
-          summary: '被保險人投保前二年內已有多次高血壓與糖尿病門診就醫紀錄，於要保書健康告知事項勾選「否」，保險公司依保險法第64條解除契約有據。',
-          reasons: '一、調閱健保就醫紀錄顯示投保前確有連續處方箋紀錄，足以影響保險人對危險之估計。\n二、保險公司於知悉解除原因後一個月內合法行使解除權，請求給付保險金為無理由。',
-          consumerClaims: [
-            '業務員代為勾選健康告知書，且自身無自覺症狀。'
-          ],
-          institutionDefenses: [
-            '要保書經要保人親自簽名確認，且病歷與此次腦中風理賠具高度因果關聯。'
-          ],
-          tokenizedTags: ['#保險法第64條', '#據實說明義務', '#帶病投保', '#解除契約'],
-          complainDaysAgo: 40,
-          replyDaysAgo: 14,
-          similarCaseIds: []
-        }
-      ],
+      // 四份 CSV 原始與整合後資料
+      rawCases: [],
+      rawRejections: [],
+      rawSyllogisms: [],
+      rawSurgeries: [],
+      mergedCases: [],
 
-      precedentDatabase: {
-        'CASE-2026-0301': {
-          docId: '115-評字第000301號',
-          industry: '保險業',
-          category: '必要性醫療/理賠金額認定',
-          amount: 450000,
-          similarity: '89%(同型醫療案)',
-          verdict: '全部成立',
-          summary: '自費標靶藥物門診化療認定爭端，依契約精神與最新醫療技術實質給付。',
-          coreDistinction: '【心證分水嶺】特約專科醫師出具明確鑑定報告，證明若不在醫院施打觀察將有危及生命之高風險，確認住院之醫學必要性成立。'
-        },
-        'CASE-2025-0882': {
-          docId: '114-評字第000882號',
-          industry: '保險業',
-          category: '業務招攬爭端/未盡告知義務',
-          amount: 1100000,
-          similarity: '94%(高度重疊案)',
-          verdict: '全部成立',
-          summary: '向未具投資經驗保戶推銷高槓桿投資型保險，違反KYC適當性原則。',
-          coreDistinction: '【心證分水嶺】業務員以代操獲利之口頭承諾引導投保，且核保錄音背景有業務員低聲指導發言，錄音存證失效。'
-        },
-        'CASE-2025-0955': {
-          docId: '114-評字第000955號',
-          industry: '保險業',
-          category: '汽機車責任險/事故過失責任',
-          amount: 280000,
-          similarity: '92%(責任險前案)',
-          verdict: '部分成立',
-          summary: '車輛追撞事故維修工資爭議，判定工資不計折舊。',
-          coreDistinction: '【心證分水嶺】委員會認定更換新品始得依耐用年限扣除折舊，修復之純勞務工資不應列入折舊扣減範圍。'
-        }
-      },
-
-      metrics: {
-        totalCases: 8588,
-        complaints: 6031,
-        ombuds: 2557,
-        overdue: 29
-      }
+      // 當前篩選與分頁狀態
+      filteredList: [],
+      showSimilarityInFeed: false,
+      currentPage: 1,
+      pageSize: 15
     };
+
+    // 內建備援樣本（若使用者未透過 HTTP Server 而是直接雙擊本機 file:// 開啟時自動啟用）
+    const FALLBACK_SAMPLE_CASES = [
+      {
+        caseNo: '113年評字第004325號',
+        fileName: '113年評字第004325號.pdf',
+        verdict: '不准許',
+        awardedAmountStr: '',
+        claimTarget: '相對人應給付申請人新臺幣（下同）103,090元，及自民國（下同）113年7月29日起至清償日止按週年利率百分之十計算之遲延利息。',
+        claimAmountStr: '103,090元',
+        claimAmountNum: 103090,
+        paidAmountStr: '114,929元',
+        policyName: '○○○終身壽險；○○○醫療健康保險附約',
+        diagnosis: '兩下肢靜脈曲張伴有疼痛',
+        hospital: '中心診所醫療財團法人中心綜合醫院',
+        setting: '住院',
+        issue: '依現有卷證資料，申請人自費接受之鹽水閉合術（費用為「特別處置費-治療處置費95,000元」）是否屬全民健康保險醫療費用支付標準第二部第二章第七節所列舉之手術項目？申請人請求相對人給付相關醫療保險金103,090元及遲延利息是否有據？',
+        failedAudit: '',
+        model: 'ollama:qwen3:8b',
+        rejections: [
+          { seq: '1.0', basis: '系爭附約條款', mismatch: '硬化治療（高濃度鹽水注射）非屬系爭附約條款約定之手術。', audit: '通過' },
+          { seq: '2.0', basis: '全民健康保險醫療費用支付標準第二部第二章第七節', mismatch: '鹽水閉合術非全民健康保險醫療費用支付標準第二部第二章第七節所列舉之手術項目。', audit: '通過' }
+        ],
+        surgeries: [
+          { name: '兩下肢靜脈曲張微創靜脈根除剝離手術去除及結紮交通枝及小腿曲張靜脈叢及並實施微小靜脈曲張血管高張鹽水閉合術', part: '兩下肢靜脈', method: '', evidence: '申請人因「兩下肢靜脈曲張伴有疼痛」於113年7月18日至中心綜合醫院接受兩下肢靜脈曲張微創靜脈根除剝離手術...' }
+        ],
+        syllogisms: [
+          {
+            seq: '1',
+            item: '手術醫療保險金',
+            lawShort: '系爭附約第2條',
+            lawFull: '○○○醫療健康保險附約第2條',
+            majorSummary: '根據系爭附約的定義，手術需符合全民健康保險醫療費用支付標準第二部第二章第七節所列舉之手術項目。',
+            majorText: '系爭附約第2條約定：「…七、『手術』：係指符合保險事故當時中央衛生主管機關公布適用之全民健康保險醫療費用支付標準第二部第二章第七節所列舉之手術…」',
+            minorSummary: '申請人接受的鹽水閉合術未被認定為全民健康保險醫療費用支付標準第二部第二章第七節所列舉之手術項目。',
+            minorText: '經諮詢本中心專業醫療顧問，其意見略以：1.鹽水閉合術不屬全民健康保險醫療費用支付標準第二部第二章第七節所列舉之手術項目。',
+            conclusionSummary: '申請人所接受之鹽水閉合術不屬系爭附約所定之手術項目，故相對人不負手術費用保險金給付之責。',
+            conclusionText: '經查，依現有病歷資料及本中心諮詢醫療顧問之意見，可認申請人所接受之鹽水閉合術不屬全民健康保險醫療費用支付標準第二部第二章第七節所列舉之手術項目，故相對人主張其不負手術費用保險金給付之責，難謂無據。',
+            reviewNote: '摘要內容與原文一致，大前提正確引用系爭附約對「手術」的定義，小前提正確指出鹽水閉合術未被認定為符合手術項目。'
+          }
+        ]
+      }
+    ];
+
+    // ========================================================
+    // CSV 載入與四表關聯整合引擎 (GitHub Pages Relative Fetch)
+    // ========================================================
+    function parseNumericAmount(val) {
+      if (!val) return 0;
+      const cleaned = String(val).replace(/[^\d.]/g, '');
+      return cleaned ? Math.round(Number(cleaned)) : 0;
+    }
+
+    function loadCsvFile(filename) {
+      return new Promise((resolve, reject) => {
+        Papa.parse(`./${filename}`, {
+          download: true,
+          header: true,
+          skipEmptyLines: true,
+          complete: (results) => resolve(results.data || []),
+          error: (err) => reject(err)
+        });
+      });
+    }
+
+    async function reloadAllCsvData() {
+      const refreshIcon = document.getElementById('crawler-refresh-icon');
+      const statusEl = document.getElementById('csv-connection-status');
+      if (refreshIcon) refreshIcon.classList.add('animate-spin');
+      if (statusEl) statusEl.innerText = '正在讀取 4 份 CSV...';
+
+      try {
+        const [casesData, rejectionsData, syllogismsData, surgeriesData] = await Promise.all([
+          loadCsvFile('llm_cases.csv'),
+          loadCsvFile('llm_rejections.csv'),
+          loadCsvFile('llm_syllogisms.csv'),
+          loadCsvFile('llm_surgeries.csv')
+        ]);
+
+        portalState.rawCases = casesData;
+        portalState.rawRejections = rejectionsData;
+        portalState.rawSyllogisms = syllogismsData;
+        portalState.rawSurgeries = surgeriesData;
+
+        buildMergedDataset();
+
+        if (statusEl) statusEl.innerText = '4 份 CSV 連線正常';
+        document.getElementById('crawler-last-sync-time').innerText = new Date().toTimeString().split(' ')[0];
+        showToast(`成功載入 ${portalState.mergedCases.length} 件評議決定書與關聯特徵`, 'check-circle-2');
+      } catch (err) {
+        console.warn('無法透過 fetch 讀取同目錄 CSV（若為本機 file:// 開啟屬正常 CORS 限制，部署至 GitHub Pages 後即可自動讀取）：', err);
+        portalState.mergedCases = FALLBACK_SAMPLE_CASES;
+        if (statusEl) statusEl.innerText = '本機預覽模式（部署後讀取完整CSV）';
+        showToast('已啟用預覽資料（上傳至 GitHub 後將自動讀取四份完整 CSV）', 'info');
+      } finally {
+        if (refreshIcon) refreshIcon.classList.remove('animate-spin');
+        updateAllDashboardViews();
+      }
+    }
+
+    function buildMergedDataset() {
+      const rejMap = {};
+      portalState.rawRejections.forEach(r => {
+        const k = (r['案號'] || '').trim();
+        if (!k) return;
+        if (!rejMap[k]) rejMap[k] = [];
+        rejMap[k].push({
+          seq: r['序號'] || '',
+          basis: (r['依據'] || '').trim(),
+          mismatch: (r['不符之處'] || '').trim(),
+          audit: (r['檢核'] || '').trim()
+        });
+      });
+
+      const surMap = {};
+      portalState.rawSurgeries.forEach(s => {
+        const k = (s['案號'] || '').trim();
+        if (!k) return;
+        if (!surMap[k]) surMap[k] = [];
+        surMap[k].push({
+          name: (s['手術名稱'] || '').trim(),
+          part: (s['部位'] || '').trim(),
+          method: (s['方式'] || '').trim(),
+          audit: (s['檢核'] || '').trim(),
+          evidence: (s['證據句'] || '').trim()
+        });
+      });
+
+      const sylMap = {};
+      portalState.rawSyllogisms.forEach(sy => {
+        const k = (sy['案號'] || '').trim();
+        if (!k) return;
+        if (!sylMap[k]) sylMap[k] = [];
+        sylMap[k].push({
+          seq: sy['序號'] || '',
+          item: (sy['請求項目'] || '').trim(),
+          groupAudit: (sy['分組檢核'] || '').trim(),
+          contractShort: (sy['契約簡稱'] || '').trim(),
+          lawShort: (sy['大前提引用條文'] || '').trim(),
+          lawFull: (sy['大前提引用條文（全名）'] || '').trim(),
+          majorSummary: (sy['大前提摘要'] || '').trim(),
+          majorText: (sy['大前提原文'] || '').trim(),
+          majorSource: (sy['大前提出處'] || '').trim(),
+          minorSummary: (sy['小前提摘要'] || '').trim(),
+          minorText: (sy['小前提原文'] || '').trim(),
+          minorSource: (sy['小前提出處'] || '').trim(),
+          conclusionSummary: (sy['涵攝結論摘要'] || '').trim(),
+          conclusionText: (sy['涵攝結論原文'] || '').trim(),
+          conclusionSource: (sy['涵攝結論出處'] || '').trim(),
+          reviewNote: (sy['涵攝結論審查說明'] || sy['大前提審查說明'] || '').trim()
+        });
+      });
+
+      portalState.mergedCases = portalState.rawCases.map(c => {
+        const caseNo = (c['案號'] || '').trim();
+        return {
+          caseNo,
+          fileName: (c['檔名'] || '').trim(),
+          verdict: (c['評議結果'] || '不准許').trim(),
+          awardedAmountStr: (c['准許金額'] || '').trim(),
+          claimTarget: (c['請求標的'] || '').trim(),
+          claimAmountStr: (c['請求金額'] || '').trim(),
+          claimAmountNum: parseNumericAmount(c['請求金額']),
+          paidAmountStr: (c['已給付金額'] || '').trim(),
+          policyName: (c['保險商品'] || '').trim(),
+          diagnosis: (c['傷病'] || '').trim(),
+          hospital: (c['就醫院所'] || '').trim(),
+          setting: (c['住院或門診'] || '不明').trim(),
+          issue: (c['爭點'] || '').trim(),
+          failedAudit: (c['未通過檢核'] || '').trim(),
+          model: (c['模型'] || '').trim(),
+          rejections: rejMap[caseNo] || [],
+          surgeries: surMap[caseNo] || [],
+          syllogisms: sylMap[caseNo] || []
+        };
+      });
+    }
+
+    function updateAllDashboardViews() {
+      const totalCases = portalState.mergedCases.length;
+      const totalSurgeries = portalState.rawSurgeries.length || portalState.mergedCases.reduce((acc, c) => acc + c.surgeries.length, 0);
+      const totalRejections = portalState.rawRejections.length || portalState.mergedCases.reduce((acc, c) => acc + c.rejections.length, 0);
+      const syllogismCaseCount = portalState.mergedCases.filter(c => c.syllogisms.length > 0).length;
+
+      document.getElementById('stat-total-crawled-badge').innerHTML = `${totalCases.toLocaleString()} <span class="text-xs text-slate-400 font-normal">件</span>`;
+      document.getElementById('kpi-total-cases').innerText = totalCases.toLocaleString();
+      document.getElementById('kpi-total-surgeries').innerText = totalSurgeries.toLocaleString();
+      document.getElementById('kpi-total-rejections').innerText = totalRejections.toLocaleString();
+      document.getElementById('kpi-total-syllogisms').innerText = syllogismCaseCount.toLocaleString();
+
+      const statsSampleBadge = document.getElementById('stats-sample-badge');
+      if (statsSampleBadge) {
+        statsSampleBadge.innerText = `目前基準解析決定書：${totalCases.toLocaleString()} 篇`;
+      }
+
+      portalState.filteredList = [...portalState.mergedCases];
+      portalState.currentPage = 1;
+      renderDecisionFeed();
+      computeAndRenderAnalytics(portalState.mergedCases);
+    }
 
     // ========================================================
     // 導覽與提示核心函式
@@ -1434,6 +1345,7 @@
       if (sectionId === 'portal-stats') {
         setTimeout(() => {
           initOfficialCharts();
+          computeAndRenderAnalytics(getFilteredAnalyticsSubset());
         }, 80);
       }
     }
@@ -1460,9 +1372,9 @@
     }
 
     // ========================================================
-    // 七大評議衍生統計數據模型與渲染引擎
+    // 大數據統計中心：從四份 CSV 動態計算六大指標
     // ========================================================
-    const analyticsSevenMetrics = {
+    const dynamicAnalytics = {
       inadmissible1to9: {
         labels: [
           '第3款：未先向業者申訴',
@@ -1477,38 +1389,12 @@
         ],
         counts: [412, 348, 195, 142, 88, 64, 53, 31, 22]
       },
-      verdictPie: {
-        labels: ['全部成立', '部分成立', '評議不成立', '程序不受理'],
-        percentages: [14.2, 18.5, 52.8, 14.5]
-      },
-      top5Laws: [
-        { rank: 1, law: '《金融消費者保護法》第 7 條（公平合理與善良管理人義務）', count: 3842, pct: 44.7 },
-        { rank: 2, law: '《保險法》第 54 條（契約條款疑義有利被保險人解釋原則）', count: 2915, pct: 33.9 },
-        { rank: 3, law: '《金融消費者保護法》第 9 條 / 第 10 條（適合度與說明義務）', count: 1620, pct: 18.9 },
-        { rank: 4, law: '《保險法》第 64 條（要保人據實說明義務與契約解除權）', count: 1184, pct: 13.8 },
-        { rank: 5, law: '《金融消費者保護法》第 13 條 / 第 24 條（前置申訴與程序要件）', count: 1095, pct: 12.7 }
-      ],
-      payoutRatios: [
-        { category: '車險維修工資與零件折舊爭議', avgRatio: 78.4, trend: '評議會一貫認定「零件折舊、工資不折舊」，工資部分獲賠極高。', badge: '高獲賠傾向', color: 'emerald' },
-        { category: '高齡保單招攬不當 / 錄音瑕疵', avgRatio: 71.2, trend: '核保錄音有引導問答或未告知風險者，常命返還70%～100%保費。', badge: '返還保費為主', color: 'emerald' },
-        { category: '手術項目比照與條款解釋爭議', avgRatio: 54.6, trend: '常依有利被保險人解釋或比照相當手術倍數酌給，扣除已賠後約五成。', badge: '折衷比照給付', color: 'cyan' },
-        { category: '必要性醫療 / 住院日額認定', avgRatio: 46.8, trend: '高度取決於特約專科醫師鑑定意見，有醫囑留院必要者獲賠率大增。', badge: '視醫療鑑定', color: 'cyan' },
-        { category: '失能等級認定與神經障害爭議', avgRatio: 38.5, trend: '多介於保戶與公司主張級距之間，依專科鑑定對應等級比例給付。', badge: '按級距比例', color: 'amber' },
-        { category: '帶病投保 / 違反據實說明義務', avgRatio: 16.2, trend: '若健保紀錄顯示投保前有相關就醫且具因果關係，多數判賠不成立。', badge: '多數不成立', color: 'rose' }
-      ],
-      surgeries: [
-        { rank: 1, name: '心導管檢查併氣球擴張 / 血管支架放置術', count: 642, pct: 24.8, tag: '放射線診療章 vs 手術章' },
-        { rank: 2, name: '達文西機器手臂微創切除手術', count: 518, pct: 20.0, tag: '新型微創比照倍數' },
-        { rank: 3, name: '白內障超音波晶體乳化術（自費人工水晶體）', count: 435, pct: 16.8, tag: '門診手術與雜費上限' },
-        { rank: 4, name: '癌症自費標靶藥物 / 免疫療法住院輸注', count: 389, pct: 15.0, tag: '住院必要性認定' },
-        { rank: 5, name: '大腸鏡息肉切除術（內視鏡處置認定）', count: 312, pct: 12.1, tag: '健保2-2-7處置與手術界線' },
-        { rank: 6, name: '海扶刀（HIFU）無創子宮肌瘤消融處置', count: 214, pct: 8.3, tag: '非傳統開刀手術認定' },
-        { rank: 7, name: '脊椎微創內視鏡椎間盤切除與高頻熱凝療法', count: 178, pct: 6.9, tag: '神經阻斷處置認定' }
-      ],
-      processingDays: {
-        labels: ['60 天內（快速結案）', '61～90 天（法定正常期）', '91～150 天（延長鑑定期）', '150 天以上（重大複雜案）'],
-        counts: [1890, 3985, 2240, 473]
-      },
+      verdictCounts: { '不准許': 0, '部分准許': 0 },
+      settingCounts: { '門診': 0, '住院': 0, '不明': 0 },
+      top5Laws: [],
+      surgeries: [],
+      topParts: [],
+      topMethods: [],
       rectificationItems: [
         { item: '未檢附「向金融業者正式申訴之證明或回覆函影本」', pct: 38.5, tip: '線上送件時強制要求上傳申訴回覆函或郵局存證信函' },
         { item: '未載明具體請求賠償金額或計算明細不清', pct: 24.2, tip: '增設「請求金額數字欄位」與自動計算試算器' },
@@ -1518,61 +1404,169 @@
       ]
     };
 
-    function renderSevenAnalyticsModules() {
+    function getFilteredAnalyticsSubset() {
+      if (portalState.activePeriod === '113') {
+        return portalState.mergedCases.filter(c => c.caseNo.startsWith('113'));
+      }
+      if (portalState.activePeriod === 'syllogism') {
+        return portalState.mergedCases.filter(c => c.syllogisms.length > 0);
+      }
+      return portalState.mergedCases;
+    }
+
+    function computeAndRenderAnalytics(subsetCases) {
+      const total = Math.max(subsetCases.length, 1);
+
+      // 1. 評議結果統計
+      let denyCount = 0;
+      let partialCount = 0;
+      let outpatientCount = 0;
+      let inpatientCount = 0;
+      let unknownSettingCount = 0;
+
+      const basisCounter = {};
+      const surgeryCounter = {};
+      const surgeryTagMap = {};
+      const partCounter = {};
+      const methodCounter = {};
+
+      subsetCases.forEach(c => {
+        if (c.verdict.includes('部分')) partialCount++;
+        else denyCount++;
+
+        if (c.setting === '門診') outpatientCount++;
+        else if (c.setting === '住院') inpatientCount++;
+        else unknownSettingCount++;
+
+        c.rejections.forEach(r => {
+          if (!r.basis) return;
+          let normBasis = r.basis;
+          if (normBasis.includes('第二部第二章第七節') || normBasis.includes('2-2-7') || normBasis.includes('227') || normBasis.includes('第2部第2章第7節')) {
+            normBasis = '全民健康保險醫療費用支付標準第二部第二章第七節';
+          } else if (normBasis.includes('除外責任')) {
+            normBasis = '系爭附約【除外責任】條款';
+          } else if (normBasis.includes('名詞定義')) {
+            normBasis = '系爭附約【名詞定義】條款';
+          } else if (normBasis.includes('88062307')) {
+            normBasis = '行政院衛生署衛署醫字第88062307號函';
+          }
+          basisCounter[normBasis] = (basisCounter[normBasis] || 0) + 1;
+        });
+
+        c.surgeries.forEach(s => {
+          if (s.name) {
+            let normName = s.name;
+            if (normName.includes('陰道雷射')) normName = '陰道雷射手術／治療';
+            surgeryCounter[normName] = (surgeryCounter[normName] || 0) + 1;
+            if (!surgeryTagMap[normName]) {
+              surgeryTagMap[normName] = [s.part, s.method].filter(Boolean).join('・') || c.setting;
+            }
+          }
+          if (s.part) partCounter[s.part] = (partCounter[s.part] || 0) + 1;
+          if (s.method) methodCounter[s.method] = (methodCounter[s.method] || 0) + 1;
+        });
+      });
+
+      dynamicAnalytics.verdictCounts = { '不准許': denyCount, '部分准許': partialCount };
+      dynamicAnalytics.settingCounts = { '門診': outpatientCount, '住院': inpatientCount, '不明': unknownSettingCount };
+
+      // 排序 Top 5 依據
+      const totalRejEntries = Object.values(basisCounter).reduce((a, b) => a + b, 0) || 1;
+      dynamicAnalytics.top5Laws = Object.entries(basisCounter)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 5)
+        .map(([law, count], idx) => ({
+          rank: idx + 1,
+          law,
+          count,
+          pct: Number(((count / totalRejEntries) * 100).toFixed(1))
+        }));
+
+      // 排序手術熱度
+      const totalSurEntries = Object.values(surgeryCounter).reduce((a, b) => a + b, 0) || 1;
+      dynamicAnalytics.surgeries = Object.entries(surgeryCounter)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 12)
+        .map(([name, count], idx) => ({
+          rank: idx + 1,
+          name,
+          count,
+          pct: Number(((count / totalSurEntries) * 100).toFixed(1)),
+          tag: surgeryTagMap[name] || '手術項目認定'
+        }));
+
+      dynamicAnalytics.topParts = Object.entries(partCounter).sort((a, b) => b[1] - a[1]).slice(0, 5);
+      dynamicAnalytics.topMethods = Object.entries(methodCounter).sort((a, b) => b[1] - a[1]).slice(0, 5);
+
+      // 更新 DOM 文字卡片
+      const verdictCardsEl = document.getElementById('verdict-summary-cards');
+      if (verdictCardsEl) {
+        const denyPct = ((denyCount / total) * 100).toFixed(1);
+        const partialPct = ((partialCount / total) * 100).toFixed(1);
+        verdictCardsEl.innerHTML = `
+          <div class="p-3 rounded-lg bg-slate-100 border border-slate-200">
+            <div class="font-black text-slate-800 text-base font-mono">${denyCount} 件 (${denyPct}%)</div>
+            <div class="text-slate-600 font-bold">不准許</div>
+          </div>
+          <div class="p-3 rounded-lg bg-emerald-50 border border-emerald-200">
+            <div class="font-black text-emerald-700 text-base font-mono">${partialCount} 件 (${partialPct}%)</div>
+            <div class="text-emerald-800 font-bold">部分准許</div>
+          </div>
+        `;
+      }
+
+      const insightListEl = document.getElementById('surgery-insight-list');
+      if (insightListEl) {
+        const partsStr = dynamicAnalytics.topParts.map(([p, c]) => `${p}(${c}筆)`).join('、') || '無資料';
+        const methodsStr = dynamicAnalytics.topMethods.map(([m, c]) => `${m}(${c}筆)`).join('、') || '無資料';
+        insightListEl.innerHTML = `
+          <li><strong class="text-slate-800">就醫型態分佈</strong>：門診案件共 <strong>${outpatientCount} 件</strong>（${((outpatientCount / total) * 100).toFixed(1)}%），住院案件共 <strong>${inpatientCount} 件</strong>（${((inpatientCount / total) * 100).toFixed(1)}%）。</li>
+          <li><strong class="text-slate-800">高頻爭議解剖部位 Top 5</strong>：${partsStr}。</li>
+          <li><strong class="text-slate-800">高頻爭議治療方式 Top 5</strong>：${methodsStr}。</li>
+        `;
+      }
+
+      renderSixAnalyticsModules();
+
+      // 更新 Chart.js 實例
+      if (chartVerdictPieInstance) {
+        chartVerdictPieInstance.data.datasets[0].data = [denyCount, partialCount];
+        chartVerdictPieInstance.update();
+      }
+      if (chartProcessingDaysInstance) {
+        chartProcessingDaysInstance.data.datasets[0].data = [outpatientCount, inpatientCount, unknownSettingCount];
+        chartProcessingDaysInstance.update();
+      }
+    }
+
+    function renderSixAnalyticsModules() {
       const lawsContainer = document.getElementById('stat-top5-laws-container');
       if (lawsContainer) {
-        lawsContainer.innerHTML = analyticsSevenMetrics.top5Laws.map(item => `
-          <div class="space-y-1.5">
-            <div class="flex items-center justify-between text-xs sm:text-sm">
-              <div class="flex items-center gap-2 font-bold text-slate-800">
-                <span class="w-6 h-6 rounded-md bg-indigo-100 text-indigo-800 flex items-center justify-center font-mono text-xs font-black shrink-0">${item.rank}</span>
-                <span>${item.law}</span>
+        if (dynamicAnalytics.top5Laws.length === 0) {
+          lawsContainer.innerHTML = '<div class="text-xs text-slate-400">尚無駁回依據資料</div>';
+        } else {
+          lawsContainer.innerHTML = dynamicAnalytics.top5Laws.map(item => `
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between text-xs sm:text-sm">
+                <div class="flex items-center gap-2 font-bold text-slate-800">
+                  <span class="w-6 h-6 rounded-md bg-indigo-100 text-indigo-800 flex items-center justify-center font-mono text-xs font-black shrink-0">${item.rank}</span>
+                  <span>${item.law}</span>
+                </div>
+                <span class="font-mono font-bold text-indigo-700 shrink-0 ml-2">${item.count} 次 (${item.pct}%)</span>
               </div>
-              <span class="font-mono font-bold text-indigo-700 shrink-0 ml-2">${item.count.toLocaleString()} 件 (${item.pct}%)</span>
+              <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                <div class="bg-indigo-600 h-full rounded-full" style="width: ${Math.min(100, item.pct * 3.2)}%"></div>
+              </div>
             </div>
-            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-              <div class="bg-indigo-600 h-full rounded-full" style="width: ${Math.min(100, item.pct * 2)}%"></div>
-            </div>
-          </div>
-        `).join('');
+          `).join('');
+        }
       }
 
       renderSurgeriesList();
 
-      const payoutContainer = document.getElementById('stat-payout-ratio-container');
-      if (payoutContainer) {
-        const colorMap = {
-          emerald: { bar: 'bg-emerald-500', text: 'text-emerald-700', bg: 'bg-emerald-50 border-emerald-200' },
-          cyan: { bar: 'bg-cyan-600', text: 'text-cyan-700', bg: 'bg-cyan-50 border-cyan-200' },
-          amber: { bar: 'bg-amber-500', text: 'text-amber-700', bg: 'bg-amber-50 border-amber-200' },
-          rose: { bar: 'bg-rose-500', text: 'text-rose-700', bg: 'bg-rose-50 border-rose-200' }
-        };
-        payoutContainer.innerHTML = analyticsSevenMetrics.payoutRatios.map(p => {
-          const c = colorMap[p.color] || colorMap.cyan;
-          return `
-            <div class="p-4 rounded-xl border border-slate-200 bg-slate-50/60 hover:bg-white transition space-y-2.5 flex flex-col justify-between">
-              <div class="space-y-1.5">
-                <div class="flex items-start justify-between gap-2">
-                  <span class="font-bold text-slate-900 text-sm leading-snug">${p.category}</span>
-                  <span class="px-2 py-0.5 rounded border text-[11px] font-bold shrink-0 ${c.bg} ${c.text}">${p.badge}</span>
-                </div>
-                <div class="flex items-baseline gap-2 pt-1">
-                  <span class="text-xs text-slate-500">平均獲賠成數：</span>
-                  <span class="text-2xl font-black font-mono ${c.text}">${p.avgRatio}%</span>
-                </div>
-                <div class="w-full bg-slate-200 h-2 rounded-full overflow-hidden">
-                  <div class="${c.bar} h-full rounded-full" style="width: ${p.avgRatio}%"></div>
-                </div>
-              </div>
-              <p class="text-xs text-slate-600 leading-relaxed pt-1 border-t border-slate-200/70">${p.trend}</p>
-            </div>
-          `;
-        }).join('');
-      }
-
       const rectContainer = document.getElementById('stat-rectification-container');
       if (rectContainer) {
-        rectContainer.innerHTML = analyticsSevenMetrics.rectificationItems.map((r, idx) => `
+        rectContainer.innerHTML = dynamicAnalytics.rectificationItems.map((r, idx) => `
           <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
             <div class="flex items-center justify-between gap-2 text-xs sm:text-sm">
               <span class="font-bold text-slate-800">${idx + 1}. ${r.item}</span>
@@ -1591,21 +1585,26 @@
       const container = document.getElementById('stat-top5-surgeries-container');
       if (!container) return;
       const list = portalState.showAllSurgeries
-        ? analyticsSevenMetrics.surgeries
-        : analyticsSevenMetrics.surgeries.slice(0, 5);
+        ? dynamicAnalytics.surgeries
+        : dynamicAnalytics.surgeries.slice(0, 5);
+
+      if (list.length === 0) {
+        container.innerHTML = '<div class="text-xs text-slate-400">尚無手術萃取資料</div>';
+        return;
+      }
 
       container.innerHTML = list.map(s => `
         <div class="space-y-1.5">
           <div class="flex items-center justify-between text-xs sm:text-sm gap-2">
             <div class="flex items-center gap-2 font-bold text-slate-800">
               <span class="w-6 h-6 rounded-md bg-amber-100 text-amber-800 flex items-center justify-center font-mono text-xs font-black shrink-0">${s.rank}</span>
-              <span>${s.name}</span>
+              <span class="line-clamp-1" title="${s.name}">${s.name}</span>
             </div>
-            <span class="font-mono font-bold text-amber-700 shrink-0">${s.count} 件 (${s.pct}%)</span>
+            <span class="font-mono font-bold text-amber-700 shrink-0">${s.count} 筆 (${s.pct}%)</span>
           </div>
           <div class="flex items-center gap-3">
             <div class="flex-1 bg-slate-100 h-2 rounded-full overflow-hidden">
-              <div class="bg-amber-500 h-full rounded-full" style="width: ${Math.min(100, s.pct * 3.5)}%"></div>
+              <div class="bg-amber-500 h-full rounded-full" style="width: ${Math.min(100, s.pct * 5)}%"></div>
             </div>
             <span class="text-[11px] px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-medium shrink-0">${s.tag}</span>
           </div>
@@ -1622,33 +1621,8 @@
       renderSurgeriesList();
     }
 
-    window.updateAnalyticsCharts = function(externalData) {
-      if (!externalData) return;
-      if (externalData.inadmissible1to9 && chartInadmissibleInstance) {
-        chartInadmissibleInstance.data.labels = externalData.inadmissible1to9.labels;
-        chartInadmissibleInstance.data.datasets[0].data = externalData.inadmissible1to9.counts;
-        chartInadmissibleInstance.update();
-      }
-      if (externalData.verdictPie && chartVerdictPieInstance) {
-        chartVerdictPieInstance.data.labels = externalData.verdictPie.labels;
-        chartVerdictPieInstance.data.datasets[0].data = externalData.verdictPie.percentages;
-        chartVerdictPieInstance.update();
-      }
-      if (externalData.processingDays && chartProcessingDaysInstance) {
-        chartProcessingDaysInstance.data.labels = externalData.processingDays.labels;
-        chartProcessingDaysInstance.data.datasets[0].data = externalData.processingDays.counts;
-        chartProcessingDaysInstance.update();
-      }
-      if (externalData.top5Laws) analyticsSevenMetrics.top5Laws = externalData.top5Laws;
-      if (externalData.payoutRatios) analyticsSevenMetrics.payoutRatios = externalData.payoutRatios;
-      if (externalData.surgeries) analyticsSevenMetrics.surgeries = externalData.surgeries;
-      if (externalData.rectificationItems) analyticsSevenMetrics.rectificationItems = externalData.rectificationItems;
-      renderSevenAnalyticsModules();
-      showToast('已成功載入外部統計資料並更新七大圖表', 'check-circle');
-    };
-
     // ========================================================
-    // 三大查詢模式切換與檢索邏輯（案號 / 相似案件 / NLP 衍生查詢）
+    // 三大查詢模式切換與檢索邏輯（案號 / 相似案件 / LLM 衍生查詢）
     // ========================================================
     function switchSearchMode(mode) {
       portalState.searchMode = mode;
@@ -1674,6 +1648,9 @@
       } else if (mode === 'nlp') {
         runNlpDerivedSearch();
       } else {
+        portalState.filteredList = [...portalState.mergedCases];
+        portalState.showSimilarityInFeed = false;
+        portalState.currentPage = 1;
         renderDecisionFeed();
       }
       if (window.lucide) lucide.createIcons();
@@ -1695,11 +1672,13 @@
       }
 
       const tokens = query.split(/[\s,，。、；;（）()]+/).filter(t => t.length >= 2);
-      const scored = portalState.crawledDecisions.map(doc => {
-        const corpus = `${doc.category} ${doc.summary} ${doc.reasons} ${(doc.tokenizedTags || []).join(' ')}`;
+      const scored = portalState.mergedCases.map(doc => {
+        const surText = doc.surgeries.map(s => `${s.name} ${s.part} ${s.method}`).join(' ');
+        const rejText = doc.rejections.map(r => `${r.basis} ${r.mismatch}`).join(' ');
+        const corpus = `${doc.diagnosis} ${doc.issue} ${surText} ${rejText}`;
         let hitCount = 0;
         tokens.forEach(tk => {
-          if (corpus.includes(tk)) hitCount += 1;
+          if (corpus.includes(tk)) hitCount += 1.2;
           else {
             for (let i = 0; i < tk.length - 1; i++) {
               const bi = tk.slice(i, i + 2);
@@ -1711,65 +1690,117 @@
           }
         });
         const maxPossible = Math.max(tokens.length, 1);
-        const simScore = Math.min(98, Math.max(42, Math.round((hitCount / maxPossible) * 95)));
+        const simScore = Math.min(99, Math.max(25, Math.round((hitCount / maxPossible) * 90)));
         return { ...doc, _similarityScore: simScore };
       });
 
       scored.sort((a, b) => b._similarityScore - a._similarityScore);
-      renderDecisionFeed(scored, true);
+      portalState.filteredList = scored;
+      portalState.showSimilarityInFeed = true;
+      portalState.currentPage = 1;
+      renderDecisionFeed();
       showToast(`已完成語意特徵比對，依相似度由高至低排列共 ${scored.length} 筆類案`, 'git-compare');
     }
 
     function runNlpDerivedSearch() {
       const lawFilter = document.getElementById('nlp-filter-law')?.value || 'all';
-      const expertFilter = document.getElementById('nlp-filter-expert')?.value || 'all';
-      const rectifyFilter = document.getElementById('nlp-filter-rectify')?.value || 'all';
-      const ratioFilter = document.getElementById('nlp-filter-ratio')?.value || 'all';
+      const methodFilter = document.getElementById('nlp-filter-method')?.value || 'all';
+      const auditFilter = document.getElementById('nlp-filter-audit')?.value || 'all';
 
-      const filtered = portalState.crawledDecisions.filter(c => {
-        const matchLaw = lawFilter === 'all' || (c.citedLaws && c.citedLaws.includes(lawFilter));
-        const matchExpert = expertFilter === 'all' || (expertFilter === 'yes' ? c.hasMedicalExpert === true : !c.hasMedicalExpert);
-        const matchRectify = rectifyFilter === 'all' || (rectifyFilter === 'yes' ? c.hasRectification === true : !c.hasRectification);
-        
-        let matchRatio = true;
-        const r = c.payoutRatio ?? 0;
-        if (ratioFilter === 'full') matchRatio = r === 100;
-        else if (ratioFilter === 'partial') matchRatio = r > 0 && r < 100;
-        else if (ratioFilter === 'zero') matchRatio = r === 0;
+      const filtered = portalState.mergedCases.filter(c => {
+        const matchLaw = lawFilter === 'all' || c.rejections.some(r => r.basis.includes(lawFilter) || r.mismatch.includes(lawFilter));
+        const matchMethod = methodFilter === 'all' || c.surgeries.some(s => (s.method && s.method.includes(methodFilter)) || (s.name && s.name.includes(methodFilter)));
+        let matchAudit = true;
+        if (auditFilter === 'passed') matchAudit = !c.failedAudit;
+        else if (auditFilter === 'flagged') matchAudit = Boolean(c.failedAudit);
 
-        return matchLaw && matchExpert && matchRectify && matchRatio;
+        return matchLaw && matchMethod && matchAudit;
       });
 
-      renderDecisionFeed(filtered, false);
+      portalState.filteredList = filtered;
+      portalState.showSimilarityInFeed = false;
+      portalState.currentPage = 1;
+      renderDecisionFeed();
     }
 
     function resetAllSearchFilters() {
       if (document.getElementById('feed-search-input')) document.getElementById('feed-search-input').value = '';
-      if (document.getElementById('feed-filter-industry')) document.getElementById('feed-filter-industry').value = 'all';
+      if (document.getElementById('feed-filter-setting')) document.getElementById('feed-filter-setting').value = 'all';
       if (document.getElementById('feed-filter-verdict')) document.getElementById('feed-filter-verdict').value = 'all';
-      if (document.getElementById('feed-filter-duration')) document.getElementById('feed-filter-duration').value = 'all';
+      if (document.getElementById('feed-filter-syllogism')) document.getElementById('feed-filter-syllogism').value = 'all';
       if (document.getElementById('similar-case-query-input')) document.getElementById('similar-case-query-input').value = '';
       if (document.getElementById('nlp-filter-law')) document.getElementById('nlp-filter-law').value = 'all';
-      if (document.getElementById('nlp-filter-expert')) document.getElementById('nlp-filter-expert').value = 'all';
-      if (document.getElementById('nlp-filter-rectify')) document.getElementById('nlp-filter-rectify').value = 'all';
-      if (document.getElementById('nlp-filter-ratio')) document.getElementById('nlp-filter-ratio').value = 'all';
+      if (document.getElementById('nlp-filter-method')) document.getElementById('nlp-filter-method').value = 'all';
+      if (document.getElementById('nlp-filter-audit')) document.getElementById('nlp-filter-audit').value = 'all';
 
+      portalState.filteredList = [...portalState.mergedCases];
+      portalState.showSimilarityInFeed = false;
+      portalState.currentPage = 1;
       renderDecisionFeed();
       showToast('已重置所有查詢條件', 'rotate-ccw');
     }
 
-    // Render Case Feed
-    function renderDecisionFeed(filteredList = null, showSimilarityBadge = false) {
+    function filterDecisionFeed() {
+      const query = (document.getElementById('feed-search-input')?.value || '').toLowerCase().trim();
+      const settingFilter = document.getElementById('feed-filter-setting')?.value || 'all';
+      const verdictFilter = document.getElementById('feed-filter-verdict')?.value || 'all';
+      const syllogismFilter = document.getElementById('feed-filter-syllogism')?.value || 'all';
+
+      const filtered = portalState.mergedCases.filter(c => {
+        const surNames = c.surgeries.map(s => s.name).join(' ').toLowerCase();
+        const matchQuery = !query || 
+          c.caseNo.toLowerCase().includes(query) ||
+          c.diagnosis.toLowerCase().includes(query) ||
+          c.hospital.toLowerCase().includes(query) ||
+          c.issue.toLowerCase().includes(query) ||
+          surNames.includes(query);
+
+        const matchSetting = settingFilter === 'all' || c.setting === settingFilter;
+        const matchVerdict = verdictFilter === 'all' || c.verdict === verdictFilter;
+        const matchSyl = syllogismFilter === 'all' || (syllogismFilter === 'yes' ? c.syllogisms.length > 0 : c.syllogisms.length === 0);
+
+        return matchQuery && matchSetting && matchVerdict && matchSyl;
+      });
+
+      portalState.filteredList = filtered;
+      portalState.showSimilarityInFeed = false;
+      portalState.currentPage = 1;
+      renderDecisionFeed();
+    }
+
+    function changeFeedPage(delta) {
+      const totalPages = Math.max(1, Math.ceil(portalState.filteredList.length / portalState.pageSize));
+      const next = portalState.currentPage + delta;
+      if (next >= 1 && next <= totalPages) {
+        portalState.currentPage = next;
+        renderDecisionFeed();
+      }
+    }
+
+    function renderDecisionFeed() {
       const tbody = document.getElementById('decision-feed-tbody');
       if (!tbody) return;
 
-      const items = filteredList || portalState.crawledDecisions;
+      const total = portalState.filteredList.length;
+      const totalPages = Math.max(1, Math.ceil(total / portalState.pageSize));
+      if (portalState.currentPage > totalPages) portalState.currentPage = totalPages;
+
+      const startIdx = (portalState.currentPage - 1) * portalState.pageSize;
+      const endIdx = Math.min(startIdx + portalState.pageSize, total);
+      const pageItems = portalState.filteredList.slice(startIdx, endIdx);
+
+      document.getElementById('feed-result-count').innerText = total.toLocaleString();
+      document.getElementById('feed-showing-range').innerText = total === 0 ? '0-0' : `${startIdx + 1}-${endIdx}`;
+      document.getElementById('feed-page-indicator').innerText = `${portalState.currentPage} / ${totalPages}`;
+      document.getElementById('btn-prev-page').disabled = portalState.currentPage <= 1;
+      document.getElementById('btn-next-page').disabled = portalState.currentPage >= totalPages;
+
       tbody.innerHTML = '';
 
-      if (items.length === 0) {
+      if (pageItems.length === 0) {
         tbody.innerHTML = `
           <tr>
-            <td colspan="8" class="py-8 text-center text-slate-400 text-sm">
+            <td colspan="7" class="py-8 text-center text-slate-400 text-sm">
               查無符合篩選條件之評議決定書，請調整查詢條件或點擊重置。
             </td>
           </tr>
@@ -1777,64 +1808,62 @@
         return;
       }
 
-      items.forEach(c => {
-        const ratioDisplay = c.verdictType === '不受理' 
-          ? '<span class="text-xs text-slate-400 font-mono">不適用</span>' 
-          : `<span class="font-mono font-bold text-sm ${c.payoutRatio > 0 ? 'text-teal-700' : 'text-slate-500'}">${c.payoutRatio ?? 0}%</span>`;
+      pageItems.forEach(c => {
+        const isPartial = c.verdict.includes('部分');
+        const badgeClass = isPartial ? 'bg-emerald-100 text-emerald-800' : 'bg-slate-200 text-slate-800';
+        const dotClass = isPartial ? 'bg-emerald-500' : 'bg-slate-500';
 
-        const daysDisplay = c.processingDays 
-          ? `<span class="font-mono text-xs px-2 py-1 rounded bg-slate-100 text-slate-700 font-bold whitespace-nowrap">${c.processingDays}天</span>` 
-          : '<span class="text-xs text-slate-400">-</span>';
-
-        const simBadgeHtml = (showSimilarityBadge && c._similarityScore)
+        const simBadgeHtml = (portalState.showSimilarityInFeed && c._similarityScore)
           ? `<span class="inline-block mt-1 px-2 py-0.5 rounded bg-cyan-100 text-cyan-900 border border-cyan-300 text-[11px] font-mono font-black whitespace-nowrap">相似度 ${c._similarityScore}%</span>`
           : '';
 
-        const nlpBadges = [];
-        if (c.citedLaws && c.citedLaws.length) {
-          nlpBadges.push(`<span class="inline-block w-fit px-2 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200 text-xs font-mono font-bold whitespace-nowrap">${c.citedLaws[0]}</span>`);
+        const llmBadges = [];
+        if (c.syllogisms.length > 0) {
+          llmBadges.push(`<span class="inline-block w-fit px-2 py-0.5 rounded bg-purple-100 text-purple-800 border border-purple-300 text-xs font-bold whitespace-nowrap">三段論法精析 (${c.syllogisms.length})</span>`);
         }
-        if (c.hasMedicalExpert) {
-          nlpBadges.push(`<span class="inline-block w-fit px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 text-xs font-bold whitespace-nowrap">醫療顧問鑑定</span>`);
+        if (c.surgeries.length > 0) {
+          const methodTag = c.surgeries[0].method ? `・${c.surgeries[0].method}` : '';
+          llmBadges.push(`<span class="inline-block w-fit px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200 text-xs font-bold whitespace-nowrap">手術萃取 (${c.surgeries.length})${methodTag}</span>`);
         }
-        if (c.hasRectification) {
-          nlpBadges.push(`<span class="inline-block w-fit px-2 py-0.5 rounded bg-purple-50 text-purple-800 border border-purple-200 text-xs font-bold whitespace-nowrap">曾程序補正</span>`);
+        if (c.rejections.length > 0) {
+          llmBadges.push(`<span class="inline-block w-fit px-2 py-0.5 rounded bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold whitespace-nowrap">駁回依據 (${c.rejections.length}條)</span>`);
         }
 
-        const docIdParts = c.docId.split('-');
-        const formattedDocIdHtml = docIdParts.length > 1
-          ? `<span class="block">${docIdParts[0]}-</span><span class="block">${docIdParts.slice(1).join('-')}</span>`
-          : `<span class="block">${c.docId}</span>`;
+        const primarySurgery = c.surgeries.length > 0 ? c.surgeries[0].name : '';
+        const settingBadge = c.setting === '住院'
+          ? 'bg-blue-50 text-blue-700 border border-blue-200'
+          : (c.setting === '門診' ? 'bg-teal-50 text-teal-700 border border-teal-200' : 'bg-slate-100 text-slate-600');
 
         const tr = document.createElement('tr');
         tr.className = 'hover:bg-slate-50/80 transition-colors';
         tr.innerHTML = `
           <td class="py-3 px-3 font-mono whitespace-nowrap">
-            <button onclick="openDecisionDossier('${c.id}')" class="text-left group focus:outline-none">
-              <div class="font-bold text-gov-700 group-hover:text-regtech-600 group-hover:underline inline-flex items-start gap-1.5 text-sm leading-snug">
-                <i data-lucide="brain-circuit" class="w-4 h-4 text-emerald-600 shrink-0 mt-0.5"></i>
-                <div class="whitespace-nowrap">${formattedDocIdHtml}</div>
+            <button onclick="openDecisionDossier('${c.caseNo}')" class="text-left group focus:outline-none">
+              <div class="font-bold text-gov-700 group-hover:text-regtech-600 group-hover:underline inline-flex items-center gap-1.5 text-sm">
+                <i data-lucide="brain-circuit" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+                <span>${c.caseNo}</span>
               </div>
-              <span class="text-xs text-slate-400 block mt-0.5">${c.date || ''}</span>
               ${simBadgeHtml}
             </button>
           </td>
-          <td class="py-3 px-3 whitespace-nowrap"><span class="px-2.5 py-1 rounded bg-slate-100 text-slate-700 text-xs font-bold whitespace-nowrap">${c.industry}</span></td>
-          <td class="py-3 px-3 whitespace-nowrap font-medium text-sm" title="${c.category}">${c.category}</td>
+          <td class="py-3 px-3 whitespace-nowrap"><span class="px-2.5 py-1 rounded text-xs font-bold ${settingBadge}">${c.setting}</span></td>
+          <td class="py-3 px-3 max-w-xs">
+            <div class="font-bold text-slate-900 text-sm truncate" title="${c.diagnosis}">${c.diagnosis || '未載明傷病'}</div>
+            <div class="text-xs text-slate-500 truncate mt-0.5" title="${primarySurgery}">${primarySurgery || c.issue}</div>
+          </td>
           <td class="py-3 px-3 whitespace-nowrap">
             <div class="flex flex-col items-start gap-1">
-              ${nlpBadges.join('') || '<span class="text-xs text-slate-400">-</span>'}
+              ${llmBadges.join('') || '<span class="text-xs text-slate-400">-</span>'}
             </div>
           </td>
           <td class="py-3 px-3 font-mono text-xs whitespace-nowrap">
-            <div class="text-slate-500 whitespace-nowrap">請求：${c.amount.toLocaleString()}</div>
-            <div class="font-bold text-gov-800 text-sm whitespace-nowrap">判賠：${(c.awardedAmount || 0).toLocaleString()}</div>
+            <div class="text-slate-600">請求：${c.claimAmountStr || '-'}</div>
+            <div class="font-bold text-gov-800 text-xs mt-0.5">准許：${c.awardedAmountStr || '0元'}</div>
           </td>
-          <td class="py-3 px-3 whitespace-nowrap">${ratioDisplay}</td>
-          <td class="py-3 px-3 whitespace-nowrap">${daysDisplay}</td>
+          <td class="py-3 px-3 text-xs text-slate-600 max-w-[180px] truncate" title="${c.hospital}">${c.hospital || '-'}</td>
           <td class="py-3 px-3 whitespace-nowrap">
-            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full ${c.badgeClass} text-sm font-bold whitespace-nowrap">
-              <span class="w-2 h-2 rounded-full ${c.dotClass}"></span>${c.verdict}
+            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full ${badgeClass} text-sm font-bold whitespace-nowrap">
+              <span class="w-2 h-2 rounded-full ${dotClass}"></span>${c.verdict}
             </span>
           </td>
         `;
@@ -1844,114 +1873,132 @@
       if (window.lucide) lucide.createIcons();
     }
 
-    function filterDecisionFeed() {
-      const query = (document.getElementById('feed-search-input')?.value || '').toLowerCase().trim();
-      const indFilter = document.getElementById('feed-filter-industry')?.value || 'all';
-      const verdictFilter = document.getElementById('feed-filter-verdict')?.value || 'all';
-      const durationFilter = document.getElementById('feed-filter-duration')?.value || 'all';
-
-      const filtered = portalState.crawledDecisions.filter(c => {
-        const matchQuery = !query || 
-          c.id.toLowerCase().includes(query) ||
-          c.docId.toLowerCase().includes(query) ||
-          c.category.toLowerCase().includes(query) ||
-          c.summary.toLowerCase().includes(query) ||
-          (c.tokenizedTags && c.tokenizedTags.some(t => t.toLowerCase().includes(query)));
-
-        const matchInd = indFilter === 'all' || c.industry === indFilter;
-        const matchVerdict = verdictFilter === 'all' || (c.verdictType && c.verdictType === verdictFilter) || c.verdict.includes(verdictFilter);
-        const matchDuration = durationFilter === 'all' || c.durationBucket === durationFilter;
-
-        return matchQuery && matchInd && matchVerdict && matchDuration;
-      });
-      renderDecisionFeed(filtered);
-    }
-
-    function openDecisionDossier(caseId) {
-      let doc = portalState.crawledDecisions.find(c => c.id === caseId);
-      
-      if (!doc && portalState.precedentDatabase[caseId]) {
-        const prec = portalState.precedentDatabase[caseId];
-        doc = {
-          id: caseId,
-          docId: prec.docId,
-          industry: prec.industry,
-          category: prec.category,
-          amount: prec.amount,
-          awardedAmount: prec.amount,
-          payoutRatio: 100,
-          processingDays: 95,
-          verdict: prec.verdict,
-          summary: prec.summary,
-          reasons: prec.coreDistinction || '依主管機關評議作業辦法與金融消費者保護法第 13 條及第 24 條規定之裁判心證作成。',
-          consumerClaims: ['消費者主張契約解釋應依有利被保險人原則辦理。'],
-          institutionDefenses: ['業者抗辯治療處置未列於條款附表手術項目內。'],
-          tokenizedTags: ['#評議前案', '#心證參照'],
-          similarCaseIds: []
-        };
-      }
-
+    // ========================================================
+    // 案件詳情視窗（四表交叉顯示：基本資料 + 手術 + 駁回依據 + 三段論法）
+    // ========================================================
+    function openDecisionDossier(caseNo) {
+      const doc = portalState.mergedCases.find(c => c.caseNo === caseNo);
       if (!doc) return;
       portalState.activeModalDoc = doc;
 
-      document.getElementById('modal-doc-id').innerText = doc.docId;
-      document.getElementById('modal-doc-industry-badge').innerText = doc.industry;
-      document.getElementById('modal-doc-title').innerText = `${doc.category} 爭點與心證分析`;
-      document.getElementById('modal-doc-amount').innerText = `NT$ ${doc.amount.toLocaleString()} / 判賠 ${(doc.awardedAmount || 0).toLocaleString()}`;
-      document.getElementById('modal-doc-ratio').innerText = `${doc.payoutRatio ?? 0}%`;
-      document.getElementById('modal-doc-days').innerText = `${doc.processingDays || 90} 天`;
-      document.getElementById('modal-doc-verdict').innerText = doc.verdict;
-      document.getElementById('modal-doc-verdict').className = `font-bold text-base mt-0.5 ${doc.verdict.includes('成立') ? 'text-emerald-700' : 'text-amber-700'}`;
+      document.getElementById('modal-doc-id').innerText = doc.caseNo;
+      document.getElementById('modal-doc-industry-badge').innerText = `${doc.setting}案件`;
+      document.getElementById('modal-doc-model-badge').innerText = doc.model || 'ollama:qwen3:8b';
+      document.getElementById('modal-doc-title').innerText = `${doc.diagnosis || '醫療保險爭議'} 爭點與結構化精析`;
       
+      document.getElementById('modal-doc-amount').innerText = `請求 ${doc.claimAmountStr || '-'} ｜ 准許 ${doc.awardedAmountStr || '0元'}${doc.paidAmountStr ? ` (已給付 ${doc.paidAmountStr})` : ''}`;
+      document.getElementById('modal-doc-hospital').innerText = `${doc.hospital || '未載明院所'}（${doc.diagnosis || '-'}）`;
+      
+      const verdictEl = document.getElementById('modal-doc-verdict');
+      verdictEl.innerText = doc.verdict;
+      verdictEl.className = `font-bold text-base mt-1 ${doc.verdict.includes('部分') ? 'text-emerald-700' : 'text-rose-700'}`;
+
+      // 手術與保單標籤
       const tagsContainer = document.getElementById('modal-nlp-tags');
-      const tags = doc.tokenizedTags || ['#金保法實務'];
-      tagsContainer.innerHTML = tags.map(t => `<span class="px-2.5 py-1 rounded bg-slate-800 border border-slate-600 text-xs font-mono text-cyan-300">${t}</span>`).join('');
+      const surgeryTags = doc.surgeries.map(s => {
+        const meta = [s.part, s.method].filter(Boolean).join(' / ');
+        return `<span class="px-2.5 py-1 rounded bg-slate-800 border border-amber-500/50 text-xs font-bold text-amber-300"># ${s.name}${meta ? ` (${meta})` : ''}</span>`;
+      });
+      if (doc.policyName) {
+        surgeryTags.push(`<span class="px-2.5 py-1 rounded bg-slate-800 border border-cyan-500/50 text-xs text-cyan-300">保單：${doc.policyName}</span>`);
+      }
+      tagsContainer.innerHTML = surgeryTags.join('') || '<span class="text-xs text-slate-400">無特定手術標籤</span>';
 
-      const claimsList = document.getElementById('modal-consumer-claims');
-      const claims = doc.consumerClaims || [doc.summary];
-      claimsList.innerHTML = claims.map(item => `<li>${item}</li>`).join('');
-
-      const defensesList = document.getElementById('modal-institution-defenses');
-      const defenses = doc.institutionDefenses || ['相對人抗辯依約無給付義務。'];
-      defensesList.innerHTML = defenses.map(item => `<li>${item}</li>`).join('');
-
-      document.getElementById('modal-doc-summary').innerText = doc.summary;
-      document.getElementById('modal-doc-reasons').innerText = doc.reasons;
-
-      const similarContainer = document.getElementById('modal-similar-cases-list');
-      similarContainer.innerHTML = '';
-
-      const similarIds = doc.similarCaseIds || [];
-      if (similarIds.length === 0) {
-        similarContainer.innerHTML = `
-          <div class="col-span-2 p-4 text-center text-xs text-slate-400 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-            目前無高度重疊之特定前案標籤，本案判定標準符合同類通常裁判原則。
-          </div>
-        `;
+      const evidenceEl = document.getElementById('modal-surgery-evidence');
+      if (doc.surgeries.length > 0 && doc.surgeries[0].evidence) {
+        evidenceEl.innerHTML = `<strong class="text-emerald-400">病歷與處置證據句：</strong>${doc.surgeries[0].evidence}`;
+        evidenceEl.classList.remove('hidden');
       } else {
-        similarIds.forEach(simId => {
-          const simDoc = portalState.precedentDatabase[simId] || portalState.crawledDecisions.find(c => c.id === simId);
-          if (simDoc) {
-            const card = document.createElement('div');
-            card.className = 'p-3.5 rounded-xl border border-slate-200 hover:border-cyan-500 bg-slate-50 hover:bg-cyan-50/30 transition text-xs space-y-1.5 cursor-pointer';
-            card.onclick = () => openDecisionDossier(simId);
-            card.innerHTML = `
-              <div class="flex items-center justify-between">
-                <span class="font-bold text-slate-900 font-mono">${simDoc.docId}</span>
-                <span class="font-bold text-cyan-700">${simDoc.verdict}</span>
+        evidenceEl.classList.add('hidden');
+      }
+
+      // 法律三段論法（若該案存在於 llm_syllogisms.csv）
+      const sylSection = document.getElementById('modal-syllogism-section');
+      const sylList = document.getElementById('modal-syllogism-list');
+      if (doc.syllogisms && doc.syllogisms.length > 0) {
+        sylSection.classList.remove('hidden');
+        sylList.innerHTML = doc.syllogisms.map(sy => `
+          <div class="p-5 rounded-xl bg-purple-50/60 border border-purple-200 space-y-3 text-sm">
+            <div class="flex flex-wrap items-center justify-between gap-2 border-b border-purple-200 pb-2">
+              <span class="font-black text-purple-900">請求項目 ${sy.seq}：${sy.item}（${sy.lawFull || sy.lawShort}）</span>
+              <span class="px-2.5 py-0.5 rounded bg-purple-100 text-purple-800 text-xs font-bold">三段論法檢核：${sy.groupAudit || '通過'}</span>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div class="p-3.5 rounded-lg bg-white border border-purple-100 space-y-1.5">
+                <div class="text-xs font-black text-indigo-700">一、大前提（契約／法規規範）</div>
+                <p class="text-xs font-bold text-slate-800">${sy.majorSummary}</p>
+                <p class="text-xs text-slate-500 leading-relaxed">${sy.majorText}</p>
               </div>
-              <div class="text-slate-600 font-medium">${simDoc.category} ｜ NT$ ${simDoc.amount.toLocaleString()}</div>
-              <p class="text-slate-500 line-clamp-2 leading-relaxed">${simDoc.summary}</p>
-            `;
-            similarContainer.appendChild(card);
-          }
-        });
+              <div class="p-3.5 rounded-lg bg-white border border-purple-100 space-y-1.5">
+                <div class="text-xs font-black text-cyan-700">二、小前提（病歷與醫療顧問認定）</div>
+                <p class="text-xs font-bold text-slate-800">${sy.minorSummary}</p>
+                <p class="text-xs text-slate-500 leading-relaxed">${sy.minorText}</p>
+              </div>
+              <div class="p-3.5 rounded-lg bg-white border border-purple-100 space-y-1.5">
+                <div class="text-xs font-black text-emerald-700">三、涵攝結論（評議判斷理由）</div>
+                <p class="text-xs font-bold text-slate-800">${sy.conclusionSummary}</p>
+                <p class="text-xs text-slate-500 leading-relaxed">${sy.conclusionText}</p>
+              </div>
+            </div>
+            ${sy.reviewNote ? `<div class="text-xs text-purple-900 bg-purple-100/70 p-2.5 rounded-lg"><strong>AI 邏輯審查說明：</strong>${sy.reviewNote}</div>` : ''}
+          </div>
+        `).join('');
+      } else {
+        sylSection.classList.add('hidden');
+      }
+
+      // 核心爭點與請求標的
+      document.getElementById('modal-doc-summary').innerHTML = `
+        <div><strong class="text-blue-900">【請求標的】</strong>${doc.claimTarget || '無'}</div>
+        <div class="pt-2 border-t border-blue-200/70"><strong class="text-blue-900">【核心爭點】</strong>${doc.issue || '無'}</div>
+      `;
+
+      // 駁回依據明細
+      const reasonsEl = document.getElementById('modal-doc-reasons');
+      if (doc.rejections.length > 0) {
+        reasonsEl.innerHTML = doc.rejections.map(r => `
+          <div class="p-3 rounded-lg bg-white border border-rose-200/80 space-y-1">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-xs font-black text-rose-800">${r.seq ? `#${r.seq} ` : ''}${r.basis}</span>
+              <span class="text-[11px] px-2 py-0.5 rounded bg-slate-100 text-slate-600 font-bold">檢核：${r.audit || '通過'}</span>
+            </div>
+            <p class="text-xs text-slate-700 leading-relaxed">${r.mismatch}</p>
+          </div>
+        `).join('');
+      } else {
+        reasonsEl.innerHTML = '<div class="text-xs text-slate-500">本案未列舉特定駁回條款明細。</div>';
+      }
+
+      // 智慧關聯相似前案
+      const similarContainer = document.getElementById('modal-similar-cases-list');
+      const targetPart = doc.surgeries[0]?.part || '';
+      const targetDiag = doc.diagnosis.slice(0, 4);
+      const related = portalState.mergedCases.filter(other => {
+        if (other.caseNo === doc.caseNo) return false;
+        if (targetPart && other.surgeries.some(s => s.part === targetPart)) return true;
+        if (targetDiag && other.diagnosis.includes(targetDiag)) return true;
+        return false;
+      }).slice(0, 4);
+
+      if (related.length === 0) {
+        similarContainer.innerHTML = `<div class="col-span-2 p-4 text-center text-xs text-slate-400 bg-slate-50 rounded-xl border border-dashed border-slate-200">目前無同部位或同傷病之其他前案。</div>`;
+      } else {
+        similarContainer.innerHTML = related.map(sim => `
+          <div onclick="openDecisionDossier('${sim.caseNo}')" class="p-3.5 rounded-xl border border-slate-200 hover:border-cyan-500 bg-slate-50 hover:bg-cyan-50/30 transition text-xs space-y-1.5 cursor-pointer">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-slate-900 font-mono">${sim.caseNo}</span>
+              <span class="font-bold ${sim.verdict.includes('部分') ? 'text-emerald-700' : 'text-rose-700'}">${sim.verdict}</span>
+            </div>
+            <div class="text-slate-700 font-bold">${sim.diagnosis} ｜ 請求 ${sim.claimAmountStr}</div>
+            <p class="text-slate-500 line-clamp-2 leading-relaxed">${sim.issue}</p>
+          </div>
+        `).join('');
       }
 
       const loadBtn = document.getElementById('modal-doc-load-btn');
       loadBtn.onclick = () => {
         closeDecisionModal();
-        loadPresetCase(doc.id);
+        loadPresetCase(doc.caseNo);
       };
 
       const modal = document.getElementById('decision-detail-modal');
@@ -1967,7 +2014,8 @@
     function copyAIAnalysisSummary() {
       const doc = portalState.activeModalDoc;
       if (!doc) return;
-      const reportText = `【評議決定書爭點分析報告】\n評議字號：${doc.docId} (${doc.industry})\n爭議類型：${doc.category}\n請求金額：NT$ ${doc.amount.toLocaleString()} ｜ 判賠金額：NT$ ${(doc.awardedAmount || 0).toLocaleString()} (獲賠成數 ${doc.payoutRatio ?? 0}%)\n裁判結果：${doc.verdict}\n【決定主文】${doc.summary}\n【心證理由】\n${doc.reasons}`;
+      const rejSummary = doc.rejections.map(r => `- [${r.basis}] ${r.mismatch}`).join('\n');
+      const reportText = `【評議決定書爭點分析報告】\n評議字號：${doc.caseNo} (${doc.setting})\n傷病診斷：${doc.diagnosis}\n請求金額：${doc.claimAmountStr} ｜ 准許金額：${doc.awardedAmountStr || '0元'}\n評議結果：${doc.verdict}\n【核心爭點】${doc.issue}\n【駁回／不符依據】\n${rejSummary}`;
       const t = document.createElement('textarea');
       t.value = reportText;
       document.body.appendChild(t);
@@ -1981,107 +2029,33 @@
       document.body.removeChild(t);
     }
 
-    function triggerLiveCrawlerSync() {
-      if (portalState.isCrawling) return;
-      portalState.isCrawling = true;
-
-      const refreshIcon = document.getElementById('crawler-refresh-icon');
-      if (refreshIcon) refreshIcon.classList.add('animate-spin');
-
-      showToast('正在與金融消費評議中心公開資料庫進行同步與文本解析...', 'radio');
-
-      setTimeout(() => {
-        const now = new Date();
-        const randId = Math.floor(1000 + Math.random() * 9000);
-        const newCaseNumber = `115-評字第00${randId}號`;
-
-        const freshDoc = {
-          id: `CASE-2026-${randId}`,
-          docId: newCaseNumber,
-          industry: '保險業',
-          category: '必要性醫療/理賠金額認定（達文西手術）',
-          amount: 510000,
-          awardedAmount: 510000,
-          payoutRatio: 100,
-          processingDays: 114,
-          durationBucket: 'extended',
-          citedLaws: ['保險法§54', '金保法§7'],
-          hasMedicalExpert: true,
-          hasRectification: false,
-          date: now.toISOString().split('T')[0],
-          verdictType: '全部成立',
-          badgeClass: 'bg-emerald-100 text-emerald-800',
-          dotClass: 'bg-emerald-500',
-          verdict: '全部成立',
-          summary: '被保險人實施微創達文西手術切除腫瘤，相對人認屬處置非手術拒賠。評議會審酌最新健保與醫學常規，認定應按保險金條款給付。',
-          reasons: '一、保險契約約定之手術項目若未隨醫療科技進步更新，應作有利於被保險人之解釋。\n二、本件經專家鑑定確認具實質手術侵入性與麻醉監控必要，應依約給付。',
-          consumerClaims: [
-            '主治醫師診斷證明書已明載達文西切除手術及全身麻醉處置。',
-            '新型微創手術取代傳統開腹，符合現代醫學實質手術標準。'
-          ],
-          institutionDefenses: [
-            '全民健保醫療費用支付標準未列於第二部第二章第七節之手術項下。'
-          ],
-          tokenizedTags: ['#醫療險', '#達文西微創手術', '#契約解釋原則', '#醫學必要性', '#具強制拘束力'],
-          complainDaysAgo: 29,
-          replyDaysAgo: 8,
-          similarCaseIds: ['CASE-2025-5624', 'CASE-2026-0904']
-        };
-
-        portalState.crawledDecisions.unshift(freshDoc);
-
-        portalState.metrics.totalCases += 1;
-        portalState.metrics.ombuds += 1;
-
-        document.getElementById('kpi-total-cases').innerText = portalState.metrics.totalCases.toLocaleString();
-        document.getElementById('stat-total-crawled-badge').innerHTML = `${portalState.metrics.totalCases.toLocaleString()}<span class="text-xs text-slate-400 font-normal ml-1">篇</span>`;
-        document.getElementById('crawler-last-sync-time').innerText = now.toTimeString().split(' ')[0];
-
-        renderDecisionFeed();
-
-        portalState.isCrawling = false;
-        if (refreshIcon) refreshIcon.classList.remove('animate-spin');
-
-        showToast(`已成功同步最新評議書：${freshDoc.docId}`, 'check-circle-2');
-      }, 1400);
-    }
-
-    function loadPresetCase(caseId) {
+    // ========================================================
+    // 適格性審查表單與類案比對
+    // ========================================================
+    function loadPresetCase(caseNo) {
       navigateTo('portal-analysis');
       const today = new Date();
       const toISO = (d) => d.toISOString().split('T')[0];
 
-      const item = portalState.crawledDecisions.find(c => c.id === caseId) || portalState.precedentDatabase[caseId];
+      const item = portalState.mergedCases.find(c => c.caseNo === caseNo);
       if (item) {
-        document.getElementById('audit-industry').value = item.industry;
-        
-        let mappedCat = '必要性醫療/理賠金額認定';
-        if (item.category.includes('招攬')) mappedCat = '業務招攬爭端/未盡告知義務';
-        else if (item.category.includes('責任險') || item.category.includes('工資')) mappedCat = '汽機車責任險/事故過失責任';
-        else if (item.category.includes('下單') || item.category.includes('斷線')) mappedCat = '電子下單線路中斷/委託失敗';
-        document.getElementById('audit-category').value = mappedCat;
-
-        document.getElementById('audit-amount').value = item.amount;
-        document.getElementById('audit-details').value = item.summary;
+        document.getElementById('audit-industry').value = '保險業';
+        document.getElementById('audit-category').value = '必要性醫療/理賠金額認定';
+        document.getElementById('audit-amount').value = item.claimAmountNum || 100000;
+        const surNames = item.surgeries.map(s => s.name).join('、');
+        document.getElementById('audit-details').value = `【傷病】${item.diagnosis}【手術】${surNames}\n【爭點】${item.issue}`;
         document.getElementById('audit-has-complained').value = 'yes';
         onAuditComplainStatusChange();
 
-        if (item.complainDaysAgo) {
-          const d1 = new Date(today);
-          d1.setDate(today.getDate() - item.complainDaysAgo);
-          document.getElementById('audit-complain-date').value = toISO(d1);
-        }
+        const d1 = new Date(today);
+        d1.setDate(today.getDate() - 45);
+        document.getElementById('audit-complain-date').value = toISO(d1);
 
-        if (item.replyDaysAgo) {
-          document.getElementById('audit-reply-status').value = 'replied_rejected';
-          onAuditReplyStatusChange();
-          const d2 = new Date(today);
-          d2.setDate(today.getDate() - item.replyDaysAgo);
-          document.getElementById('audit-reply-date').value = toISO(d2);
-        } else {
-          document.getElementById('audit-reply-status').value = 'not_replied';
-          onAuditReplyStatusChange();
-        }
+        document.getElementById('audit-reply-status').value = 'replied_rejected';
+        onAuditReplyStatusChange();
+        const d2 = new Date(today);
+        d2.setDate(today.getDate() - 15);
+        document.getElementById('audit-reply-date').value = toISO(d2);
 
         document.getElementById('audit-dispute-nature').value = 'civil_financial';
         document.getElementById('audit-consumer-status').value = 'general_consumer';
@@ -2090,7 +2064,7 @@
         document.getElementById('audit-court-status').value = 'none';
 
         runAuditEngine();
-        showToast(`已成功載入案卷 ${item.docId} 至適格性審查表單`, 'check-circle');
+        showToast(`已成功載入案卷 ${item.caseNo} 至適格性審查表單`, 'check-circle');
       }
     }
 
@@ -2145,7 +2119,7 @@
       banner.className = "rounded-2xl p-6 sm:p-8 border-2 transition-all text-white shadow-md bg-gov-800 border-gov-700";
       document.getElementById('audit-badge-text').innerText = "待輸入資料並執行研判";
       document.getElementById('audit-verdict-title').innerHTML = `<span>請於左側填寫個案審查資料</span><span class="block text-xl sm:text-2xl text-cyan-300 font-bold mt-1 tracking-normal">（填妥後點擊下方「執行適格性研判」）</span>`;
-      document.getElementById('audit-verdict-desc').innerText = "系統將自動檢核《金融消費者保護法》第 13 條時效要件、第 24 條第 2 項法定不受理事由、第 29 條強制拘束力門檻，並為您調出歷史相似裁判案件進行心證對比。";
+      document.getElementById('audit-verdict-desc').innerText = "系統將自動檢核《金融消費者保護法》第 13 條時效要件、第 24 條第 2 項法定不受理事由、第 29 條強制拘束力門檻，並為您調出 CSV 資料庫中之歷史相似裁判案件進行心證對比。";
       document.getElementById('audit-countdown-box').classList.add('hidden');
 
       document.getElementById('screening-statutory-category-badge').className = "px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-700 self-start sm:self-auto";
@@ -2181,55 +2155,50 @@
       if (window.lucide) lucide.createIcons();
     }
 
-    function renderSimilarCasesComparison(industry, category) {
+    function renderSimilarCasesComparison(detailsText) {
       const panel = document.getElementById('audit-similar-cases-panel');
       const grid = document.getElementById('audit-similar-cases-grid');
       if (!panel || !grid) return;
 
-      const allPool = [
-        ...portalState.crawledDecisions,
-        ...Object.entries(portalState.precedentDatabase).map(([k, v]) => ({ id: k, ...v }))
-      ];
+      const tokens = (detailsText || '').split(/[\s,，。、；;（）()【】]+/).filter(t => t.length >= 2);
+      let matches = [];
 
-      let matches = allPool.filter(item => {
-        if (category && item.category && item.category.includes(category.split('/')[0])) return true;
-        if (industry && item.industry === industry) return true;
-        return false;
-      });
-
-      const seen = new Set();
-      matches = matches.filter(item => {
-        if (seen.has(item.docId)) return false;
-        seen.add(item.docId);
-        return true;
-      }).slice(0, 3);
+      if (tokens.length > 0) {
+        matches = portalState.mergedCases.map(doc => {
+          const corpus = `${doc.diagnosis} ${doc.issue} ${doc.surgeries.map(s => s.name).join(' ')}`;
+          let score = 0;
+          tokens.forEach(tk => { if (corpus.includes(tk)) score += 1; });
+          return { doc, score };
+        }).filter(x => x.score > 0).sort((a, b) => b.score - a.score).slice(0, 3).map(x => x.doc);
+      }
 
       if (matches.length === 0) {
-        matches = allPool.slice(0, 2);
+        matches = portalState.mergedCases.slice(0, 3);
       }
 
       grid.innerHTML = '';
       matches.forEach(m => {
-        const isWin = m.verdict.includes('成立') && !m.verdict.includes('不成立');
-        const badgeStyle = isWin ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-amber-100 text-amber-800 border-amber-200';
-        const distinctionText = m.coreDistinction || `【裁判尺度參考】本案標的金額 NT$ ${m.amount.toLocaleString()}，核心裁決理由：${m.summary}`;
+        const isPartial = m.verdict.includes('部分');
+        const badgeStyle = isPartial ? 'bg-emerald-100 text-emerald-800 border-emerald-200' : 'bg-rose-100 text-rose-800 border-rose-200';
+        const firstRej = m.rejections[0] ? `【核心駁回依據：${m.rejections[0].basis}】${m.rejections[0].mismatch}` : m.issue;
 
         const card = document.createElement('div');
-        card.className = 'p-4 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-white hover:border-cyan-400 transition space-y-2.5';
+        card.className = 'p-4 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-white hover:border-cyan-400 transition space-y-2.5 cursor-pointer';
+        card.onclick = () => openDecisionDossier(m.caseNo);
         card.innerHTML = `
           <div class="flex flex-wrap items-center justify-between gap-2">
             <div class="flex items-center gap-2">
-              <span class="font-mono font-bold text-gov-800 text-sm">${m.docId}</span>
-              <span class="text-xs px-2 py-0.5 rounded bg-slate-200/70 text-slate-700 font-semibold">${m.industry}</span>
+              <span class="font-mono font-bold text-gov-800 text-sm hover:underline">${m.caseNo}</span>
+              <span class="text-xs px-2 py-0.5 rounded bg-slate-200/70 text-slate-700 font-semibold">${m.setting}</span>
             </div>
             <span class="px-2.5 py-0.5 rounded-full text-xs font-bold border ${badgeStyle}">${m.verdict}</span>
           </div>
           <div class="text-xs text-slate-600 font-medium">
-            爭端案由：<strong class="text-slate-800">${m.category}</strong> ｜ 標的金額：<span class="font-mono font-bold text-gov-700">NT$ ${m.amount.toLocaleString()}</span>
+            傷病診斷：<strong class="text-slate-800">${m.diagnosis}</strong> ｜ 請求金額：<span class="font-mono font-bold text-gov-700">${m.claimAmountStr}</span>
           </div>
-          <p class="text-xs text-slate-600 leading-relaxed">${m.summary}</p>
+          <p class="text-xs text-slate-600 leading-relaxed line-clamp-2">${m.issue}</p>
           <div class="p-2.5 rounded-lg bg-cyan-50/80 border border-cyan-200/80 text-xs text-cyan-950 font-medium leading-relaxed">
-            ${distinctionText}
+            ${firstRej}
           </div>
         `;
         grid.appendChild(card);
@@ -2258,6 +2227,7 @@
       const replyDateStr = document.getElementById('audit-reply-date').value;
       const repeatOmbuds = document.getElementById('audit-repeat-ombuds').value;
       const courtStatus = document.getElementById('audit-court-status').value;
+      const detailsText = document.getElementById('audit-details').value;
       const amount = Number(amountVal) || 0;
 
       const banner = document.getElementById('audit-result-banner');
@@ -2290,7 +2260,7 @@
         }
       };
 
-      renderSimilarCasesComparison(industry, category);
+      renderSimilarCasesComparison(detailsText);
 
       const isBinding = amount <= 1200000;
       if (isBinding) {
@@ -2568,20 +2538,29 @@
       document.body.removeChild(t);
     }
 
-    function exportVerdictPDF() {
-      showToast('正在封裝匯出「金融消費爭端適格性審定書 (PDF)」...', 'download');
-      setTimeout(() => {
-        showToast('公文審定書匯出完成！具備法遵數位存證雜湊碼。', 'file-check');
-      }, 1200);
-    }
-
     function exportAuditReport() {
-      showToast('正在匯出當季監理大數據交叉分析月報 (Excel/CSV)...', 'download');
-      setTimeout(() => {
-        showToast('月報資料表匯出成功！', 'file-spreadsheet');
-      }, 1000);
+      if (!portalState.mergedCases.length) {
+        showToast('目前無可匯出之資料', 'alert-circle');
+        return;
+      }
+      const headers = ['案號', '評議結果', '請求金額', '准許金額', '傷病', '就醫院所', '住院或門診', '駁回依據數', '手術萃取數'];
+      const rows = portalState.mergedCases.map(c => [
+        c.caseNo, c.verdict, c.claimAmountStr, c.awardedAmountStr || '0', c.diagnosis, c.hospital, c.setting, c.rejections.length, c.surgeries.length
+      ]);
+      const csvContent = '\uFEFF' + [headers, ...rows].map(e => e.map(v => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+      const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `評議監理交叉統計報表_${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('已匯出整合分析報表 (CSV)！', 'file-spreadsheet');
     }
 
+    // ========================================================
+    // Chart.js 初始化與週期切換
+    // ========================================================
     let chartInadmissibleInstance = null;
     let chartVerdictPieInstance = null;
     let chartProcessingDaysInstance = null;
@@ -2598,10 +2577,10 @@
       chartInadmissibleInstance = new Chart(ctx1, {
         type: 'bar',
         data: {
-          labels: analyticsSevenMetrics.inadmissible1to9.labels,
+          labels: dynamicAnalytics.inadmissible1to9.labels,
           datasets: [{
             label: '不受理案件數',
-            data: analyticsSevenMetrics.inadmissible1to9.counts,
+            data: dynamicAnalytics.inadmissible1to9.counts,
             backgroundColor: '#e11d48',
             borderRadius: 5
           }]
@@ -2635,10 +2614,10 @@
       chartVerdictPieInstance = new Chart(ctx2, {
         type: 'doughnut',
         data: {
-          labels: analyticsSevenMetrics.verdictPie.labels,
+          labels: ['不准許', '部分准許'],
           datasets: [{
-            data: analyticsSevenMetrics.verdictPie.percentages,
-            backgroundColor: ['#10b981', '#06b6d4', '#64748b', '#f43f5e'],
+            data: [dynamicAnalytics.verdictCounts['不准許'], dynamicAnalytics.verdictCounts['部分准許']],
+            backgroundColor: ['#64748b', '#10b981'],
             borderWidth: 2,
             borderColor: '#ffffff'
           }]
@@ -2652,31 +2631,28 @@
               position: 'bottom',
               labels: {
                 boxWidth: 12,
-                font: { family: 'Noto Sans TC', size: 11, weight: 'bold' },
+                font: { family: 'Noto Sans TC', size: 12, weight: 'bold' },
                 color: '#334155',
-                padding: 10
-              }
-            },
-            tooltip: {
-              callbacks: {
-                label: function(context) {
-                  return ` ${context.label}: ${context.raw}%`;
-                }
+                padding: 12
               }
             }
           }
         }
       });
 
-      // 6. 平均審理天數分佈 (長條圖)
+      // 5. 就醫型態分佈 (長條圖)
       chartProcessingDaysInstance = new Chart(ctx6, {
         type: 'bar',
         data: {
-          labels: analyticsSevenMetrics.processingDays.labels,
+          labels: ['門診治療', '住院治療', '未載明／不明'],
           datasets: [{
             label: '案件數',
-            data: analyticsSevenMetrics.processingDays.counts,
-            backgroundColor: ['#10b981', '#0284c7', '#f59e0b', '#e11d48'],
+            data: [
+              dynamicAnalytics.settingCounts['門診'],
+              dynamicAnalytics.settingCounts['住院'],
+              dynamicAnalytics.settingCounts['不明']
+            ],
+            backgroundColor: ['#0d9488', '#0284c7', '#94a3b8'],
             borderRadius: 6
           }]
         },
@@ -2689,7 +2665,7 @@
           scales: {
             x: {
               grid: { display: false },
-              ticks: { font: { family: 'Noto Sans TC', size: 11, weight: 'bold' }, color: '#334155' }
+              ticks: { font: { family: 'Noto Sans TC', size: 12, weight: 'bold' }, color: '#334155' }
             },
             y: {
               border: { dash: [4, 4] },
@@ -2704,25 +2680,30 @@
 
     function setYearPeriod(period) {
       portalState.activePeriod = period;
-      const ids = ['btn-period-all', 'btn-period-recent', 'btn-period-latest'];
+      const ids = ['btn-period-all', 'btn-period-113', 'btn-period-syllogism'];
       ids.forEach(id => {
         const btn = document.getElementById(id);
         if (!btn) return;
-        if (id.includes(period)) {
+        if (id.endsWith(period)) {
           btn.className = "px-3.5 py-1.5 rounded-lg text-sm font-bold bg-gov-800 text-white transition";
         } else {
           btn.className = "px-3.5 py-1.5 rounded-lg text-sm font-bold bg-slate-100 text-slate-700 hover:bg-slate-200 transition";
         }
       });
 
-      showToast(`已切換統計樣本區間：${period === 'all' ? '全期累計樣本' : (period === 'recent' ? '近三年度' : '當年度即時')}`, 'calendar');
+      const subset = getFilteredAnalyticsSubset();
+      const statsSampleBadge = document.getElementById('stats-sample-badge');
+      if (statsSampleBadge) {
+        statsSampleBadge.innerText = `目前篩選樣本數：${subset.length.toLocaleString()} 篇`;
+      }
+      computeAndRenderAnalytics(subset);
+      showToast(`已切換統計樣本區間（共 ${subset.length} 篇）`, 'calendar');
     }
 
     // Portal Initialization
     window.addEventListener('DOMContentLoaded', () => {
       if (window.lucide) lucide.createIcons();
-      renderDecisionFeed();
-      renderSevenAnalyticsModules();
+      reloadAllCsvData();
     });
   </script>
 </body>
